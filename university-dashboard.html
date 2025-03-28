@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>University Profile</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <style>
+        .container {
+            max-width: 600px;
+            margin-top: 50px;
+        }
+        .edit-btn {
+            float: right;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2 class="text-center">University Profile</h2>
+        <form id="universityProfile">
+            <div class="mb-3">
+                <label class="form-label">University Name</label>
+                <input type="text" class="form-control" id="uniName" value="" disabled>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Admin Name</label>
+                <input type="text" class="form-control" id="adminName" value="" disabled>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Official Email ID</label>
+                <input type="email" class="form-control" id="uniEmail" value="" disabled>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">University Registration Number</label>
+                <input type="text" class="form-control" id="regNumber" value="" disabled>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Address</label>
+                <input type="text" class="form-control" id="address" value="" disabled>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Contact Number</label>
+                <input type="text" class="form-control" id="contact" value="" disabled>
+            </div>
+            <h4 class="mt-4">Social Media Links</h4>
+            <div class="mb-3">
+                <label class="form-label">Facebook 'or'</label>
+                <input type="url" class="form-control" id="facebook" placeholder="Enter Facebook Profile URL" disabled>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Instagram 'or'</label>
+                <input type="url" class="form-control" id="instagram" placeholder="Enter Instagram Profile URL" disabled>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Twitter 'or'</label>
+                <input type="url" class="form-control" id="twitter" placeholder="Enter Twitter Profile URL" disabled>
+            </div>
+            <!-- <div class="mb-3">
+                <label class="form-label">LinkedIn</label>
+                <input type="url" class="form-control" id="linkedin" placeholder="Enter LinkedIn Profile URL" disabled>
+            </div> -->
+            
+            <div class="mb-3">
+                <label class="form-label">University Website*</label>
+                <input type="text" class="form-control" id="website" value="" disabled>
+            </div>
+            <button type="button" class="btn btn-primary edit-btn" onclick="enableEditing()">Edit</button>
+            <button type="submit" class="btn btn-success" style="display: none;" id="saveBtn">Save</button>
+        </form>
+    </div>
+
+    <script>
+        function enableEditing() {
+            document.querySelectorAll("#universityProfile input").forEach(input => input.disabled = false);
+            document.getElementById("saveBtn").style.display = "block";
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AlumniZONE | Connect & Grow</title>
+  <link rel="stylesheet" href="styles.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;600&display=swap" rel="stylesheet">
+</head>
+
+<body>
+  <!-- Navbar -->
+  <header class="navbar">
+    <div class="logo">AlumniZONE</div>
+    <nav>
+      <ul>
+        <li><a href="#">Home</a></li>
+        <li><a href="#">About</a></li>
+        <li><a href="#">Features</a></li>
+        <li><a href="#" onclick="openLoginForm()">Login</a></li>
+        <li><a href="#" onclick="openForm()">Register</a></li> <!-- Yeh button form open karega -->
+
+      </ul>
+    </nav>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="hero-content">
+      <h1>Welcome to AlumniZONE</h1>
+      <p>Connecting Alumni, Students & Recruiters for a Brighter Future!</p>
+      <div class="hero-buttons">
+        <div class="hero-buttons">
+          <button onclick="openForm()" id="register">Register</button> <!-- Yeh button bhi form open karega -->
+          <button onclick="openLoginForm()"id="register">Login</button>
+        </div>
+      </div>
+    </div>
+  </section>
+  <div class="form-popup" id="registerForm">
+    <h2>Register</h2>
+    <form>
+      <!-- Name -->
+      <input type="text" placeholder="Full Name" required>
+
+      <!-- Email -->
+      <input type="email" placeholder="Email ID" required>
+
+      <!-- Phone (Optional) -->
+      <input type="tel" placeholder="Phone Number">
+
+      <!-- Dropdown: User Type -->
+      <select id="userType" onchange="toggleUniversityDropdown()" required>
+        <option value="">Select User Type</option>
+        <option value="university">University</option>
+        <option value="alumni">Alumni</option>
+        <option value="recruiter">Recruiter</option>
+      </select>
+
+      <!-- Dropdown: University Name (Only if Alumni selected) -->
+      <select id="universityName" class="hidden" required>
+        <option value="">Choose Your University Name</option>
+        <option value="Makhanlal Chaturvedi University">Makhanlal Chaturvedi University</option>
+        <option value="Delhi University">Delhi University</option>
+        <option value="Mumbai University">Mumbai University</option>
+        <option value="JNU">JNU</option>
+        <option value="IGNOU">IGNOU</option>
+      </select>
+
+      <!-- Submit Button -->
+      <button type="submit" class="btn">Submit</button>
+
+      <!-- Close Button -->
+      <button type="button" class="btn close-btn" onclick="closeForm()">Close</button>
+    </form>
+  </div>
+  <div class="form-popup" id="loginForm">
+    <h2>Login</h2>
+    <form id="otpLoginForm">
+      <input type="email" id="loginEmail" placeholder="Email or Mobile Number" required>
+      <button type="button" class="btn" onclick="sendOTP()">Send OTP</button>
+      <input type="text" id="otpInput" placeholder="Enter OTP" class="hidden" required>
+      <button type="submit" class="btn hidden" id="verifyOtpBtn">Verify OTP</button>
+      <button type="button" class="btn close-btn" onclick="closeLoginForm()">Close</button>
+    </form>
+  </div>
+  
+
+  <!-- About Section -->
+  <section class="about">
+    <h2>About AlumniZONE</h2>
+    <p>AlumniZONE is your trusted platform to connect with university alumni, find recruiters, and participate in exclusive events. Build your network and open doors to new opportunities!</p>
+  </section>
+
+  <!-- Features Section -->
+  <section class="features">
+    <h2>Why Join AlumniZONE?</h2>
+    <div class="features-container">
+      <div class="feature-box">
+        <h3>For Alumni</h3>
+        <p>Reconnect with your university, mentor juniors, and share opportunities.</p>
+      </div>
+      <div class="feature-box">
+        <h3>For Students</h3>
+        <p>Get career guidance, find internships, and learn from experienced alumni.</p>
+      </div>
+      <div class="feature-box">
+        <h3>For Recruiters</h3>
+        <p>Hire talented alumni and students verified by the university.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <p>&copy; 2025 AlumniZONE. All rights reserved.</p>
+  </footer>
+  <script>
+    // Open Form
+    function openForm() {
+      document.getElementById("registerForm").style.display = "block";
+    }
+
+    // Close Form
+    function closeForm() {
+      document.getElementById("registerForm").style.display = "none";
+      document.getElementById("userType").value = "";
+      document.getElementById("universityName").classList.add("hidden");
+    }
+
+    // Show/Hide University Dropdown based on User Type
+    function toggleUniversityDropdown() {
+      var userType = document.getElementById("userType").value;
+      var universityDropdown = document.getElementById("universityName");
+
+      if (userType === "alumni") {
+        universityDropdown.classList.remove("hidden");
+      } else {
+        universityDropdown.classList.add("hidden");
+      }
+    }
+    document.getElementById("registerForm").addEventListener("submit", function(event) {
+      event.preventDefault();
+      var userType = document.getElementById("userType").value;
+      
+      if (userType === "university") {
+        window.location.href = "university-dashboard.html";
+      } else if (userType === "alumni") {
+        window.location.href = "alumni-dashboard.html";
+      } else if (userType === "recruiter") {
+        window.location.href = "recruiter-dashboard.html";
+      }
+    });
+    // login form
+    function openLoginForm() {
+      document.getElementById("loginForm").style.display = "block";
+    }
+
+    function closeLoginForm() {
+      document.getElementById("loginForm").style.display = "none";
+    }
+
+    function sendOTP() {
+      document.getElementById("otpInput").classList.remove("hidden");
+      document.getElementById("verifyOtpBtn").classList.remove("hidden");
+      alert("OTP sent! (Use 1234 for demo)");
+    }
+
+    document.getElementById("otpLoginForm").addEventListener("submit", function(event) {
+      event.preventDefault();
+      let otp = document.getElementById("otpInput").value;
+      if (otp === "1234") {
+        alert("Login successful!");
+        closeLoginForm();
+      } else {
+        alert("Invalid OTP. Try again.");
+      }
+    });
+  </script>
+</body>
+</html>
