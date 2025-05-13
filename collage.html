@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Institute Registration</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .file-preview {
+            font-size: 0.9rem;
+            color: #28a745;
+            margin-top: 5px;
+        }
+
+        .form-step {
+            display: none;
+        }
+
+        .form-step.active {
+            display: block;
+        }
+
+        .step-indicator {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 30px;
+        }
+
+        .step {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: #e9ecef;
+            color: #6c757d;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 10px;
+            position: relative;
+            font-weight: bold;
+        }
+
+        .step.active {
+            background-color: #0d6efd;
+            color: white;
+        }
+
+        .step.completed {
+            background-color: #198754;
+            color: white;
+        }
+
+        .step-connector {
+            flex-grow: 1;
+            height: 2px;
+            background-color: #e9ecef;
+            margin: 0 -10px;
+            position: relative;
+            top: 20px;
+        }
+
+        .step-connector.active {
+            background-color: #0d6efd;
+        }
+
+        .step-connector.completed {
+            background-color: #198754;
+        }
+
+        .step-label {
+            position: absolute;
+            top: 45px;
+            width: 100px;
+            left: 50%;
+            transform: translateX(-50%);
+            text-align: center;
+            font-size: 0.8rem;
+            color: #6c757d;
+        }
+
+        .step.active .step-label {
+            color: #0d6efd;
+            font-weight: bold;
+        }
+
+        .step.completed .step-label {
+            color: #198754;
+        }
+
+        .navigation-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container mt-5">
+        <h2 class="mb-4 text-center">Institute Registration Form</h2>
+
+        <!-- Step Indicators -->
+        <div class="step-indicator">
+            <div class="step active" id="step1-indicator">
+                <span>1</span>
+                <div class="step-label">Institute Details</div>
+            </div>
+            <div class="step-connector" id="connector1-2"></div>
+            <div class="step" id="step2-indicator">
+                <span>2</span>
+                <div class="step-label">Affiliations</div>
+            </div>
+            <div class="step-connector" id="connector2-3"></div>
+            <div class="step" id="step3-indicator">
+                <span>3</span>
+                <div class="step-label">Documents</div>
+            </div>
+            <div class="step-connector" id="connector3-4"></div>
+            <div class="step" id="step4-indicator">
+                <span>4</span>
+                <div class="step-label">Contact Person</div>
+            </div>
+        </div>
+
+        <form id="instituteForm" enctype="multipart/form-data">
+            <!-- Step 1: Institute Details -->
+            <div class="form-step active" id="step1">
+                <div class="mb-3">
+                    <label class="form-label">Institute Name</label>
+                    <input type="text" name="instituteName" class="form-control" required>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Type</label>
+                    <select name="instituteType" class="form-select" required>
+                        <option value="">Select</option>
+                        <option value="University">University</option>
+                        <option value="College">College</option>
+                        <option value="Deemed University">Deemed University</option>
+                        <option value="Private Institute">Private Institute</option>
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Official Email</label>
+                    <input type="email" name="email" class="form-control"
+                        pattern="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
+                        title="Please enter a valid institute email" required>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Phone</label>
+                    <input type="text" name="phone" class="form-control" pattern="[0-9]{10}"
+                        title="10-digit phone number (without +91)" required>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">City</label>
+                    <input type="text" name="address[city]" class="form-control">
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">State</label>
+                    <input type="text" name="address[state]" class="form-control">
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Pin Code</label>
+                    <input type="text" name="address[pinCode]" class="form-control">
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Website</label>
+                    <input type="url" name="website" class="form-control">
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Established Year</label>
+                    <input type="number" name="establishedYear" class="form-control">
+                </div>
+
+                <div class="navigation-buttons">
+                    <button type="button" class="btn btn-secondary" disabled>Previous</button>
+                    <button type="button" class="btn btn-primary next-step" data-next="step2">Next</button>
+                </div>
+            </div>
+
+            <!-- Step 2: Affiliations -->
+            <div class="form-step" id="step2">
+                <div class="mb-3">
+                    <label class="form-label">Affiliations</label>
+
+                    <!-- UGC -->
+                    <div class="form-check">
+                        <input class="form-check-input affiliation-checkbox" type="checkbox" value="UGC" id="ugc"
+                            name="affiliations[]">
+                        <label class="form-check-label" for="ugc">UGC</label>
+                    </div>
+                    <div id="ugc-upload" class="mt-2 mb-3" style="display:none;">
+                        <label class="form-label">Upload UGC Certificate</label>
+                        <input type="file" name="ugcCertificate" class="form-control">
+                        <div class="file-preview" id="ugc-preview"></div>
+                    </div>
+
+                    <!-- AICTE -->
+                    <div class="form-check">
+                        <input class="form-check-input affiliation-checkbox" type="checkbox" value="AICTE" id="aicte"
+                            name="affiliations[]">
+                        <label class="form-check-label" for="aicte">AICTE</label>
+                    </div>
+                    <div id="aicte-upload" class="mt-2 mb-3" style="display:none;">
+                        <label class="form-label">Upload AICTE Approval</label>
+                        <input type="file" name="aicteApproval" class="form-control">
+                        <div class="file-preview" id="aicte-preview"></div>
+                    </div>
+
+                    <!-- NAAC -->
+                    <div class="form-check">
+                        <input class="form-check-input affiliation-checkbox" type="checkbox" value="NAAC" id="naac"
+                            name="affiliations[]">
+                        <label class="form-check-label" for="naac">NAAC</label>
+                    </div>
+                    <div id="naac-upload" class="mt-2 mb-3" style="display:none;">
+                        <label class="form-label">Upload NAAC Accreditation</label>
+                        <input type="file" name="naacAccreditation" class="form-control">
+                        <div class="file-preview" id="naac-preview"></div>
+                    </div>
+
+                    <!-- BCI -->
+                    <div class="form-check">
+                        <input class="form-check-input affiliation-checkbox" type="checkbox" value="BCI" id="bci"
+                            name="affiliations[]">
+                        <label class="form-check-label" for="bci">BCI</label>
+                    </div>
+                    <div id="bci-upload" class="mt-2 mb-3" style="display:none;">
+                        <label class="form-label">Upload BCI License</label>
+                        <input type="file" name="bciLicense" class="form-control">
+                        <div class="file-preview" id="bci-preview"></div>
+                    </div>
+                </div>
+
+                <div class="navigation-buttons">
+                    <button type="button" class="btn btn-secondary prev-step" data-prev="step1">Previous</button>
+                    <button type="button" class="btn btn-primary next-step" data-next="step3">Next</button>
+                </div>
+            </div>
+
+            <!-- Step 3: Documents -->
+            <div class="form-step" id="step3">
+                <div class="mb-3">
+                    <label class="form-label">Upload Logo</label>
+                    <input type="file" name="logo" class="form-control" id="logoUpload" accept="image/*">
+                    <div class="file-preview" id="logo-preview"></div>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Authorization Letter</label>
+                    <input type="file" name="authorizationLetter" class="form-control" id="authLetterUpload">
+                    <div class="file-preview" id="authLetter-preview"></div>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Authorized Person ID Proof</label>
+                    <input type="file" name="idProof" class="form-control" id="idProofUpload">
+                    <div class="file-preview" id="idProof-preview"></div>
+                </div>
+
+                <div class="navigation-buttons">
+                    <button type="button" class="btn btn-secondary prev-step" data-prev="step2">Previous</button>
+                    <button type="button" class="btn btn-primary next-step" data-next="step4">Next</button>
+                </div>
+            </div>
+
+            <!-- Step 4: Contact Person -->
+            <div class="form-step" id="step4">
+                <div class="mb-3">
+                    <label class="form-label">Name</label>
+                    <input type="text" name="contactPerson[name]" class="form-control" required>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Designation</label>
+                    <input type="text" name="contactPerson[designation]" class="form-control">
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Email</label>
+                    <input type="email" name="contactPerson[email]" class="form-control">
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Phone</label>
+                    <input type="text" name="contactPerson[phone]" class="form-control">
+                </div>
+
+                <div class="navigation-buttons">
+                    <button type="button" class="btn btn-secondary prev-step" data-prev="step3">Previous</button>
+                    <button type="submit" class="btn btn-success" id="submitBtn">
+                        <span id="submitText">Submit Registration</span>
+                        <span id="spinner" class="spinner-border spinner-border-sm d-none"></span>
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <!-- Toast Notification -->
+    <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11">
+        <div id="toast" class="toast align-items-center text-white" role="alert" aria-live="assertive"
+            aria-atomic="true">
+            <div class="d-flex">
+                <div class="toast-body" id="toastMessage"></div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Multi-step form navigation
+        document.querySelectorAll('.next-step').forEach(button => {
+            button.addEventListener('click', function () {
+                const currentStep = this.closest('.form-step');
+                const nextStepId = this.getAttribute('data-next');
+
+                // Validate current step before proceeding
+                if (!validateStep(currentStep)) {
+                    return;
+                }
+
+                currentStep.classList.remove('active');
+                document.getElementById(nextStepId).classList.add('active');
+
+                // Update step indicators
+                updateStepIndicators(nextStepId);
+            });
+        });
+
+        document.querySelectorAll('.prev-step').forEach(button => {
+            button.addEventListener('click', function () {
+                const currentStep = this.closest('.form-step');
+                const prevStepId = this.getAttribute('data-prev');
+
+                currentStep.classList.remove('active');
+                document.getElementById(prevStepId).classList.add('active');
+
+                // Update step indicators
+                updateStepIndicators(prevStepId);
+            });
+        });
+
+        function validateStep(stepElement) {
+            const requiredFields = stepElement.querySelectorAll('[required]');
+            let isValid = true;
+
+            requiredFields.forEach(field => {
+                if (!field.value.trim()) {
+                    field.classList.add('is-invalid');
+                    isValid = false;
+
+                    // Create error message if it doesn't exist
+                    if (!field.nextElementSibling || !field.nextElementSibling.classList.contains('invalid-feedback')) {
+                        const errorDiv = document.createElement('div');
+                        errorDiv.className = 'invalid-feedback';
+                        errorDiv.textContent = 'This field is required';
+                        field.parentNode.insertBefore(errorDiv, field.nextSibling);
+                    }
+                } else {
+                    field.classList.remove('is-invalid');
+                    const errorDiv = field.nextElementSibling;
+                    if (errorDiv && errorDiv.classList.contains('invalid-feedback')) {
+                        errorDiv.remove();
+                    }
+                }
+            });
+
+            if (!isValid) {
+                showToast('Please fill all required fields', false);
+                stepElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+
+            return isValid;
+        }
+
+        function updateStepIndicators(activeStepId) {
+            const stepNumber = parseInt(activeStepId.replace('step', ''));
+
+            // Update step indicators
+            for (let i = 1; i <= 4; i++) {
+                const indicator = document.getElementById(`step${i}-indicator`);
+                const connector = document.getElementById(`connector${i - 1}-${i}`);
+
+                if (i < stepNumber) {
+                    indicator.classList.remove('active');
+                    indicator.classList.add('completed');
+                    if (connector) connector.classList.add('completed');
+                } else if (i === stepNumber) {
+                    indicator.classList.add('active');
+                    indicator.classList.remove('completed');
+                    if (connector) connector.classList.remove('completed');
+                } else {
+                    indicator.classList.remove('active', 'completed');
+                    if (connector) connector.classList.remove('active', 'completed');
+                }
+
+                // Update connectors
+                if (i < stepNumber) {
+                    if (connector) connector.classList.add('completed');
+                } else if (i === stepNumber) {
+                    if (connector) connector.classList.add('active');
+                } else {
+                    if (connector) connector.classList.remove('active', 'completed');
+                }
+            }
+        }
+
+        // Affiliation Checkbox Handling
+        document.querySelectorAll('.affiliation-checkbox').forEach(checkbox => {
+            checkbox.addEventListener('change', function () {
+                const uploadDiv = document.getElementById(`${this.value.toLowerCase()}-upload`);
+                const fileInput = uploadDiv.querySelector('input[type="file"]');
+                const previewDiv = document.getElementById(`${this.value.toLowerCase()}-preview`);
+
+                if (this.checked) {
+                    uploadDiv.style.display = 'block';
+                } else {
+                    uploadDiv.style.display = 'none';
+                    fileInput.value = '';
+                    previewDiv.innerHTML = '';
+                }
+            });
+        });
+
+        // File Upload Previews
+        function setupFilePreview(inputId, previewId) {
+            const input = document.getElementById(inputId);
+            if (!input) return;
+
+            const preview = document.getElementById(previewId);
+
+            input.addEventListener('change', function () {
+                if (this.files && this.files[0]) {
+                    preview.innerHTML = `Selected: <strong>${this.files[0].name}</strong> (${(this.files[0].size / 1024).toFixed(2)} KB)`;
+                } else {
+                    preview.innerHTML = '';
+                }
+            });
+        }
+
+        // Setup previews for all file inputs
+        setupFilePreview('logoUpload', 'logo-preview');
+        setupFilePreview('authLetterUpload', 'authLetter-preview');
+        setupFilePreview('idProofUpload', 'idProof-preview');
+
+        // Setup previews for affiliation file inputs (they might not exist initially)
+        document.querySelectorAll('.affiliation-checkbox').forEach(checkbox => {
+            const uploadDiv = document.getElementById(`${checkbox.value.toLowerCase()}-upload`);
+            if (uploadDiv) {
+                const fileInput = uploadDiv.querySelector('input[type="file"]');
+                if (fileInput) {
+                    const previewDiv = document.getElementById(`${checkbox.value.toLowerCase()}-preview`);
+                    fileInput.addEventListener('change', function () {
+                        if (this.files && this.files[0]) {
+                            previewDiv.innerHTML = `Selected: <strong>${this.files[0].name}</strong> (${(this.files[0].size / 1024).toFixed(2)} KB)`;
+                        } else {
+                            previewDiv.innerHTML = '';
+                        }
+                    });
+                }
+            }
+        });
+
+        // Form Submission
+        document.getElementById('instituteForm').addEventListener('submit', async function (e) {
+            e.preventDefault();
+
+            // Validate the current step (should be step 4)
+            const currentStep = document.querySelector('.form-step.active');
+            if (!validateStep(currentStep)) {
+                return;
+            }
+
+            // Validate affiliation certificates
+            const checkedBoxes = document.querySelectorAll('.affiliation-checkbox:checked');
+            let isValid = true;
+
+            checkedBoxes.forEach(checkbox => {
+                const uploadDiv = document.getElementById(`${checkbox.value.toLowerCase()}-upload`);
+                if (!uploadDiv) return;
+
+                const uploadField = uploadDiv.querySelector('input[type="file"]');
+
+                if (!uploadField.files || !uploadField.files[0]) {
+                    isValid = false;
+                    showToast(`Please upload ${checkbox.value} certificate`, false);
+                    // Go to step 2 to show the error
+                    document.querySelector('.form-step.active').classList.remove('active');
+                    document.getElementById('step2').classList.add('active');
+                    updateStepIndicators('step2');
+                    uploadField.focus();
+                }
+            });
+
+            if (!isValid) return;
+
+            // Show loading spinner
+            const submitBtn = document.getElementById('submitBtn');
+            const spinner = document.getElementById('spinner');
+            const submitText = document.getElementById('submitText');
+
+            submitBtn.disabled = true;
+            submitText.textContent = "Submitting...";
+            spinner.classList.remove('d-none');
+
+            try {
+                const formData = new FormData(this);
+
+                // Send data to backend API
+                const response = await fetch('http://localhost:3000/api/institute/register', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    showToast('Registration successful!', true);
+                    // Reset form
+                    this.reset();
+                    // Hide all affiliation upload sections
+                    document.querySelectorAll('[id$="-upload"]').forEach(el => {
+                        el.style.display = 'none';
+                    });
+                    // Clear all file previews
+                    document.querySelectorAll('.file-preview').forEach(el => {
+                        el.innerHTML = '';
+                    });
+                    // Reset to first step
+                    document.querySelector('.form-step.active').classList.remove('active');
+                    document.getElementById('step1').classList.add('active');
+                    updateStepIndicators('step1');
+                } else {
+                    showToast(result.message || 'Registration failed!', false);
+                }
+
+            } catch (error) {
+                showToast("Error submitting form. Please try again.", false);
+                console.error('Error:', error);
+            } finally {
+                submitBtn.disabled = false;
+                submitText.textContent = "Submit Registration";
+                spinner.classList.add('d-none');
+            }
+        });
+
+        // Toast Notification Function
+        function showToast(message, isSuccess = true) {
+            const toastEl = document.getElementById('toast');
+            const toastMessage = document.getElementById('toastMessage');
+
+            toastEl.classList.remove('bg-success', 'bg-danger');
+            toastEl.classList.add(isSuccess ? 'bg-success' : 'bg-danger');
+            toastMessage.textContent = message;
+
+            const toast = new bootstrap.Toast(toastEl);
+            toast.show();
+        }
+    </script>
+</body>
+
+</html>

@@ -1,480 +1,506 @@
-// API Configuration
-const API_BASE_URL = 'https://alumni-web-api.onrender.com/api/auth';
+// // config.js - API Configuration
+// const API_BASE_URL = 'https://alumni-web-api.onrender.com/api/auth';
 
-// Check if user is already logged in
-document.addEventListener('DOMContentLoaded', function () {
-  const authToken = localStorage.getItem('authToken');
-  const userRole = localStorage.getItem('userRole');
+// // auth.js - Authentication Functions
+// class AuthService {
+//   static getAuthToken() {
+//     return localStorage.getItem('authToken');
+//   }
 
-  if (authToken && userRole) {
-    showDashboard(userRole);
-  }
-});
+//   static getUserRole() {
+//     return localStorage.getItem('userRole');
+//   }
 
-// Mobile Menu Toggle
-const mobileMenu = document.getElementById('mobile-menu');
-const navLinks = document.getElementById('nav-links');
+//   static setAuthData(token, role) {
+//     localStorage.setItem('authToken', token);
+//     localStorage.setItem('userRole', role);
+//   }
 
-mobileMenu.addEventListener('click', () => {
-  navLinks.classList.toggle('show');
-});
+//   static clearAuthData() {
+//     localStorage.removeItem('authToken');
+//     localStorage.removeItem('userRole');
+//   }
 
-// Close mobile menu when a link is clicked
-document.querySelectorAll('.nav-links a').forEach(link => {
-  link.addEventListener('click', () => {
-    navLinks.classList.remove('show');
-  });
-});
+//   static isAuthenticated() {
+//     return !!this.getAuthToken();
+//   }
+// }
 
-// Form Functions
-const overlay = document.getElementById('overlay');
+// // ui.js - UI Helper Functions
+// class UIHelper {
+//   static showError(element, message) {
+//     if (typeof element === 'string') {
+//       element = document.getElementById(element);
+//     }
+//     if (element) {
+//       element.textContent = message;
+//       element.classList.remove('success', 'hidden');
+//       element.classList.add('error');
+//     }
+//   }
 
-// Open Registration Form
-function openForm() {
-  document.getElementById("registerForm").style.display = "block";
-  overlay.style.display = "block";
-  document.body.style.overflow = "hidden";
-  resetRegistrationForm();
-}
+//   static showSuccess(element, message) {
+//     if (typeof element === 'string') {
+//       element = document.getElementById(element);
+//     }
+//     if (element) {
+//       element.textContent = message;
+//       element.classList.remove('error', 'hidden');
+//       element.classList.add('success');
+//     }
+//   }
 
-// Close Registration Form
-function closeForm() {
-  document.getElementById("registerForm").style.display = "none";
-  overlay.style.display = "none";
-  document.body.style.overflow = "auto";
-  resetRegistrationForm();
-}
+//   static toggleElement(element, show) {
+//     if (element) {
+//       element.style.display = show ? 'block' : 'none';
+//     }
+//   }
 
-// Reset registration form to initial state
-function resetRegistrationForm() {
-  document.getElementById("userType").value = "";
-  document.getElementById("universityName").classList.add("hidden");
-  document.getElementById("universityName").required = false;
-  document.getElementById("registrationForm").reset();
-  document.getElementById("registerMessage").classList.add("hidden");
-  document.getElementById("otpVerificationSection").classList.add("hidden");
-  document.getElementById("registerOtpInput").classList.add("hidden");
-  document.getElementById("submitRegisterBtn").classList.remove("hidden");
-  document.getElementById("verifyRegisterOtpBtn").classList.add("hidden");
-}
+//   static setupMobileMenu() {
+//     const mobileMenu = document.getElementById('mobile-menu');
+//     const navLinks = document.getElementById('nav-links');
+//     const overlay = document.getElementById('overlay');
 
-// Show/Hide University Dropdown based on User Type
-function toggleUniversityDropdown() {
-  var userType = document.getElementById("userType").value;
-  var universityDropdown = document.getElementById("universityName");
+//     if (mobileMenu && navLinks && overlay) {
+//       mobileMenu.addEventListener('click', () => {
+//         navLinks.classList.toggle('show');
+//         overlay.classList.toggle('active');
+//       });
 
-  if (userType === "alumni") {
-    universityDropdown.classList.remove("hidden");
-    universityDropdown.required = true;
-  } else {
-    universityDropdown.classList.add("hidden");
-    universityDropdown.required = false;
-  }
-}
+//       overlay.addEventListener('click', () => {
+//         navLinks.classList.remove('show');
+//         overlay.classList.remove('active');
+//       });
+//     }
+//   }
+// }
 
-// Handle Registration Form Submission
-async function submitRegistration() {
-  const name = document.getElementById("registerName").value;
-  const email = document.getElementById("registerEmail").value;
-  const phone = document.getElementById("registerPhone").value;
-  const role = document.getElementById("userType").value;
-  const university = document.getElementById("universityName").value;
+// // form-validations.js - Form Validation Functions
+// class FormValidator {
+//   static validateEmail(email) {
+//     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+//   }
 
-  const registerMessage = document.getElementById("registerMessage");
-  registerMessage.classList.add("hidden");
+//   static validatePhone(phone) {
+//     return !phone || /^[0-9]{10,15}$/.test(phone);
+//   }
 
-  // Basic validation
-  if (!name || !email || !role) {
-    registerMessage.textContent = "Please fill all required fields";
-    registerMessage.classList.remove("success");
-    registerMessage.classList.add("error");
-    registerMessage.classList.remove("hidden");
-    return;
-  }
+//   static validateOTP(otp) {
+//     return /^[0-9]{6}$/.test(otp);
+//   }
 
-  if (role === "alumni" && !university) {
-    registerMessage.textContent = "Please select your university";
-    registerMessage.classList.remove("success");
-    registerMessage.classList.add("error");
-    registerMessage.classList.remove("hidden");
-    return;
-  }
+//   static sanitizeInput(input) {
+//     return input.trim();
+//   }
+// }
 
-  try {
-    const response = await fetch(`${API_BASE_URL}/register`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        name,
-        email,
-        role,
-        university: role === 'alumni' ? university : undefined
-      })
-    });
+// // dashboard.js - Dashboard Functions
+// class DashboardManager {
+//   static showDashboard(role) {
+//     // Hide all sections first
+//     const sections = {
+//       main: document.getElementById('mainContent'),
+//       alumni: document.getElementById('alumniDashboard'),
+//       recruiter: document.getElementById('recruiterDashboard'),
+//       university: document.getElementById('universityDashboard')
+//     };
 
-    const data = await response.json();
+//     Object.values(sections).forEach(section => {
+//       if (section) section.style.display = 'none';
+//     });
 
-    if (response.ok) {
-      // Show OTP verification section
-      document.getElementById("otpVerificationSection").classList.remove("hidden");
-      document.getElementById("registerOtpInput").classList.remove("hidden");
-      document.getElementById("submitRegisterBtn").classList.add("hidden");
-      document.getElementById("verifyRegisterOtpBtn").classList.remove("hidden");
+//     if (!role) {
+//       if (sections.main) sections.main.style.display = 'block';
+//       return;
+//     }
 
-      registerMessage.textContent = data.message || "OTP sent to your email!";
-      registerMessage.classList.remove("error");
-      registerMessage.classList.add("success");
-      registerMessage.classList.remove("hidden");
-    } else {
-      registerMessage.textContent = data.message || "Registration failed!";
-      registerMessage.classList.remove("success");
-      registerMessage.classList.add("error");
-      registerMessage.classList.remove("hidden");
-    }
-  } catch (error) {
-    registerMessage.textContent = "Network error. Please try again.";
-    registerMessage.classList.remove("success");
-    registerMessage.classList.add("error");
-    registerMessage.classList.remove("hidden");
-    console.error("Registration error:", error);
-  }
-}
+//     // Normalize the role
+//     role = role.toLowerCase();
 
-// Verify OTP for registration
-async function verifyRegistrationOTP() {
-  const email = document.getElementById("registerEmail").value;
-  const otp = document.getElementById("registerOtpInput").value;
-  const registerMessage = document.getElementById("registerMessage");
-  registerMessage.classList.add("hidden");
+//     switch (role) {
+//       case 'alumni':
+//         if (sections.alumni) {
+//           sections.alumni.style.display = 'block';
+//           this.loadAlumniData();
+//         }
+//         break;
 
-  if (!otp) {
-    registerMessage.textContent = "Please enter the OTP";
-    registerMessage.classList.remove("success");
-    registerMessage.classList.add("error");
-    registerMessage.classList.remove("hidden");
-    return;
-  }
+//       case 'recruiter':
+//         if (sections.recruiter) {
+//           sections.recruiter.style.display = 'block';
+//           this.loadRecruiterData();
+//           document.querySelector('.dashboard-header').classList.add('recruiter');
+//         }
+//         break;
 
-  try {
-    const response = await fetch(`${API_BASE_URL}/verify-otp`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({ email, otp })
-    });
+//       case 'university_admin':
+//         if (sections.university) {
+//           sections.university.style.display = 'block';
+//           this.loadUniversityData();
+//           document.querySelector('.dashboard-header').classList.add('university');
+//         }
+//         break;
 
-    const data = await response.json();
+//       default:
+//         if (sections.main) sections.main.style.display = 'block';
+//     }
+//   }
 
-    if (response.ok && data.token) {
-      registerMessage.textContent = data.message || "Registration successful!";
-      registerMessage.classList.remove("error");
-      registerMessage.classList.add("success");
-      registerMessage.classList.remove("hidden");
+//   static async loadAlumniData() {
+//     try {
+//       const response = await fetch(`${API_BASE_URL}/alumni/profile`, {
+//         headers: {
+//           'Authorization': `Bearer ${AuthService.getAuthToken()}`
+//         }
+//       });
 
-      // ✅ Save token and role to localStorage from correct place
-      localStorage.setItem('authToken', data.token);
-      localStorage.setItem('userRole', data.user.role);
+//       if (response.ok) {
+//         const data = await response.json();
+//         this.updateAlumniUI(data);
+//       }
+//     } catch (error) {
+//       console.error('Error loading alumni data:', error);
+//       UIHelper.showError('alumniProfile', 'Failed to load profile data');
+//     }
+//   }
 
-      // ✅ Show dashboard
-      showDashboard(data.user.role);
+//   static updateAlumniUI(data) {
+//     const elements = {
+//       alumniName: data.name || 'Alumni',
+//       profileName: data.name || 'N/A',
+//       profileUniversity: data.university || 'N/A',
+//       profileYear: data.graduationYear || 'N/A'
+//     };
 
-      // ✅ Close form
-      setTimeout(() => {
-        closeForm();
-      }, 1500);
-    } else {
-      registerMessage.textContent = data.message || "Invalid OTP!";
-      registerMessage.classList.remove("success");
-      registerMessage.classList.add("error");
-      registerMessage.classList.remove("hidden");
-    }
+//     Object.entries(elements).forEach(([id, value]) => {
+//       const element = document.getElementById(id);
+//       if (element) element.textContent = value;
+//     });
+//   }
 
-  } catch (error) {
-    registerMessage.textContent = "Network error. Please try again.";
-    registerMessage.classList.remove("success");
-    registerMessage.classList.add("error");
-    registerMessage.classList.remove("hidden");
-    console.error("OTP verification error:", error);
-  }
-}
+//   static async loadUniversityData() {
+//     try {
+//       const response = await fetch(`${API_BASE_URL}/university/profile`, {
+//         headers: {
+//           'Authorization': `Bearer ${AuthService.getAuthToken()}`
+//         }
+//       });
 
-// Login form functions
-function openLoginForm() {
-  document.getElementById("loginForm").style.display = "block";
-  overlay.style.display = "block";
-  document.body.style.overflow = "hidden";
-  resetLoginForm();
-}
+//       if (response.ok) {
+//         const data = await response.json();
+//         this.updateUniversityUI(data);
+//       }
+//     } catch (error) {
+//       console.error('Error loading university data:', error);
+//       UIHelper.showError('universityProfile', 'Failed to load university data');
+//     }
+//   }
 
-function closeLoginForm() {
-  document.getElementById("loginForm").style.display = "none";
-  overlay.style.display = "none";
-  document.body.style.overflow = "auto";
-  resetLoginForm();
-}
+//   static updateUniversityUI(data) {
+//     const elements = {
+//       universityTitle: data.name || 'University',
+//       uniName: data.name || 'N/A',
+//       uniAlumniCount: data.alumniCount || '0'
+//     };
 
-function resetLoginForm() {
-  document.getElementById("otpInput").classList.add("hidden");
-  document.getElementById("verifyOtpBtn").classList.add("hidden");
-  document.getElementById("otpLoginForm").reset();
-  document.getElementById("loginMessage").classList.add("hidden");
-}
+//     Object.entries(elements).forEach(([id, value]) => {
+//       const element = document.getElementById(id);
+//       if (element) element.textContent = value;
+//     });
+//   }
 
-// Send OTP for login
-async function sendLoginOTP() {
-  const email = document.getElementById("loginEmail").value;
-  const loginMessage = document.getElementById("loginMessage");
-  loginMessage.classList.add("hidden");
+//   static async loadRecruiterData() {
+//     try {
+//       const response = await fetch(`${API_BASE_URL}/recruiter/profile`, {
+//         headers: {
+//           'Authorization': `Bearer ${AuthService.getAuthToken()}`
+//         }
+//       });
 
-  if (!email) {
-    loginMessage.textContent = "Please enter your email";
-    loginMessage.classList.remove("success");
-    loginMessage.classList.add("error");
-    loginMessage.classList.remove("hidden");
-    return;
-  }
+//       if (response.ok) {
+//         const data = await response.json();
+//         console.log('Recruiter data loaded:', data);
+//         // Update recruiter UI here
+//       }
+//     } catch (error) {
+//       console.error('Error loading recruiter data:', error);
+//     }
+//   }
+// }
 
-  try {
-    const response = await fetch(`${API_BASE_URL}/login`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({ email })
-    });
+// // form-handlers.js - Form Handling Functions
+// class FormHandlers {
+//   static init() {
+//     // Registration Form
+//     document.getElementById('userType')?.addEventListener('change', this.toggleUniversityDropdown);
+//     document.getElementById('registerOtpInput')?.addEventListener('input', this.restrictToNumbers);
+//     document.getElementById('otpInput')?.addEventListener('input', this.restrictToNumbers);
+//   }
 
-    const data = await response.json();
+//   static toggleUniversityDropdown() {
+//     const userType = document.getElementById('userType').value;
+//     const universityDropdown = document.getElementById('universityName');
 
-    if (response.ok) {
-      loginMessage.textContent = data.message || "OTP sent to your email!";
-      loginMessage.classList.remove("error");
-      loginMessage.classList.add("success");
-      loginMessage.classList.remove("hidden");
+//     if (userType === 'alumni') {
+//       universityDropdown.classList.remove('hidden');
+//       universityDropdown.required = true;
+//     } else {
+//       universityDropdown.classList.add('hidden');
+//       universityDropdown.required = false;
+//     }
+//   }
 
-      document.getElementById("otpInput").classList.remove("hidden");
-      document.getElementById("verifyOtpBtn").classList.remove("hidden");
-    } else {
-      loginMessage.textContent = data.message || "Login failed!";
-      loginMessage.classList.remove("success");
-      loginMessage.classList.add("error");
-      loginMessage.classList.remove("hidden");
-    }
-  } catch (error) {
-    loginMessage.textContent = "Network error. Please try again.";
-    loginMessage.classList.remove("success");
-    loginMessage.classList.add("error");
-    loginMessage.classList.remove("hidden");
-    console.error("Login error:", error);
-  }
-}
+//   static restrictToNumbers(e) {
+//     e.target.value = e.target.value.replace(/[^0-9]/g, '');
+//   }
 
-// Verify OTP for login
-async function verifyLoginOTP() {
-  const email = document.getElementById("loginEmail").value;
-  const otp = document.getElementById("otpInput").value;
-  const loginMessage = document.getElementById("loginMessage");
-  loginMessage.classList.add("hidden");
+//   static async submitRegistration() {
+//     const name = FormValidator.sanitizeInput(document.getElementById('registerName').value);
+//     const email = FormValidator.sanitizeInput(document.getElementById('registerEmail').value);
+//     const phone = FormValidator.sanitizeInput(document.getElementById('registerPhone').value);
+//     const role = document.getElementById('userType').value;
+//     const university = document.getElementById('universityName').value;
 
-  if (!otp) {
-    loginMessage.textContent = "Please enter the OTP";
-    loginMessage.classList.remove("success");
-    loginMessage.classList.add("error");
-    loginMessage.classList.remove("hidden");
-    return;
-  }
+//     const registerMessage = document.getElementById('registerMessage');
+//     registerMessage.classList.add('hidden');
 
-  try {
-    const response = await fetch(`${API_BASE_URL}/verify-otp`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({ email, otp })
-    });
+//     // Validation
+//     if (!name || !email || !role) {
+//       UIHelper.showError(registerMessage, 'Please fill all required fields');
+//       return;
+//     }
 
-    const data = await response.json();
+//     if (!FormValidator.validateEmail(email)) {
+//       UIHelper.showError(registerMessage, 'Please enter a valid email address');
+//       return;
+//     }
 
-    // console.log(data.user.role);
-    // var role = data.user.role;
-    console.log(response);
-    console.log(data);
-    if (response.ok) {
-      loginMessage.textContent = data.message || "Login successful!";
-      loginMessage.classList.remove("error");
-      loginMessage.classList.add("success");
-      loginMessage.classList.remove("hidden");
+//     if (!FormValidator.validatePhone(phone)) {
+//       UIHelper.showError(registerMessage, 'Please enter a valid phone number');
+//       return;
+//     }
 
-      // ✅ Store the token and user role in localStorage
-      if (data.token) {
-        localStorage.setItem('authToken', data.token);
-        localStorage.setItem('userRole', data.user.role);
-      }
+//     if (role === 'alumni' && !university) {
+//       UIHelper.showError(registerMessage, 'Please select your university');
+//       return;
+//     }
 
-      // ✅ Show the appropriate dashboard
-      showDashboard(data.user.role);
+//     try {
+//       const response = await fetch(`${API_BASE_URL}/register`, {
+//         method: 'POST',
+//         headers: {
+//           'Content-Type': 'application/json'
+//         },
+//         body: JSON.stringify({
+//           name,
+//           email,
+//           phone,
+//           role,
+//           university: role === 'alumni' ? university : undefined
+//         })
+//       });
 
-      // ✅ Close the form after a short delay and redirect
-      setTimeout(() => {
-        closeLoginForm();
+//       const data = await response.json();
 
-        // ✅ Use data.user.role here instead of data.role
-        const role = data.user.role.toLowerCase();
+//       if (response.ok) {
+//         document.getElementById('otpVerificationSection').classList.remove('hidden');
+//         document.getElementById('registerOtpInput').classList.remove('hidden');
+//         document.getElementById('submitRegisterBtn').classList.add('hidden');
+//         document.getElementById('verifyRegisterOtpBtn').classList.remove('hidden');
 
-        switch (role) {
-          case 'university_admin':
-          case 'university':
-            window.location.href = 'university-dashboard.html';
-            break;
-          case 'alumni':
-            window.location.href = 'alumni-dashboard.html';
-            break;
-          case 'recruiter':
-            window.location.href = 'recruiter-dashboard.html';
-            break;
-          default:
-            showDashboard(role); // fallback
-        }
-      }, 1500);
-    } else {
-      loginMessage.textContent = data.message || "Invalid login!";
-      loginMessage.classList.remove("success");
-      loginMessage.classList.add("error");
-      loginMessage.classList.remove("hidden");
-    }
+//         UIHelper.showSuccess(registerMessage, data.message || 'OTP sent to your email!');
+//       } else {
+//         UIHelper.showError(registerMessage, data.message || 'Registration failed!');
+//       }
+//     } catch (error) {
+//       UIHelper.showError(registerMessage, 'Network error. Please try again.');
+//       console.error('Registration error:', error);
+//     }
+//   }
 
-  } catch (error) {
-    loginMessage.textContent = "Network error. Please try again.";
-    loginMessage.classList.remove("success");
-    loginMessage.classList.add("error");
-    loginMessage.classList.remove("hidden");
-    console.error("OTP verification error:", error);
-  }
-}
+//   static async verifyRegistrationOTP() {
+//     const email = document.getElementById('registerEmail').value;
+//     const otp = document.getElementById('registerOtpInput').value;
+//     const registerMessage = document.getElementById('registerMessage');
+//     registerMessage.classList.add('hidden');
 
-// Show the appropriate dashboard based on user role
-function showDashboard(role) {
-  // Hide main content and all dashboards
-  document.getElementById('mainContent').style.display = 'none';
-  document.getElementById('alumniDashboard').style.display = 'none';
-  document.getElementById('recruiterDashboard').style.display = 'none';
-  document.getElementById('universityDashboard').style.display = 'none';
+//     if (!FormValidator.validateOTP(otp)) {
+//       UIHelper.showError(registerMessage, 'Please enter a valid 6-digit OTP');
+//       return;
+//     }
 
-  // Show the appropriate dashboard
-  switch (role.toLowerCase()) {
-    case 'alumni':
-      document.getElementById('alumniDashboard').style.display = 'block';
-      loadAlumniData();
-      break;
-    case 'recruiter':
-      document.getElementById('recruiterDashboard').style.display = 'block';
-      loadRecruiterData();
-      break;
-    case 'university':
-      document.getElementById('universityDashboard').style.display = 'block';
-      loadUniversityData();
-      break;
-    default:
-      // If role is not recognized, show main content
-      document.getElementById('mainContent').style.display = 'block';
-  }
-}
+//     try {
+//       const response = await fetch(`${API_BASE_URL}/verify-otp`, {
+//         method: 'POST',
+//         headers: {
+//           'Content-Type': 'application/json'
+//         },
+//         body: JSON.stringify({ email, otp })
+//       });
 
-// Load alumni data
-async function loadAlumniData() {
-  try {
-    const response = await fetch('https://alumni-web-api.onrender.com/api/alumni/profile', {
-      headers: {
-        'Authorization': `Bearer ${localStorage.getItem('authToken')}`
-      }
-    });
+//       const data = await response.json();
 
-    if (response.ok) {
-      const data = await response.json();
-      document.getElementById('alumniProfile').innerHTML = `
-        <p><strong>Name:</strong> ${data.name}</p>
-        <p><strong>University:</strong> ${data.university}</p>
-        <p><strong>Graduation Year:</strong> ${data.graduationYear}</p>
-      `;
-    }
-  } catch (error) {
-    console.error('Error loading alumni data:', error);
-  }
-}
+//       if (response.ok && data.token) {
+//         UIHelper.showSuccess(registerMessage, data.message || 'Registration successful!');
+//         AuthService.setAuthData(data.token, data.user.role);
+//         closeForm();
 
-// Load recruiter data
-async function loadRecruiterData() {
-  try {
-    const response = await fetch('https://alumni-web-api.onrender.com/api/recruiter/profile', {
-      headers: {
-        'Authorization': `Bearer ${localStorage.getItem('authToken')}`
-      }
-    });
+//         setTimeout(() => {
+//           window.location.href = `html/${data.user.role.toLowerCase()}-updateProfile.html`;
+//         }, 500);
+//       } else {
+//         UIHelper.showError(registerMessage, data.message || 'Invalid OTP!');
+//       }
+//     } catch (error) {
+//       UIHelper.showError(registerMessage, 'Network error. Please try again.');
+//       console.error('OTP verification error:', error);
+//     }
+//   }
 
-    if (response.ok) {
-      const data = await response.json();
-      // Display recruiter data as needed
-    }
-  } catch (error) {
-    console.error('Error loading recruiter data:', error);
-  }
-}
+//   static async sendLoginOTP() {
+//     const email = FormValidator.sanitizeInput(document.getElementById('loginEmail').value);
+//     const loginMessage = document.getElementById('loginMessage');
+//     loginMessage.classList.add('hidden');
 
-// Load university data
-async function loadUniversityData() {
-  try {
-    const response = await fetch('https://alumni-web-api.onrender.com/api/university/profile', {
-      headers: {
-        'Authorization': `Bearer ${localStorage.getItem('authToken')}`
-      }
-    });
+//     if (!email) {
+//       UIHelper.showError(loginMessage, 'Please enter your email');
+//       return;
+//     }
 
-    if (response.ok) {
-      const data = await response.json();
-      document.getElementById('universityProfile').innerHTML = `
-        <p><strong>University Name:</strong> ${data.name}</p>
-        <p><strong>Total Alumni:</strong> ${data.alumniCount}</p>
-      `;
-    }
-  } catch (error) {
-    console.error('Error loading university data:', error);
-  }
-}
+//     if (!FormValidator.validateEmail(email)) {
+//       UIHelper.showError(loginMessage, 'Please enter a valid email address');
+//       return;
+//     }
 
-// Logout function
-function logout() {
-  localStorage.removeItem('authToken');
-  localStorage.removeItem('userRole');
+//     try {
+//       const response = await fetch(`${API_BASE_URL}/login`, {
+//         method: 'POST',
+//         headers: {
+//           'Content-Type': 'application/json'
+//         },
+//         body: JSON.stringify({ email })
+//       });
 
-  // Hide all dashboards and show main content
-  document.getElementById('alumniDashboard').style.display = 'none';
-  document.getElementById('recruiterDashboard').style.display = 'none';
-  document.getElementById('universityDashboard').style.display = 'none';
-  document.getElementById('mainContent').style.display = 'block';
-}
+//       const data = await response.json();
 
-// Close forms when clicking on overlay
-overlay.addEventListener('click', () => {
-  closeForm();
-  closeLoginForm();
-});
+//       if (response.ok) {
+//         UIHelper.showSuccess(loginMessage, data.message || 'OTP sent to your email!');
+//         document.getElementById('otpInput').classList.remove('hidden');
+//         document.getElementById('verifyOtpBtn').classList.remove('hidden');
+//       } else {
+//         UIHelper.showError(loginMessage, data.message || 'Login failed!');
+//       }
+//     } catch (error) {
+//       UIHelper.showError(loginMessage, 'Network error. Please try again.');
+//       console.error('Login error:', error);
+//     }
+//   }
 
-// Smooth scrolling for anchor links
-document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-  anchor.addEventListener('click', function (e) {
-    e.preventDefault();
+//   static async verifyLoginOTP() {
+//     const email = document.getElementById('loginEmail').value;
+//     const otp = document.getElementById('otpInput').value;
+//     const loginMessage = document.getElementById('loginMessage');
+//     loginMessage.classList.add('hidden');
 
-    const targetId = this.getAttribute('href');
-    if (targetId === '#') return;
+//     if (!FormValidator.validateOTP(otp)) {
+//       UIHelper.showError(loginMessage, 'Please enter a valid 6-digit OTP');
+//       return;
+//     }
 
-    const targetElement = document.querySelector(targetId);
-    if (targetElement) {
-      window.scrollTo({
-        top: targetElement.offsetTop - 70,
-        behavior: 'smooth'
-      });
-    }
-  });
-});
+//     try {
+//       const response = await fetch(`${API_BASE_URL}/verify-otp`, {
+//         method: 'POST',
+//         headers: {
+//           'Content-Type': 'application/json'
+//         },
+//         body: JSON.stringify({ email, otp })
+//       });
+
+//       const data = await response.json();
+
+//       if (response.ok && data.token) {
+//         UIHelper.showSuccess(loginMessage, data.message || 'Login successful!');
+//         AuthService.setAuthData(data.token, data.user.role);
+//         closeLoginForm();
+//         DashboardManager.showDashboard(data.user.role);
+//       } else {
+//         UIHelper.showError(loginMessage, data.message || 'Invalid login!');
+//       }
+//     } catch (error) {
+//       UIHelper.showError(loginMessage, 'Network error. Please try again.');
+//       console.error('OTP verification error:', error);
+//     }
+//   }
+// }
+
+// // app.js - Main Application Initialization
+// document.addEventListener('DOMContentLoaded', function () {
+//   // Initialize UI components
+//   UIHelper.setupMobileMenu();
+//   FormHandlers.init();
+
+//   // Check authentication status
+//   if (AuthService.isAuthenticated()) {
+//     DashboardManager.showDashboard(AuthService.getUserRole());
+//   }
+
+//   // Set up event listeners
+//   document.getElementById('submitRegisterBtn')?.addEventListener('click', FormHandlers.submitRegistration);
+//   document.getElementById('verifyRegisterOtpBtn')?.addEventListener('click', FormHandlers.verifyRegistrationOTP);
+//   document.getElementById('verifyOtpBtn')?.addEventListener('click', FormHandlers.verifyLoginOTP);
+//   document.querySelector('.btn[onclick="sendLoginOTP()"]')?.addEventListener('click', FormHandlers.sendLoginOTP);
+//   document.querySelector('.btn[onclick="logout()"]')?.addEventListener('click', AuthService.clearAuthData);
+// });
+
+// // Helper functions for HTML onclick handlers
+// function openForm() {
+//   document.getElementById('registerForm').style.display = 'block';
+//   document.getElementById('overlay').style.display = 'block';
+//   document.body.style.overflow = 'hidden';
+//   resetRegistrationForm();
+// }
+
+// function closeForm() {
+//   document.getElementById('registerForm').style.display = 'none';
+//   document.getElementById('overlay').style.display = 'none';
+//   document.body.style.overflow = 'auto';
+//   resetRegistrationForm();
+// }
+
+// function resetRegistrationForm() {
+//   document.getElementById('userType').value = '';
+//   document.getElementById('universityName').classList.add('hidden');
+//   document.getElementById('universityName').required = false;
+//   document.getElementById('registrationForm').reset();
+//   document.getElementById('registerMessage').classList.add('hidden');
+//   document.getElementById('otpVerificationSection').classList.add('hidden');
+//   document.getElementById('registerOtpInput').classList.add('hidden');
+//   document.getElementById('submitRegisterBtn').classList.remove('hidden');
+//   document.getElementById('verifyRegisterOtpBtn').classList.add('hidden');
+// }
+
+// function openLoginForm() {
+//   document.getElementById('loginForm').style.display = 'block';
+//   document.getElementById('overlay').style.display = 'block';
+//   document.body.style.overflow = 'hidden';
+//   resetLoginForm();
+// }
+
+// function closeLoginForm() {
+//   document.getElementById('loginForm').style.display = 'none';
+//   document.getElementById('overlay').style.display = 'none';
+//   document.body.style.overflow = 'auto';
+//   resetLoginForm();
+// }
+
+// function resetLoginForm() {
+//   document.getElementById('otpInput').classList.add('hidden');
+//   document.getElementById('verifyOtpBtn').classList.add('hidden');
+//   document.getElementById('otpLoginForm').reset();
+//   document.getElementById('loginMessage').classList.add('hidden');
+// }
+
+// function logout() {
+//   AuthService.clearAuthData();
+//   window.location.href = 'index.html';
+// }

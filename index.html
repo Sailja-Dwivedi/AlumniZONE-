@@ -5,7 +5,319 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>AlumniZONE | Connect & Grow</title>
-  <link rel="stylesheet" href="./css/style.css">
+  <style>
+    /* Base Styles */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    body {
+      background-color: #f5f5f5;
+      color: #333;
+      line-height: 1.6;
+    }
+
+    .container {
+      width: 90%;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    .btn {
+      display: inline-block;
+      background-color: #3498db;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      text-decoration: none;
+      transition: background-color 0.3s;
+    }
+
+    .btn:hover {
+      background-color: #2980b9;
+    }
+
+    .btn-outline {
+      background-color: transparent;
+      border: 2px solid #3498db;
+      color: #3498db;
+    }
+
+    .btn-outline:hover {
+      background-color: #3498db;
+      color: white;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    .error {
+      color: #e74c3c;
+    }
+
+    .success {
+      color: #2ecc71;
+    }
+
+    /* Navbar Styles */
+    .navbar {
+      background-color: white;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      padding: 15px 0;
+      position: fixed;
+      width: 100%;
+      top: 0;
+      z-index: 1000;
+    }
+
+    .navbar .container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo {
+      font-size: 24px;
+      font-weight: 700;
+      color: #3498db;
+      text-decoration: none;
+    }
+
+    .nav-links {
+      display: flex;
+      list-style: none;
+    }
+
+    .nav-links li {
+      margin-left: 30px;
+    }
+
+    .nav-links a {
+      color: #333;
+      text-decoration: none;
+      font-weight: 500;
+      transition: color 0.3s;
+    }
+
+    .nav-links a:hover {
+      color: #3498db;
+    }
+
+    .menu-toggle {
+      display: none;
+      cursor: pointer;
+      font-size: 24px;
+    }
+
+    /* Hero Section */
+    .hero {
+      background: linear-gradient(135deg, #3498db, #2c3e50);
+      color: white;
+      padding: 150px 0 100px;
+      text-align: center;
+    }
+
+    .hero h1 {
+      font-size: 48px;
+      margin-bottom: 20px;
+    }
+
+    .hero p {
+      font-size: 20px;
+      margin-bottom: 30px;
+      max-width: 800px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .hero-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+    }
+
+    /* Sections */
+    section {
+      padding: 80px 0;
+    }
+
+    section h2 {
+      text-align: center;
+      margin-bottom: 40px;
+      font-size: 36px;
+    }
+
+    .features-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 30px;
+    }
+
+    .feature-box {
+      background-color: white;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+      text-align: center;
+    }
+
+    .feature-box h3 {
+      margin-bottom: 15px;
+      font-size: 24px;
+    }
+
+    .feature-box i {
+      font-size: 40px;
+      margin-bottom: 20px;
+      color: #3498db;
+    }
+
+    /* Forms */
+    .overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      z-index: 1001;
+      display: none;
+    }
+
+    .form-popup {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background-color: white;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 5px 25px rgba(0, 0, 0, 0.2);
+      z-index: 1002;
+      width: 90%;
+      max-width: 500px;
+      display: none;
+    }
+
+    .form-popup h2 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .form-popup input,
+    .form-popup select {
+      width: 100%;
+      padding: 12px;
+      margin-bottom: 15px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      font-size: 16px;
+    }
+
+    .form-footer {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 20px;
+    }
+
+    .form-message {
+      padding: 10px;
+      margin-bottom: 15px;
+      border-radius: 5px;
+      text-align: center;
+    }
+
+    /* Dashboard Styles */
+    .dashboard {
+      display: none;
+      min-height: 100vh;
+      padding-top: 80px;
+    }
+
+    .dashboard-header {
+      background-color: #3498db;
+      color: white;
+      padding: 20px 0;
+      position: fixed;
+      width: 100%;
+      top: 0;
+      z-index: 999;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .dashboard-header h1 {
+      margin-left: 20px;
+    }
+
+    .dashboard-header .btn {
+      margin-right: 20px;
+    }
+
+    .dashboard-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 30px;
+      padding: 30px;
+    }
+
+    .dashboard-card {
+      background-color: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+    }
+
+    /* Responsive Styles */
+    @media (max-width: 768px) {
+      .menu-toggle {
+        display: block;
+      }
+
+      .nav-links {
+        position: fixed;
+        top: 70px;
+        left: 0;
+        width: 100%;
+        background-color: white;
+        flex-direction: column;
+        align-items: center;
+        padding: 20px 0;
+        box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+        transform: translateY(-150%);
+        transition: transform 0.3s ease-in-out;
+      }
+
+      .nav-links.show {
+        transform: translateY(0);
+      }
+
+      .nav-links li {
+        margin: 15px 0;
+      }
+
+      .hero h1 {
+        font-size: 36px;
+      }
+
+      .hero p {
+        font-size: 18px;
+      }
+
+      .hero-buttons {
+        flex-direction: column;
+        align-items: center;
+      }
+    }
+  </style>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
@@ -15,20 +327,23 @@
   <div id="mainContent">
     <!-- Navbar -->
     <header class="navbar">
-      <a href="#" class="logo">AlumniZONE</a>
-      <div class="menu-toggle" id="mobile-menu">
-        <i class="fas fa-bars"></i>
+      <div class="container">
+        <a href="#" class="logo">AlumniZONE</a>
+        <div class="menu-toggle" id="mobile-menu">
+          <i class="fas fa-bars"></i>
+        </div>
+        <nav>
+          <ul class="nav-links" id="nav-links">
+            <li><a href="#">Home</a></li>
+            <li><a href="#about">About</a></li>
+            <li><a href="#features">Features</a></li>
+            <li><a href="#" onclick="openLoginForm()">LogIN</a></li>
+            <li><a href="#" onclick="openForm()" class="btn">Register</a></li>
+          </ul>
+        </nav>
       </div>
-      <nav>
-        <ul class="nav-links" id="nav-links">
-          <li><a href="#">Home</a></li>
-          <li><a href="#about">About</a></li>
-          <li><a href="#features">Features</a></li>
-          <li><a href="#" onclick="openLoginForm()">LogIN</a></li>
-          <li><a href="#" onclick="openForm()" class="btn">Register</a></li>
-        </ul>
-      </nav>
     </header>
+
     <!-- Hero Section -->
     <section class="hero">
       <div class="hero-content container">
@@ -40,6 +355,7 @@
         </div>
       </div>
     </section>
+
     <!-- About Section -->
     <section class="about" id="about">
       <div class="container">
@@ -50,6 +366,7 @@
           thriving community that benefits all members.</p>
       </div>
     </section>
+
     <!-- Features Section -->
     <section class="features" id="features">
       <div class="container">
@@ -73,6 +390,7 @@
         </div>
       </div>
     </section>
+
     <!-- Footer -->
     <footer class="footer">
       <div class="container">
@@ -86,26 +404,22 @@
       </div>
     </footer>
   </div>
+
   <!-- Registration Form -->
   <div class="overlay" id="overlay"></div>
   <div class="form-popup" id="registerForm">
     <h2>Register</h2>
     <form id="registrationForm">
       <div id="registerMessage" class="form-message hidden"></div>
-      <!-- Name -->
       <input type="text" id="registerName" placeholder="Full Name" required>
-      <!-- Email -->
       <input type="email" id="registerEmail" placeholder="Email ID" required>
-      <!-- Phone (Optional) -->
       <input type="tel" id="registerPhone" placeholder="Phone Number">
-      <!-- Dropdown: User Type -->
       <select id="userType" onchange="toggleUniversityDropdown()" required>
         <option value="">Select User Type</option>
         <option value="university_admin">University</option>
         <option value="alumni">Alumni</option>
         <option value="recruiter">Recruiter</option>
       </select>
-      <!-- Dropdown: University Name (Only if Alumni selected) -->
       <select id="universityName" class="hidden">
         <option value="">Choose Your University Name</option>
         <option value="Makhanlal Chaturvedi University">Makhanlal Chaturvedi University</option>
@@ -114,13 +428,11 @@
         <option value="JNU">JNU</option>
         <option value="IGNOU">IGNOU</option>
       </select>
-      <!-- OTP Verification Section (Initially hidden) -->
       <div id="otpVerificationSection" class="hidden">
         <h3>OTP Verification</h3>
         <p>We've sent an OTP to your email. Please enter it below:</p>
         <input type="text" id="registerOtpInput" placeholder="Enter OTP" class="hidden">
       </div>
-      <!-- Form Footer -->
       <div class="form-footer">
         <button type="button" id="submitRegisterBtn" class="btn" onclick="submitRegistration()">Submit</button>
         <button type="button" id="verifyRegisterOtpBtn" class="btn btn-success hidden"
@@ -129,6 +441,7 @@
       </div>
     </form>
   </div>
+
   <!-- Login Form -->
   <div class="form-popup" id="loginForm">
     <h2>Login</h2>
@@ -144,6 +457,7 @@
       </div>
     </form>
   </div>
+
   <!-- Dashboard Sections -->
   <div id="alumniDashboard" class="dashboard">
     <header class="dashboard-header">
@@ -152,19 +466,26 @@
     </header>
     <div class="dashboard-container">
       <div class="dashboard-card">
-        <h2>Welcome, Alumni!</h2>
+        <h2>Welcome, <span id="alumniName"></span>!</h2>
         <p>Here you can connect with your university, network with other alumni, and find opportunities.</p>
       </div>
       <div class="dashboard-card">
         <h3>Your Profile</h3>
-        <div id="alumniProfile"></div>
+        <div id="alumniProfile">
+          <p><strong>Name:</strong> <span id="profileName"></span></p>
+          <p><strong>University:</strong> <span id="profileUniversity"></span></p>
+          <p><strong>Graduation Year:</strong> <span id="profileYear"></span></p>
+        </div>
       </div>
       <div class="dashboard-card">
         <h3>Upcoming Events</h3>
-        <div id="alumniEvents"></div>
+        <div id="alumniEvents">
+          <p>Loading events...</p>
+        </div>
       </div>
     </div>
   </div>
+
   <div id="recruiterDashboard" class="dashboard">
     <header class="dashboard-header" style="background-color: #e74c3c;">
       <h1>Recruiter Dashboard</h1>
@@ -185,10 +506,13 @@
       </div>
       <div class="dashboard-card">
         <h3>Your Job Posts</h3>
-        <div id="jobPosts"></div>
+        <div id="jobPosts">
+          <p>Loading job posts...</p>
+        </div>
       </div>
     </div>
   </div>
+
   <div id="universityDashboard" class="dashboard">
     <header class="dashboard-header" style="background-color: #2ecc71;">
       <h1>University Dashboard</h1>
@@ -196,21 +520,509 @@
     </header>
     <div class="dashboard-container">
       <div class="dashboard-card">
-        <h2>Welcome, University Administrator!</h2>
+        <h2>Welcome, <span id="universityTitle"></span>!</h2>
         <p>Manage your alumni network and university profile.</p>
       </div>
       <div class="dashboard-card">
         <h3>University Profile</h3>
-        <div id="universityProfile"></div>
+        <div id="universityProfile">
+          <p><strong>University Name:</strong> <span id="uniName"></span></p>
+          <p><strong>Total Alumni:</strong> <span id="uniAlumniCount"></span></p>
+        </div>
       </div>
       <div class="dashboard-card">
         <h3>Alumni Management</h3>
-        <div id="alumniManagement"></div>
+        <div id="alumniManagement">
+          <p>Loading alumni data...</p>
+        </div>
       </div>
     </div>
   </div>
-  <script src="./javascript/script.js"></script>
 
+  <script>
+    // API Configuration
+    const API_BASE_URL = 'http://localhost:3000/api/auth';
+
+    // DOM Elements
+    const overlay = document.getElementById('overlay');
+    const mobileMenu = document.getElementById('mobile-menu');
+    const navLinks = document.getElementById('nav-links');
+
+    // Initialize on page load
+    document.addEventListener('DOMContentLoaded', function () {
+      console.log('DOM fully loaded');
+      const authToken = localStorage.getItem('authToken');
+      const userRole = localStorage.getItem('userRole');
+
+      // Initialize mobile menu
+      if (mobileMenu && navLinks) {
+        mobileMenu.addEventListener('click', () => {
+          navLinks.classList.toggle('show');
+        });
+      }
+
+      // Close mobile menu when a link is clicked
+      document.querySelectorAll('.nav-links a').forEach(link => {
+        link.addEventListener('click', () => {
+          if (navLinks) navLinks.classList.remove('show');
+        });
+      });
+
+      // Check if user is logged in
+      if (authToken && userRole) {
+        console.log('User is logged in with role:', userRole);
+        showDashboard(userRole);
+      } else {
+        console.log('No user session found');
+        const mainContent = document.getElementById('mainContent');
+        if (mainContent) mainContent.style.display = 'block';
+      }
+    });
+
+    // Mobile Menu Toggle
+    if (mobileMenu && navLinks) {
+      mobileMenu.addEventListener('click', () => {
+        navLinks.classList.toggle('show');
+      });
+    }
+
+    // Form Functions
+    function openForm() {
+      document.getElementById("registerForm").style.display = "block";
+      overlay.style.display = "block";
+      document.body.style.overflow = "hidden";
+      resetRegistrationForm();
+    }
+
+    function closeForm() {
+      document.getElementById("registerForm").style.display = "none";
+      overlay.style.display = "none";
+      document.body.style.overflow = "auto";
+      resetRegistrationForm();
+    }
+
+    function resetRegistrationForm() {
+      document.getElementById("userType").value = "";
+      document.getElementById("universityName").classList.add("hidden");
+      document.getElementById("universityName").required = false;
+      document.getElementById("registrationForm").reset();
+      document.getElementById("registerMessage").classList.add("hidden");
+      document.getElementById("otpVerificationSection").classList.add("hidden");
+      document.getElementById("registerOtpInput").classList.add("hidden");
+      document.getElementById("submitRegisterBtn").classList.remove("hidden");
+      document.getElementById("verifyRegisterOtpBtn").classList.add("hidden");
+    }
+
+    function toggleUniversityDropdown() {
+      var userType = document.getElementById("userType").value;
+      var universityDropdown = document.getElementById("universityName");
+
+      if (userType === "alumni") {
+        universityDropdown.classList.remove("hidden");
+        universityDropdown.required = true;
+      } else {
+        universityDropdown.classList.add("hidden");
+        universityDropdown.required = false;
+      }
+    }
+
+    // Registration Functions
+    async function submitRegistration() {
+      const name = document.getElementById("registerName").value;
+      const email = document.getElementById("registerEmail").value;
+      const phone = document.getElementById("registerPhone").value;
+      const role = document.getElementById("userType").value;
+      const university = document.getElementById("universityName").value;
+
+      const registerMessage = document.getElementById("registerMessage");
+      registerMessage.classList.add("hidden");
+
+      // Basic validation
+      if (!name || !email || !role) {
+        showError(registerMessage, "Please fill all required fields");
+        return;
+      }
+
+      if (role === "alumni" && !university) {
+        showError(registerMessage, "Please select your university");
+        return;
+      }
+
+      try {
+        const response = await fetch(`${API_BASE_URL}/register`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            name,
+            email,
+            role,
+            university: role === 'alumni' ? university : undefined
+          })
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+          // Show OTP verification section
+          document.getElementById("otpVerificationSection").classList.remove("hidden");
+          document.getElementById("registerOtpInput").classList.remove("hidden");
+          document.getElementById("submitRegisterBtn").classList.add("hidden");
+          document.getElementById("verifyRegisterOtpBtn").classList.remove("hidden");
+
+          showSuccess(registerMessage, data.message || "OTP sent to your email!");
+        } else {
+          showError(registerMessage, data.message || "Registration failed!");
+        }
+      } catch (error) {
+        showError(registerMessage, "Network error. Please try again.");
+        console.error("Registration error:", error);
+      }
+    }
+
+    async function verifyRegistrationOTP() {
+      const email = document.getElementById("registerEmail").value;
+      const otp = document.getElementById("registerOtpInput").value;
+      const registerMessage = document.getElementById("registerMessage");
+      registerMessage.classList.add("hidden");
+
+      if (!otp) {
+        showError(registerMessage, "Please enter the OTP");
+        return;
+      }
+
+      try {
+        const response = await fetch(`${API_BASE_URL}/verify-otp`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ email, otp })
+        });
+
+        const data = await response.json();
+
+        if (response.ok && data.token) {
+          showSuccess(registerMessage, data.message || "Registration successful!");
+
+          // Save token and role
+          localStorage.setItem('authToken', data.token);
+          localStorage.setItem('userRole', data.user.role);
+
+          // Close the registration form
+          closeForm();
+
+          // Redirect after a short delay to allow UI updates
+          setTimeout(() => {
+            window.location.href = `html/${data.user.role.toLowerCase()}-updateProfile.html`;
+          }, 500);
+
+        } else {
+          showError(registerMessage, data.message || "Invalid OTP!");
+        }
+      } catch (error) {
+        showError(registerMessage, "Network error. Please try again.");
+        console.error("OTP verification error:", error);
+      }
+    }
+    // Login Functions
+    function openLoginForm() {
+      document.getElementById("loginForm").style.display = "block";
+      overlay.style.display = "block";
+      document.body.style.overflow = "hidden";
+      resetLoginForm();
+    }
+
+    function closeLoginForm() {
+      document.getElementById("loginForm").style.display = "none";
+      overlay.style.display = "none";
+      document.body.style.overflow = "auto";
+      resetLoginForm();
+    }
+
+    function resetLoginForm() {
+      document.getElementById("otpInput").classList.add("hidden");
+      document.getElementById("verifyOtpBtn").classList.add("hidden");
+      document.getElementById("otpLoginForm").reset();
+      document.getElementById("loginMessage").classList.add("hidden");
+    }
+
+    async function sendLoginOTP() {
+      const email = document.getElementById("loginEmail").value;
+      const loginMessage = document.getElementById("loginMessage");
+      loginMessage.classList.add("hidden");
+
+      if (!email) {
+        showError(loginMessage, "Please enter your email");
+        return;
+      }
+
+      try {
+        const response = await fetch(`${API_BASE_URL}/login`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ email })
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+          showSuccess(loginMessage, data.message || "OTP sent to your email!");
+
+          document.getElementById("otpInput").classList.remove("hidden");
+          document.getElementById("verifyOtpBtn").classList.remove("hidden");
+        } else {
+          showError(loginMessage, data.message || "Login failed!");
+        }
+      } catch (error) {
+        showError(loginMessage, "Network error. Please try again.");
+        console.error("Login error:", error);
+      }
+    }
+
+    async function verifyLoginOTP() {
+      const email = document.getElementById("loginEmail").value;
+      const otp = document.getElementById("otpInput").value;
+      const loginMessage = document.getElementById("loginMessage");
+      loginMessage.classList.add("hidden");
+
+      if (!otp) {
+        showError(loginMessage, "Please enter the OTP");
+        return;
+      }
+
+      try {
+        const response = await fetch(`${API_BASE_URL}/verify-otp`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ email, otp })
+        });
+
+        const data = await response.json();
+
+        if (response.ok && data.token) {
+          showSuccess(loginMessage, data.message || "Login successful!");
+
+          // Store token and role
+          localStorage.setItem('authToken', data.token);
+          localStorage.setItem('userRole', data.user.role);
+
+          // Redirect to appropriate dashboard
+          closeLoginForm();
+          showDashboard(data.user.role);
+        } else {
+          showError(loginMessage, data.message || "Invalid login!");
+        }
+      } catch (error) {
+        showError(loginMessage, "Network error. Please try again.");
+        console.error("OTP verification error:", error);
+      }
+    }
+
+    // Dashboard Functions
+    function showDashboard(role) {
+      console.log('[showDashboard] Role received:', role);
+
+      // Hide all sections first
+      const sections = {
+        main: document.getElementById('mainContent'),
+        alumni: document.getElementById('alumniDashboard'),
+        recruiter: document.getElementById('recruiterDashboard'),
+        university: document.getElementById('universityDashboard')
+      };
+
+      // Hide all sections
+      Object.values(sections).forEach(section => {
+        if (section) section.style.display = 'none';
+      });
+
+      if (!role) {
+        console.warn('No role provided - showing main content');
+        if (sections.main) sections.main.style.display = 'block';
+        return;
+      }
+
+      // Normalize the role for comparison
+      const normalizedRole = String(role).toLowerCase().trim().replace(/_/g, '');
+      console.log(`Normalized role: ${normalizedRole}`);
+
+      switch (normalizedRole) {
+        case 'alumni':
+          if (sections.alumni) {
+            sections.alumni.style.display = 'block';
+            loadAlumniData();
+          } else {
+            console.error('Alumni dashboard not found');
+            fallbackToMain();
+          }
+          break;
+
+        case 'recruiter':
+          if (sections.recruiter) {
+            sections.recruiter.style.display = 'block';
+            loadRecruiterData();
+          } else {
+            console.error('Recruiter dashboard not found');
+            fallbackToMain();
+          }
+          break;
+
+        case 'university_admin':
+        case 'university_admin':
+          if (sections.university) {
+            sections.university.style.display = 'block';
+            loadUniversityData();
+          } else {
+            console.error('University dashboard not found');
+            fallbackToMain();
+          }
+          break;
+
+        default:
+          console.warn(`Unknown role: ${normalizedRole}`);
+          fallbackToMain();
+      }
+
+      function fallbackToMain() {
+        if (sections.main) sections.main.style.display = 'block';
+      }
+    }
+
+    // Data Loading Functions
+    async function loadAlumniData() {
+      try {
+        console.log('Loading alumni data...');
+        const response = await fetch(`${API_BASE_URL}/alumni/profile`, {
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+          }
+        });
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        console.log('Alumni data:', data);
+
+        // Update UI
+        if (document.getElementById('alumniName')) {
+          document.getElementById('alumniName').textContent = data.name || 'Alumni';
+        }
+        if (document.getElementById('profileName')) {
+          document.getElementById('profileName').textContent = data.name || 'N/A';
+        }
+        if (document.getElementById('profileUniversity')) {
+          document.getElementById('profileUniversity').textContent = data.university || 'N/A';
+        }
+        if (document.getElementById('profileYear')) {
+          document.getElementById('profileYear').textContent = data.graduationYear || 'N/A';
+        }
+
+      } catch (error) {
+        console.error('Error loading alumni data:', error);
+        showError('alumniProfile', 'Failed to load profile data');
+      }
+    }
+
+    async function loadUniversityData() {
+      try {
+        console.log('Loading university data...');
+        const response = await fetch(`${API_BASE_URL}/university/profile`, {
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+          }
+        });
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        console.log('University data:', data);
+
+        // Update UI
+        if (document.getElementById('universityTitle')) {
+          document.getElementById('universityTitle').textContent = data.name || 'University';
+        }
+        if (document.getElementById('uniName')) {
+          document.getElementById('uniName').textContent = data.name || 'N/A';
+        }
+        if (document.getElementById('uniAlumniCount')) {
+          document.getElementById('uniAlumniCount').textContent = data.alumniCount || '0';
+        }
+
+      } catch (error) {
+        console.error('Error loading university data:', error);
+        showError('universityProfile', 'Failed to load university data');
+      }
+    }
+
+    function loadRecruiterData() {
+      // Implement recruiter data loading as needed
+      console.log('Loading recruiter data...');
+    }
+
+    // Utility Functions
+    function showError(element, message) {
+      if (typeof element === 'string') {
+        element = document.getElementById(element);
+      }
+      if (element) {
+        element.textContent = message;
+        element.classList.remove('success', 'hidden');
+        element.classList.add('error');
+      }
+    }
+
+    function showSuccess(element, message) {
+      if (typeof element === 'string') {
+        element = document.getElementById(element);
+      }
+      if (element) {
+        element.textContent = message;
+        element.classList.remove('error', 'hidden');
+        element.classList.add('success');
+      }
+    }
+
+    function logout() {
+      localStorage.removeItem('authToken');
+      localStorage.removeItem('userRole');
+      window.location.href = 'index.html';
+    }
+
+    // Close forms when clicking on overlay
+    if (overlay) {
+      overlay.addEventListener('click', () => {
+        closeForm();
+        closeLoginForm();
+      });
+    }
+
+    // Smooth scrolling for anchor links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+
+        const targetId = this.getAttribute('href');
+        if (targetId === '#') return;
+
+        const targetElement = document.querySelector(targetId);
+        if (targetElement) {
+          window.scrollTo({
+            top: targetElement.offsetTop - 70,
+            behavior: 'smooth'
+          });
+        }
+      });
+    });
+  </script>
 </body>
 
 </html>
