@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recruiter Dashboard</title>
+    <link rel="stylesheet" href="../css/dashboard.css">
+</head>
+
+<body>
+    <header class="dashboard-header">
+        <div class="logo">Alumni Connect</div>
+        <nav>
+            <ul>
+                <li><a href="#" class="active">Dashboard</a></li>
+                <li><a href="post-job.html">Post Job</a></li>
+                <li><a href="candidates.html">Candidates</a></li>
+                <li><a href="messages.html">Messages</a></li>
+                <li><button onclick="logout()" class="logout-btn">Logout</button></li>
+            </ul>
+        </nav>
+    </header>
+
+    <div class="container">
+        <aside class="sidebar">
+            <div class="profile-summary">
+                <img src="../images/avatar.png" alt="Profile" class="profile-pic">
+                <h3 id="recruiterName">Loading...</h3>
+                <p id="recruiterCompany">Company</p>
+            </div>
+            <ul class="side-menu">
+                <li><a href="#" class="active"><i class="icon-dashboard"></i> Dashboard</a></li>
+                <li><a href="post-job.html"><i class="icon-post"></i> Post Job</a></li>
+                <li><a href="candidates.html"><i class="icon-candidates"></i> Candidates</a></li>
+                <li><a href="messages.html"><i class="icon-messages"></i> Messages</a></li>
+                <li><a href="analytics.html"><i class="icon-analytics"></i> Analytics</a></li>
+                <li><a href="settings.html"><i class="icon-settings"></i> Settings</a></li>
+            </ul>
+        </aside>
+
+        <main class="main-content">
+            <div class="welcome-banner">
+                <h1>Welcome, <span id="welcomeName">Recruiter</span>!</h1>
+                <p>Manage your recruitment activities</p>
+            </div>
+
+            <div class="stats-cards">
+                <div class="card">
+                    <h3>Active Jobs</h3>
+                    <p id="activeJobs">0</p>
+                </div>
+                <div class="card">
+                    <h3>New Applicants</h3>
+                    <p id="newApplicants">0</p>
+                </div>
+                <div class="card">
+                    <h3>Connections</h3>
+                    <p id="connections">0</p>
+                </div>
+            </div>
+
+            <section class="recent-applicants">
+                <h2>Recent Applicants</h2>
+                <div class="applicants-table" id="applicantsTable">
+                    <!-- Applicants will be loaded here -->
+                </div>
+            </section>
+        </main>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Check authentication
+            const authToken = localStorage.getItem('authToken');
+            const userRole = localStorage.getItem('userRole');
+
+            if (!authToken || userRole !== 'recruiter') {
+                window.location.href = '../index.html';
+            }
+
+            // Load recruiter data
+            loadRecruiterData();
+            loadRecentApplicants();
+        });
+
+        async function loadRecruiterData() {
+            try {
+                const response = await fetch('http://localhost:3000/api/recruiter/profile', {
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+                    }
+                });
+
+                const data = await response.json();
+
+                // Update UI
+                document.getElementById('recruiterName').textContent = data.name;
+                document.getElementById('recruiterCompany').textContent = data.company;
+                document.getElementById('welcomeName').textContent = data.name.split(' ')[0];
+
+            } catch (error) {
+                console.error('Error loading recruiter data:', error);
+            }
+        }
+
+        async function loadRecentApplicants() {
+            try {
+                const response = await fetch('http://localhost:3000/api/recruiter/applicants', {
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+                    }
+                });
+
+                const applicants = await response.json();
+                const applicantsTable = document.getElementById('applicantsTable');
+
+                applicants.forEach(applicant => {
+                    const applicantRow = document.createElement('div');
+                    applicantRow.className = 'applicant-row';
+                    applicantRow.innerHTML = `
+                <div class="applicant-info">
+                    <img src="../images/avatar.png" alt="${applicant.name}">
+                    <div>
+                        <h4>${applicant.name}</h4>
+                        <p>${applicant.university} • ${applicant.degree}</p>
+                    </div>
+                </div>
+                <div class="applicant-job">${applicant.jobTitle}</div>
+                <div class="applicant-status ${applicant.status.toLowerCase()}">${applicant.status}</div>
+                <div class="applicant-actions">
+                    <button class="btn-view">View</button>
+                    <button class="btn-message">Message</button>
+                </div>
+            `;
+                    applicantsTable.appendChild(applicantRow);
+                });
+
+            } catch (error) {
+                console.error('Error loading applicants:', error);
+            }
+        }
+
+        function logout() {
+            localStorage.removeItem('authToken');
+            localStorage.removeItem('userRole');
+            window.location.href = '../index.html';
+        }
+    </script>
+
+    <script src="../js/recruiter-dashboard.js"></script>
+</body>
+
+</html>

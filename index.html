@@ -541,7 +541,9 @@
 
   <script>
     // API Configuration
-    const API_BASE_URL = 'http://localhost:3000/api/auth';
+    // const API_BASE_URL = 'http://localhost:3000/api/auth';
+    const API_BASE_URL = `https://alumni-web-api.onrender.com/api/auth`;
+
 
     // DOM Elements
     const overlay = document.getElementById('overlay');
@@ -812,9 +814,12 @@
           localStorage.setItem('authToken', data.token);
           localStorage.setItem('userRole', data.user.role);
 
-          // Redirect to appropriate dashboard
+          // Close login form
           closeLoginForm();
-          showDashboard(data.user.role);
+
+          // Redirect based on user role
+          redirectToRoleDashboard(data.user.role);
+
         } else {
           showError(loginMessage, data.message || "Invalid login!");
         }
@@ -822,6 +827,27 @@
         showError(loginMessage, "Network error. Please try again.");
         console.error("OTP verification error:", error);
       }
+    }
+
+    // New function for role-based redirection
+    function redirectToRoleDashboard(role) {
+      // Normalize the role for comparison
+      const normalizedRole = String(role).toLowerCase().trim();
+
+      // Map roles to their respective HTML files
+      const rolePages = {
+        'alumni': 'html/alumni-dashboard.html',
+        'recruiter': 'html/recruiter-dashboard.html',
+        'university_admin': 'html/university-dashboard.html'
+      };
+
+      // Get the appropriate page or default to main page
+      const redirectPage = rolePages[normalizedRole] || 'index.html';
+
+      // Redirect after a short delay to allow UI updates
+      setTimeout(() => {
+        window.location.href = redirectPage;
+      }, 500);
     }
 
     // Dashboard Functions

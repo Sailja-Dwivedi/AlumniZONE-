@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alumni Dashboard</title>
+    <link rel="stylesheet" href="../css/dashboard.css">
+</head>
+
+<body>
+    <header class="dashboard-header">
+        <div class="logo">Alumni Connect</div>
+        <nav>
+            <ul>
+                <li><a href="#" class="active">Dashboard</a></li>
+                <li><a href="profile.html">Profile</a></li>
+                <li><a href="jobs.html">Jobs</a></li>
+                <li><a href="network.html">Network</a></li>
+                <li><button onclick="logout()" class="logout-btn">Logout</button></li>
+            </ul>
+        </nav>
+    </header>
+
+    <div class="container">
+        <aside class="sidebar">
+            <div class="profile-summary">
+                <img src="../images/avatar.png" alt="Profile" class="profile-pic">
+                <h3 id="alumniName">Loading...</h3>
+                <p id="alumniUniversity">University</p>
+            </div>
+            <ul class="side-menu">
+                <li><a href="#" class="active"><i class="icon-dashboard"></i> Dashboard</a></li>
+                <li><a href="profile.html"><i class="icon-profile"></i> My Profile</a></li>
+                <li><a href="jobs.html"><i class="icon-jobs"></i> Job Opportunities</a></li>
+                <li><a href="events.html"><i class="icon-events"></i> Events</a></li>
+                <li><a href="messages.html"><i class="icon-messages"></i> Messages</a></li>
+                <li><a href="settings.html"><i class="icon-settings"></i> Settings</a></li>
+            </ul>
+        </aside>
+
+        <main class="main-content">
+            <div class="welcome-banner">
+                <h1>Welcome back, <span id="welcomeName">Alumni</span>!</h1>
+                <p>Here's what's happening in your network today</p>
+            </div>
+
+            <div class="stats-cards">
+                <div class="card">
+                    <h3>Job Recommendations</h3>
+                    <p id="jobCount">5</p>
+                </div>
+                <div class="card">
+                    <h3>Connection Requests</h3>
+                    <p id="connectionCount">3</p>
+                </div>
+                <div class="card">
+                    <h3>Upcoming Events</h3>
+                    <p id="eventCount">2</p>
+                </div>
+            </div>
+
+            <section class="recent-activity">
+                <h2>Recent Activity</h2>
+                <div class="activity-list" id="activityFeed">
+                    <!-- Activities will be loaded here -->
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Check authentication
+            const authToken = localStorage.getItem('authToken');
+            const userRole = localStorage.getItem('userRole');
+
+            if (!authToken || userRole !== 'alumni') {
+                window.location.href = '../index.html';
+            }
+
+            // Load alumni data
+            loadAlumniData();
+
+            // Load recent activities
+            loadRecentActivities();
+        });
+
+        async function loadAlumniData() {
+            try {
+                const response = await fetch('http://localhost:3000/api/alumni/profile', {
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+                    }
+                });
+
+                const data = await response.json();
+
+                // Update UI
+                document.getElementById('alumniName').textContent = data.name;
+                document.getElementById('alumniUniversity').textContent = data.university;
+                document.getElementById('welcomeName').textContent = data.firstName || data.name.split(' ')[0];
+
+            } catch (error) {
+                console.error('Error loading alumni data:', error);
+            }
+        }
+
+        async function loadRecentActivities() {
+            try {
+                const response = await fetch('http://localhost:3000/api/alumni/activities', {
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+                    }
+                });
+
+                const activities = await response.json();
+                const activityFeed = document.getElementById('activityFeed');
+
+                activities.forEach(activity => {
+                    const activityItem = document.createElement('div');
+                    activityItem.className = 'activity-item';
+                    activityItem.innerHTML = `
+                <div class="activity-icon">${getActivityIcon(activity.type)}</div>
+                <div class="activity-content">
+                    <p>${activity.message}</p>
+                    <small>${new Date(activity.timestamp).toLocaleString()}</small>
+                </div>
+            `;
+                    activityFeed.appendChild(activityItem);
+                });
+
+            } catch (error) {
+                console.error('Error loading activities:', error);
+            }
+        }
+
+        function getActivityIcon(type) {
+            const icons = {
+                'connection': '👥',
+                'job': '💼',
+                'event': '🎉',
+                'message': '✉️',
+                'default': '🔔'
+            };
+            return icons[type] || icons.default;
+        }
+
+        function logout() {
+            localStorage.removeItem('authToken');
+            localStorage.removeItem('userRole');
+            window.location.href = '../index.html';
+        }
+    </script>
+    <script src="../js/alumni-dashboard.js"></script>
+</body>
+
+</html>
