@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>University Dashboard</title>
+    <!-- Google Font for Stylish Logo -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500&display=swap" rel="stylesheet">
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #4e73df;
+            --secondary-color: #1cc88a;
+            --text-color: #333;
+            --light-gray: #f8f9fc;
+            --medium-gray: #dddfeb;
+            --dark-gray: #858796;
+            --white: #fff;
+            --shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--light-gray);
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+
+        .dashboard-header {
+            background-color: var(--white);
+            box-shadow: var(--shadow);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .logo {
+            font-weight: 600;
+            font-size: 26px;
+            color: var(--primary-color);
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .logo span {
+            color: var(--secondary-color);
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+        }
+
+        nav ul li {
+            margin-left: 1.5rem;
+        }
+
+        nav ul li a {
+            text-decoration: none;
+            color: var(--text-color);
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        nav ul li a:hover,
+        nav ul li a.active {
+            color: var(--primary-color);
+        }
+
+        .logout-btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: background-color 0.3s;
+        }
+
+        .logout-btn:hover {
+            background-color: #3756b8;
+        }
+
+        .container {
+            display: flex;
+            margin-top: 70px;
+        }
+
+        .sidebar {
+            width: 250px;
+            background-color: var(--white);
+            box-shadow: var(--shadow);
+            padding: 1.5rem;
+            position: fixed;
+            height: calc(100vh - 70px);
+            overflow-y: auto;
+            transition: transform 0.3s ease;
+        }
+
+        .profile-summary {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .profile-pic {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-bottom: 1rem;
+            border: 3px solid var(--medium-gray);
+        }
+
+        .side-menu {
+            list-style: none;
+        }
+
+        .side-menu li {
+            margin-bottom: 0.5rem;
+        }
+
+        .side-menu a {
+            display: block;
+            padding: 0.75rem 1rem;
+            text-decoration: none;
+            color: var(--text-color);
+            border-radius: 4px;
+            transition: all 0.3s;
+        }
+
+        .side-menu a:hover,
+        .side-menu a.active {
+            background-color: var(--primary-color);
+            color: var(--white);
+        }
+
+        .side-menu i {
+            margin-right: 0.5rem;
+            width: 20px;
+            text-align: center;
+        }
+
+        .main-content {
+            flex: 1;
+            margin-left: 250px;
+            padding: 2rem;
+        }
+
+        .welcome-banner {
+            background-color: var(--primary-color);
+            color: var(--white);
+            padding: 2rem;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow);
+        }
+
+        .welcome-banner h1 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .recent-graduates h2 {
+            margin-bottom: 1.5rem;
+            color: var(--primary-color);
+            font-size: 1.5rem;
+        }
+
+        .graduates-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .graduate-card {
+            background-color: var(--white);
+            border-radius: 8px;
+            padding: 1.5rem;
+            box-shadow: var(--shadow);
+            text-align: center;
+            transition: transform 0.3s;
+        }
+
+        .graduate-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .graduate-card img {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-bottom: 1rem;
+            border: 3px solid var(--medium-gray);
+        }
+
+        .graduate-card h3 {
+            margin-bottom: 0.5rem;
+            color: var(--primary-color);
+        }
+
+        .graduate-card p {
+            color: var(--dark-gray);
+            font-size: 0.9rem;
+        }
+
+        /* Mobile Menu Toggle */
+        .menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--primary-color);
+        }
+
+        /* Responsive Styles */
+        @media (max-width: 992px) {
+            .sidebar {
+                transform: translateX(-100%);
+                position: fixed;
+                top: 70px;
+                left: 0;
+                z-index: 999;
+                height: calc(100vh - 70px);
+            }
+
+            .sidebar.active {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+
+            .menu-toggle {
+                display: block;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .dashboard-header {
+                padding: 1rem;
+            }
+
+            nav ul li {
+                margin-left: 1rem;
+            }
+
+            .main-content {
+                padding: 1.5rem;
+            }
+
+            .welcome-banner h1 {
+                font-size: 1.5rem;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .graduates-grid {
+                grid-template-columns: 1fr;
+            }
+
+            nav ul {
+                display: none;
+            }
+
+            .logout-btn {
+                display: none;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header class="dashboard-header">
+        <!-- Updated Logo -->
+        <div class="logo" style="font-family: 'Poppins', sans-serif;">
+            Alumni<span>Zone</span>
+        </div>
+        <button class="menu-toggle" id="menuToggle">
+            <i class="fas fa-bars"></i>
+        </button>
+        <nav>
+            <ul>
+                <li><a href="#" class="active">Dashboard</a></li>
+                <!-- <li><a href="alumni.html">Alumni</a></li> -->
+                <!-- <li><a href="universityProfile.html">Profile</a></li> -->
+                <li><button onclick="logout()" class="logout-btn">Logout</button></li>
+            </ul>
+        </nav>
+    </header>
+
+    <div class="container">
+        <aside class="sidebar" id="sidebar">
+            <div class="profile-summary">
+                <img src="https://t4.ftcdn.net/jpg/04/75/00/99/360_F_475009987_zwsk4c77x3cTpcI3W1C1LU4pOSyPKaqi.jpg"
+                    alt="University" class="profile-pic" id="logo">
+
+                <h3>AlumniZone</h3>
+                <p id="adminName">Admin</p>
+            </div>
+            <ul class="side-menu">
+                <li><a href="#" class="active"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+                <li><a href="./superAdmin/verification.html"><i class="fas fa-university"></i> Institute</a></li>
+            </ul>
+        </aside>
+
+        <main class="main-content">
+            <div class="welcome-banner">
+                <h1>Welcome, <span id="welcomeName">Admin</span>!</h1>
+                <p>Manage your university's alumni network</p>
+            </div>
+
+            <section class="recent-graduates">
+                <h2>Recent Graduates</h2>
+                <div class="graduates-grid" id="graduatesGrid">
+                    <!-- Graduates will be loaded here dynamically -->
+                    <div class="graduate-card">
+                        <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="Graduate">
+                        <h3>John Doe</h3>
+                        <p>Computer Science, 2023</p>
+                    </div>
+                    <div class="graduate-card">
+                        <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="Graduate">
+                        <h3>Jane Smith</h3>
+                        <p>Business Administration, 2023</p>
+                    </div>
+                    <div class="graduate-card">
+                        <img src="https://randomuser.me/api/portraits/men/75.jpg" alt="Graduate">
+                        <h3>Michael Johnson</h3>
+                        <p>Electrical Engineering, 2023</p>
+                    </div>
+                    <div class="graduate-card">
+                        <img src="https://randomuser.me/api/portraits/women/68.jpg" alt="Graduate">
+                        <h3>Sarah Williams</h3>
+                        <p>Psychology, 2023</p>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const Token = localStorage.getItem('Token');
+            const userRole = localStorage.getItem('userRole');
+
+            if (!Token || userRole !== 'SuparAdmin') {
+                window.location.href = '../index.html';
+            }
+            const API_BASE_URL = `https://alumni-web-api.onrender.com`;
+            // const API_BASE_URL = "http://localhost:3000";
+
+            // Toggle mobile menu
+            const menuToggle = document.getElementById('menuToggle');
+            const sidebar = document.getElementById('sidebar');
+
+            menuToggle.addEventListener('click', function () {
+                sidebar.classList.toggle('active');
+            });
+
+            // Close sidebar when clicking outside
+            document.addEventListener('click', function (event) {
+                if (!sidebar.contains(event.target) && event.target !== menuToggle) {
+                    sidebar.classList.remove('active');
+                }
+            });
+
+            loadUniversityData();
+            loadRecentGraduates();
+        });
+
+        async function loadUniversityData() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/auth/superadmin/me`, {
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('Token')}`
+                    }
+                });
+
+                const data = await response.json();
+                const user = data.user;
+
+                document.getElementById('adminName').textContent = user.name;
+                document.getElementById('welcomeName').textContent = user.role.split(' ')[0];
+
+                if (data.imageUrl) {
+                    document.getElementById('logo').src = data.imageUrl;
+                }
+
+            } catch (error) {
+                console.error('Error loading university data:', error);
+            }
+        }
+
+        async function loadRecentGraduates() {
+            // In a real app, you would fetch this data from your API
+            try {
+                // Simulating API call with mock data
+                const mockGraduates = [
+                    {
+                        id: 1,
+                        name: "Robert Chen",
+                        degree: "Mechanical Engineering, 2023",
+                        image: "https://randomuser.me/api/portraits/men/22.jpg"
+                    },
+                    {
+                        id: 2,
+                        name: "Emily Davis",
+                        degree: "Biology, 2023",
+                        image: "https://randomuser.me/api/portraits/women/33.jpg"
+                    },
+                    {
+                        id: 3,
+                        name: "David Wilson",
+                        degree: "Mathematics, 2023",
+                        image: "https://randomuser.me/api/portraits/men/45.jpg"
+                    },
+                    {
+                        id: 4,
+                        name: "Lisa Brown",
+                        degree: "Chemistry, 2023",
+                        image: "https://randomuser.me/api/portraits/women/55.jpg"
+                    }
+                ];
+
+                const graduatesGrid = document.getElementById('graduatesGrid');
+                graduatesGrid.innerHTML = ''; // Clear existing content
+
+                mockGraduates.forEach(graduate => {
+                    const graduateCard = document.createElement('div');
+                    graduateCard.className = 'graduate-card';
+                    graduateCard.innerHTML = `
+                        <img src="${graduate.image}" alt="${graduate.name}">
+                        <h3>${graduate.name}</h3>
+                        <p>${graduate.degree}</p>
+                    `;
+                    graduatesGrid.appendChild(graduateCard);
+                });
+
+            } catch (error) {
+                console.error('Error loading recent graduates:', error);
+            }
+        }
+
+        function logout() {
+            localStorage.removeItem('Token');
+            localStorage.removeItem('userRole');
+            localStorage.removeItem('alumniId');
+            window.location.href = '../index.html';
+        }
+    </script>
+</body>
+
+</html>

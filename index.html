@@ -553,7 +553,7 @@
     // Initialize on page load
     document.addEventListener('DOMContentLoaded', function () {
       console.log('DOM fully loaded');
-      const authToken = localStorage.getItem('authToken');
+      const Token = localStorage.getItem('Token');
       const userRole = localStorage.getItem('userRole');
 
       // Initialize mobile menu
@@ -571,7 +571,7 @@
       });
 
       // Check if user is logged in
-      if (authToken && userRole) {
+      if (Token && userRole) {
         console.log('User is logged in with role:', userRole);
         showDashboard(userRole);
       } else {
@@ -709,7 +709,7 @@
           showSuccess(registerMessage, data.message || "Registration successful!");
 
           // Save token and role
-          localStorage.setItem('authToken', data.token);
+          localStorage.setItem('Token', data.token);
           localStorage.setItem('userRole', data.user.role);
 
           // Close the registration form
@@ -811,7 +811,7 @@
           showSuccess(loginMessage, data.message || "Login successful!");
 
           // Store token and role
-          localStorage.setItem('authToken', data.token);
+          localStorage.setItem('Token', data.token);
           localStorage.setItem('userRole', data.user.role);
 
           // Close login form
@@ -838,11 +838,14 @@
       const rolePages = {
         'alumni': 'html/alumni-dashboard.html',
         'recruiter': 'html/recruiter-dashboard.html',
-        'university_admin': 'html/university-dashboard.html'
+        'university_admin': 'html/universityProfile.html',
+        'suparadmin': 'html/superAdmin.html',
+        'suparadmin': 'html/superAdmin.html'
+
       };
 
       // Get the appropriate page or default to main page
-      const redirectPage = rolePages[normalizedRole] || 'index.html';
+      const redirectPage = rolePages[normalizedRole];
 
       // Redirect after a short delay to allow UI updates
       setTimeout(() => {
@@ -925,7 +928,7 @@
         console.log('Loading alumni data...');
         const response = await fetch(`${API_BASE_URL}/alumni/profile`, {
           headers: {
-            'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+            'Authorization': `Bearer ${localStorage.getItem('Token')}`
           }
         });
 
@@ -959,9 +962,9 @@
     async function loadUniversityData() {
       try {
         console.log('Loading university data...');
-        const response = await fetch(`${API_BASE_URL}/university/profile`, {
+        const response = await fetch(`${API_BASE_URL}/auth/profile`, {
           headers: {
-            'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+            'Authorization': `Bearer ${localStorage.getItem('Token')}`
           }
         });
 
@@ -1018,7 +1021,7 @@
     }
 
     function logout() {
-      localStorage.removeItem('authToken');
+      localStorage.removeItem('Token');
       localStorage.removeItem('userRole');
       window.location.href = 'index.html';
     }

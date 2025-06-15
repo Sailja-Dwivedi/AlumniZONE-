@@ -15,8 +15,11 @@
             <ul>
                 <li><a href="#" class="active">Dashboard</a></li>
                 <li><a href="alumni.html">Alumni</a></li>
-                <li><a href="events.html">Events</a></li>
-                <li><a href="reports.html">Reports</a></li>
+                <li><a href="universityProfile.html
+                    ">Profile</a></li>
+
+                <!-- <li><a href="events.html">Events</a></li> -->
+                <!-- <li><a href="reports.html">Reports</a></li> -->
                 <li><button onclick="logout()" class="logout-btn">Logout</button></li>
             </ul>
         </nav>
@@ -25,17 +28,21 @@
     <div class="container">
         <aside class="sidebar">
             <div class="profile-summary">
-                <img src="../images/university.png" alt="University" class="profile-pic">
-                <h3 id="universityName">Loading...</h3>
+                <img src="" alt="University" class="profile-pic" id="logo">
+
+                <h3>Alumni Connect</h3>
                 <p id="adminName">Admin</p>
             </div>
             <ul class="side-menu">
                 <li><a href="#" class="active"><i class="icon-dashboard"></i> Dashboard</a></li>
-                <li><a href="alumni.html"><i class="icon-alumni"></i> Alumni</a></li>
+                <li><a href="universityProfile.html"><i class="icon-alumni"></i> Profile</a></li>
+                <li><a href="AlumniManagement.html">Alumni Management</a></li>
+
+                <!-- <li><a href="alumni.html"><i class="icon-alumni"></i> Alumni</a></li>
                 <li><a href="events.html"><i class="icon-events"></i> Events</a></li>
                 <li><a href="recruiters.html"><i class="icon-recruiters"></i> Recruiters</a></li>
                 <li><a href="reports.html"><i class="icon-reports"></i> Reports</a></li>
-                <li><a href="settings.html"><i class="icon-settings"></i> Settings</a></li>
+                <li><a href="settings.html"><i class="icon-settings"></i> Settings</a></li> -->
             </ul>
         </aside>
 
@@ -43,21 +50,6 @@
             <div class="welcome-banner">
                 <h1>Welcome, <span id="welcomeName">Admin</span>!</h1>
                 <p>Manage your university's alumni network</p>
-            </div>
-
-            <div class="stats-cards">
-                <div class="card">
-                    <h3>Total Alumni</h3>
-                    <p id="totalAlumni">0</p>
-                </div>
-                <div class="card">
-                    <h3>Active Alumni</h3>
-                    <p id="activeAlumni">0</p>
-                </div>
-                <div class="card">
-                    <h3>Upcoming Events</h3>
-                    <p id="upcomingEvents">0</p>
-                </div>
             </div>
 
             <section class="recent-graduates">
@@ -68,81 +60,53 @@
             </section>
         </main>
     </div>
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            // Check authentication
-            const authToken = localStorage.getItem('authToken');
-            const userRole = localStorage.getItem('userRole');
 
-            if (!authToken || userRole !== 'university_admin') {
+    <script>
+
+        document.addEventListener('DOMContentLoaded', function () {
+            const Token = localStorage.getItem('Token');
+            const userRole = localStorage.getItem('userRole');
+            const API_BASE_URL = `https://alumni-web-api.onrender.com`;
+            // const API_BASE_URL = "http://localhost:3000";
+
+            if (!Token || userRole !== 'university_admin') {
                 window.location.href = '../index.html';
             }
 
-            // Load university data
             loadUniversityData();
             loadRecentGraduates();
         });
 
         async function loadUniversityData() {
             try {
-                const response = await fetch('http://localhost:3000/api/university/profile', {
+                const response = await fetch(`${API_BASE_URL}/api/auth/profile`, {
                     headers: {
-                        'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+                        'Authorization': `Bearer ${localStorage.getItem('Token')}`
                     }
                 });
 
                 const data = await response.json();
+                const user = data.user;
 
-                // Update UI
-                document.getElementById('universityName').textContent = data.universityName;
-                document.getElementById('adminName').textContent = data.adminName;
-                document.getElementById('welcomeName').textContent = data.adminName.split(' ')[0];
-                document.getElementById('totalAlumni').textContent = data.totalAlumni;
-                document.getElementById('activeAlumni').textContent = data.activeAlumni;
-                document.getElementById('upcomingEvents').textContent = data.upcomingEvents;
+                document.getElementById('adminName').textContent = user.name;
+                document.getElementById('welcomeName').textContent = user.name.split(' ')[0];
+
+                // ✅ Set image URL
+                if (data.imageUrl) {
+                    document.getElementById('logo').src = `{ data.imageUrl }`;
+                }
 
             } catch (error) {
                 console.error('Error loading university data:', error);
             }
         }
-
-        async function loadRecentGraduates() {
-            try {
-                const response = await fetch('http://localhost:3000/api/university/recent-graduates', {
-                    headers: {
-                        'Authorization': `Bearer ${localStorage.getItem('authToken')}`
-                    }
-                });
-
-                const graduates = await response.json();
-                const graduatesGrid = document.getElementById('graduatesGrid');
-
-                graduates.forEach(graduate => {
-                    const graduateCard = document.createElement('div');
-                    graduateCard.className = 'graduate-card';
-                    graduateCard.innerHTML = `
-                <img src="../images/avatar.png" alt="${graduate.name}">
-                <h4>${graduate.name}</h4>
-                <p>${graduate.degree} (${graduate.graduationYear})</p>
-                <p class="current-position">${graduate.currentPosition || 'Not specified'}</p>
-                <button class="btn-connect">Connect</button>
-            `;
-                    graduatesGrid.appendChild(graduateCard);
-                });
-
-            } catch (error) {
-                console.error('Error loading graduates:', error);
-            }
-        }
-
         function logout() {
-            localStorage.removeItem('authToken');
+            localStorage.removeItem('Token');
             localStorage.removeItem('userRole');
+            localStorage.removeItem('alumniId');
             window.location.href = '../index.html';
         }
     </script>
-
-    <script src="../js/university-dashboard.js"></script>
 </body>
 
 </html>

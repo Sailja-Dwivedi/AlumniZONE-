@@ -128,6 +128,45 @@
             background-color: #fff;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
         }
+
+        .document-preview {
+            margin-top: 10px;
+            padding: 10px;
+            border: 1px solid #eee;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+
+        .document-preview img {
+            display: block;
+            margin-bottom: 5px;
+            max-width: 100%;
+            height: auto;
+        }
+
+        .document-link {
+            display: inline-block;
+            padding: 5px 10px;
+            background-color: var(--primary-color);
+            color: white;
+            border-radius: 4px;
+            text-decoration: none;
+            margin-top: 5px;
+        }
+
+        .document-link:hover {
+            background-color: #2980b9;
+            color: white;
+            text-decoration: none;
+        }
+
+        .preview-image {
+            max-width: 200px;
+            max-height: 200px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 5px;
+        }
     </style>
 </head>
 
@@ -147,7 +186,7 @@
                     <div class="row g-3">
                         <div class="col-md-6">
                             <label class="form-label">Full Name</label>
-                            <input type="text" class="form-control" id="name" placeholder="Enter your full name"
+                            <input type="text" class="form-control" id="fullName" placeholder="Enter your full name"
                                 disabled>
                         </div>
                         <div class="col-md-6">
@@ -179,6 +218,13 @@
                             <input type="text" class="form-control" id="courseName"
                                 placeholder="e.g. B.Tech Computer Science" disabled>
                         </div>
+                        <div class="col-md-6">
+                            <label class="form-label">College</label>
+                            <select class="form-select" id="college" disabled>
+                                <option>Loading...</option>
+                            </select>
+                        </div>
+
                         <div class="col-md-6">
                             <label class="form-label">Department Name</label>
                             <input type="text" class="form-control" id="departmentName"
@@ -223,6 +269,10 @@
                                 disabled>
                         </div>
                         <div class="col-md-6">
+                            <label class="form-label">Enrollment</label>
+                            <input type="text" class="form-control" id="enrollment" placeholder="AY2060986007" disabled>
+                        </div>
+                        <div class="col-md-6">
                             <label class="form-label">Experience</label>
                             <select class="form-select" id="experience" disabled>
                                 <option value="">Select Experience</option>
@@ -249,6 +299,9 @@
                                 <input type="file" class="file-upload-input" id="marksheet" accept="image/jpeg"
                                     disabled>
                             </div>
+                            <div class="document-preview" id="marksheetPreview">
+                                <!-- Marksheet preview will appear here -->
+                            </div>
                         </div>
                         <div class="col-md-6">
                             <label class="form-label">Passport Size Photo</label>
@@ -258,6 +311,9 @@
                                     <span id="photoText">Choose file or drag here</span>
                                 </label>
                                 <input type="file" class="file-upload-input" id="photo" accept="image/jpeg" disabled>
+                            </div>
+                            <div class="document-preview" id="photoPreview">
+                                <!-- Photo preview will appear here -->
                             </div>
                         </div>
                     </div>
@@ -273,17 +329,48 @@
     </div>
 
     <script>
+        window.addEventListener('DOMContentLoaded', async () => {
+            const select = document.getElementById('college');
+
+            try {
+                const response = await fetch('http://localhost:3000/api/verified-institutes');
+                const result = await response.json();
+
+                if (result.success && Array.isArray(result.data)) {
+                    // Clear existing options
+                    select.innerHTML = '';
+
+                    // Add dynamic options from API
+                    result.data.forEach((institute) => {
+                        const option = document.createElement('option');
+                        option.value = institute._id;
+                        option.textContent = institute.instituteName;
+                        select.appendChild(option);
+                    });
+
+                    // Enable the select if you want to allow selection
+                    select.disabled = false;
+                } else {
+                    console.error('Invalid data format:', result);
+                }
+            } catch (error) {
+                console.error('Error fetching institutes:', error);
+            }
+        });
+    </script>
+
+    <script>
+        // Enable form editing
+        const API_BASE_URL = `https://alumni-web-api.onrender.com`;
+        // const API_BASE_URL = "http://localhost:3000";
         function enableEditing() {
-            // Enable all form fields
             document.querySelectorAll("#alumniProfile input, #alumniProfile select").forEach(input => {
                 input.disabled = false;
                 input.classList.add('bg-white');
             });
 
-            // Show save button
             document.getElementById("saveBtn").style.display = "block";
 
-            // Change edit button to cancel
             const editBtn = document.querySelector('.btn-edit');
             editBtn.innerHTML = '<i class="fas fa-times"></i>';
             editBtn.onclick = cancelEditing;
@@ -291,17 +378,15 @@
             editBtn.classList.add('btn-danger');
         }
 
+        // Cancel editing and reset form
         function cancelEditing() {
-            // Disable all form fields
             document.querySelectorAll("#alumniProfile input, #alumniProfile select").forEach(input => {
                 input.disabled = true;
                 input.classList.remove('bg-white');
             });
 
-            // Hide save button
             document.getElementById("saveBtn").style.display = "none";
 
-            // Reset edit button
             const editBtn = document.querySelector('.btn-edit');
             editBtn.innerHTML = '<i class="fas fa-pencil-alt"></i>';
             editBtn.onclick = enableEditing;
@@ -313,20 +398,234 @@
         document.getElementById('marksheet').addEventListener('change', function (e) {
             const fileName = e.target.files[0] ? e.target.files[0].name : 'Choose file or drag here';
             document.getElementById('marksheetText').textContent = fileName;
+
+            // Show preview for newly selected file
+            if (e.target.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function (event) {
+                    const previewDiv = document.getElementById('marksheetPreview');
+                    previewDiv.innerHTML = '';
+                    const img = document.createElement('img');
+                    img.src = event.target.result;
+                    img.alt = "Marksheet Preview";
+                    img.className = 'preview-image';
+                    previewDiv.appendChild(img);
+                };
+                reader.readAsDataURL(e.target.files[0]);
+            }
         });
 
         document.getElementById('photo').addEventListener('change', function (e) {
             const fileName = e.target.files[0] ? e.target.files[0].name : 'Choose file or drag here';
             document.getElementById('photoText').textContent = fileName;
+
+            // Show preview for newly selected file
+            if (e.target.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function (event) {
+                    const previewDiv = document.getElementById('photoPreview');
+                    previewDiv.innerHTML = '';
+                    const img = document.createElement('img');
+                    img.src = event.target.result;
+                    img.alt = "Photo Preview";
+                    img.className = 'preview-image';
+                    previewDiv.appendChild(img);
+                };
+                reader.readAsDataURL(e.target.files[0]);
+            }
         });
 
-        // Form submission
-        document.getElementById('alumniProfile').addEventListener('submit', function (e) {
+        // Display existing documents with proper URL handling
+        function displayDocument(previewElementId, documentUrl, documentName) {
+            const previewDiv = document.getElementById(previewElementId);
+            previewDiv.innerHTML = '';
+
+            // Normalize the URL (replace backslashes with forward slashes)
+            const normalizedUrl = documentUrl.replace(/\\/g, '/');
+            // Construct full URL
+            const fullUrl = normalizedUrl;
+
+            // Create a container div
+            const container = document.createElement('div');
+            container.className = 'document-preview-container';
+
+            if (normalizedUrl.match(/\.(jpeg|jpg|gif|png|webp)$/i)) {
+                const img = new Image();
+                img.onload = function () {
+                    const imgElement = document.createElement('img');
+                    imgElement.src = fullUrl;
+                    imgElement.alt = documentName;
+                    imgElement.className = 'preview-image';
+                    container.appendChild(imgElement);
+
+                    // Add a small label
+                    const label = document.createElement('div');
+                    label.className = 'small text-muted mt-1';
+                    label.textContent = 'Current ' + documentName;
+                    container.appendChild(label);
+                };
+                img.onerror = function () {
+                    container.innerHTML = `<div class="alert alert-warning p-2">Could not load ${documentName}</div>
+                                       <a href="${fullUrl}" class="document-link" target="_blank">Download ${documentName}</a>`;
+                };
+                img.src = fullUrl;
+            } else {
+                const link = document.createElement('a');
+                link.href = fullUrl;
+                link.className = 'document-link';
+                link.innerHTML = `<i class="fas fa-download me-1"></i> Download ${documentName}`;
+                link.target = '_blank';
+                container.appendChild(link);
+            }
+
+            previewDiv.appendChild(container);
+
+            // Update the file input label
+            const inputId = previewElementId.replace('Preview', '');
+            const labelId = inputId + 'Text';
+            if (document.getElementById(labelId)) {
+                document.getElementById(labelId).textContent = 'Current file: ' +
+                    (normalizedUrl.split('/').pop().split('?')[0] || documentName);
+            }
+        }
+
+        // Load profile data when page loads
+        document.addEventListener("DOMContentLoaded", async function () {
+            const Token = localStorage.getItem("Token");
+            // const alumniId = localStorage.getItem("alumniId");
+
+            if (!Token) {
+                alert("Please login to access your profile");
+                window.location.href = "/index.html";
+                return;
+            }
+
+            try {
+                // console.log(API_BASE_URL)
+                const url = `${API_BASE_URL}/api/auth/profile`;
+                const response = await fetch(url, {
+                    headers: {
+                        Authorization: `Bearer ${Token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error(response.status === 404 ? "Profile not found" : "Failed to fetch profile");
+                }
+
+                const data = await response.json();
+                // console.log(data.profile);
+                const profile = data.profile; // Handle both array and single object responses
+                console.log(profile);
+                localStorage.setItem("alumniId", profile._id);
+
+                if (profile) {
+                    document.getElementById("fullName").value = profile.fullName || "";
+                    document.getElementById("dob").value = profile.dob?.split("T")[0] || "";
+                    document.getElementById("email").value = profile.email || "";
+                    document.getElementById("mobile").value = profile.mobile || "";
+                    document.getElementById("address").value = profile.address || "";
+                    document.getElementById("courseName").value = profile.courseName || "";
+                    document.getElementById("college").value = profile.college || "makhanlala";
+                    document.getElementById("departmentName").value = profile.departmentName || "";
+                    document.getElementById("passingYear").value = profile.passingYear || "";
+                    document.getElementById("currentJob").value = profile.currentJob || "";
+                    document.getElementById("companyName").value = profile.companyName || "";
+                    document.getElementById("designation").value = profile.designation || "";
+                    document.getElementById("jobLocation").value = profile.jobLocation || "";
+                    document.getElementById("enrollment").value = profile.enrollment || "";
+                    document.getElementById("experience").value = profile.experience || "";
+
+                    if (profile.marksheetUrl) {
+                        displayDocument('marksheetPreview', profile.marksheetUrl, 'Marksheet');
+                    }
+                    if (profile.photoUrl) {
+                        displayDocument('photoPreview', profile.photoUrl, 'Profile Photo');
+                    }
+                }
+            } catch (error) {
+                console.error("Profile load error:", error);
+                if (error.message !== "Profile not found") {
+                    alert("Error loading profile: " + error.message);
+                }
+            }
+        });
+
+        // Handle form submission
+        document.getElementById('alumniProfile').addEventListener('submit', async function (e) {
             e.preventDefault();
-            alert('Profile updated successfully!');
-            cancelEditing();
+
+            const Token = localStorage.getItem("Token");
+            const alumniId = localStorage.getItem("alumniId");
+            console.log(alumniId);
+            if (!Token) {
+                alert("Session expired. Please login again.");
+                window.location.href = "/login.html";
+                return;
+            }
+
+            try {
+                const formData = new FormData();
+                formData.append("fullName", document.getElementById("fullName").value);
+                formData.append("dob", document.getElementById("dob").value);
+                formData.append("email", document.getElementById("email").value);
+                formData.append("mobile", document.getElementById("mobile").value);
+                formData.append("address", document.getElementById("address").value);
+                formData.append("courseName", document.getElementById("courseName").value);
+                formData.append("college", document.getElementById("college").value);
+                formData.append("departmentName", document.getElementById("departmentName").value);
+                formData.append("passingYear", document.getElementById("passingYear").value);
+                formData.append("currentJob", document.getElementById("currentJob").value);
+                formData.append("companyName", document.getElementById("companyName").value);
+                formData.append("designation", document.getElementById("designation").value);
+                formData.append("jobLocation", document.getElementById("jobLocation").value);
+                formData.append("enrollment", document.getElementById("enrollment").value);
+                formData.append("experience", document.getElementById("experience").value);
+
+                // Append files if selected
+                const marksheetFile = document.getElementById("marksheet").files[0];
+                const photoFile = document.getElementById("photo").files[0];
+
+                if (marksheetFile) formData.append("marksheet", marksheetFile);
+                if (photoFile) formData.append("photo", photoFile);
+
+                const url = alumniId ? `${API_BASE_URL}/api/alumni-profiles/${alumniId}` : `${API_BASE_URL}/api/alumni-profiles`;
+                const method = alumniId ? "PUT" : "POST";
+
+                const response = await fetch(url, {
+                    method: method,
+                    headers: {
+                        Authorization: `Bearer ${Token}`
+                    },
+                    body: formData
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    alert(`Profile ${alumniId ? "updated" : "created"} successfully!`);
+
+                    if (!alumniId && result._id) {
+                        localStorage.setItem("alumniId", result._id);
+                        cancelEditing();
+
+                        // ✅ Redirect to alumni dashboard only on create
+                        window.location.href = "/html/alumni-dashboard.html";
+                    } else {
+                        cancelEditing();
+                        // ✅ Only reload if it's an update
+                        window.location.reload();
+                    }
+                }
+
+            } catch (error) {
+                console.error("Save error:", error);
+                alert("Error saving profile: " + error.message);
+            }
         });
     </script>
+
 </body>
 
 </html>

@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Institutes</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .card:hover {
+            cursor: pointer;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .card-img-top {
+            height: 200px;
+            object-fit: contain;
+        }
+
+        .spinner-container {
+            display: flex;
+            justify-content: center;
+            margin-top: 40px;
+        }
+
+        .modal-body {
+            max-height: 70vh;
+            overflow-y: auto;
+        }
+
+        .sort-option {
+            cursor: pointer;
+        }
+
+        .sort-option:hover {
+            background-color: #f8f9fa;
+        }
+
+        .active-sort {
+            background-color: #e9ecef;
+            font-weight: bold;
+        }
+
+        .pagination {
+            justify-content: center;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container my-4">
+        <h2 class="text-center mb-4">All Registered Institutes</h2>
+
+        <!-- Sorting and Filtering Controls -->
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <div class="dropdown">
+                    <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="sortDropdown"
+                        data-bs-toggle="dropdown" aria-expanded="false">
+                        Sort By
+                    </button>
+                    <ul class="dropdown-menu" aria-labelledby="sortDropdown">
+                        <li><a class="dropdown-item sort-option" data-sort="name-asc">Name (A-Z)</a></li>
+                        <li><a class="dropdown-item sort-option" data-sort="name-desc">Name (Z-A)</a></li>
+                        <li><a class="dropdown-item sort-option" data-sort="date-asc">Date (Oldest First)</a></li>
+                        <li><a class="dropdown-item sort-option" data-sort="date-desc">Date (Newest First)</a></li>
+                        <li><a class="dropdown-item sort-option" data-sort="status">Status</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="dropdown">
+                    <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="filterDropdown"
+                        data-bs-toggle="dropdown" aria-expanded="false">
+                        Filter By Status
+                    </button>
+                    <ul class="dropdown-menu" aria-labelledby="filterDropdown">
+                        <li><a class="dropdown-item filter-option" data-filter="all">All</a></li>
+                        <li><a class="dropdown-item filter-option" data-filter="Verified">Verified</a></li>
+                        <li><a class="dropdown-item filter-option" data-filter="Pending">Pending</a></li>
+                        <li><a class="dropdown-item filter-option" data-filter="Rejected">Rejected</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="spinner-container" id="loadingSpinner">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+        </div>
+        <div class="row" id="institute-container">
+            <!-- Cards will be injected here -->
+        </div>
+
+        <!-- Pagination -->
+        <nav aria-label="Page navigation">
+            <ul class="pagination" id="pagination">
+                <!-- Pagination will be injected here -->
+            </ul>
+        </nav>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="instituteModal" tabindex="-1" aria-labelledby="instituteModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="instituteModalLabel">Institute Details</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="modalContent">
+                    <!-- Dynamic content will go here -->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-success" id="verifyBtn">Verify</button>
+                    <button type="button" class="btn btn-danger" id="rejectBtn">Reject</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        let currentInstituteId = null;
+        let currentModal = null;
+        let allInstitutes = [];
+        let currentPage = 1;
+        const itemsPerPage = 9;
+        let currentSort = 'date-desc';
+        let currentFilter = 'all';
+        const API_BASE_URL = `https://alumni-web-api.onrender.com`;
+        //    const API_BASE_URL ="http://localhost:3000"
+
+        async function fetchInstitutes() {
+            try {
+                const res = await fetch(`${API_BASE_URL}/api/all-institutes`);
+                const data = await res.json();
+                const spinner = document.getElementById("loadingSpinner");
+                spinner.style.display = "none";
+
+                if (!data.institutes || data.institutes.length === 0) {
+                    document.getElementById("institute-container").innerHTML = `<p class="text-center text-muted">No institutes found.</p>`;
+                    return;
+                }
+
+                allInstitutes = data.institutes;
+                applySortingAndFiltering();
+            } catch (error) {
+                console.error("Error fetching data", error);
+                document.getElementById("loadingSpinner").innerHTML = `<p class="text-danger">Error loading data. Try again later.</p>`;
+            }
+        }
+
+        function applySortingAndFiltering() {
+            // Filter first
+            let filteredInstitutes = allInstitutes;
+            if (currentFilter !== 'all') {
+                filteredInstitutes = allInstitutes.filter(inst => inst.status === currentFilter);
+            }
+
+            // Then sort
+            let sortedInstitutes = [...filteredInstitutes];
+            switch (currentSort) {
+                case 'name-asc':
+                    sortedInstitutes.sort((a, b) => a.instituteName.localeCompare(b.instituteName));
+                    break;
+                case 'name-desc':
+                    sortedInstitutes.sort((a, b) => b.instituteName.localeCompare(a.instituteName));
+                    break;
+                case 'date-asc':
+                    sortedInstitutes.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
+                    break;
+                case 'date-desc':
+                    sortedInstitutes.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+                    break;
+                case 'status':
+                    sortedInstitutes.sort((a, b) => {
+                        const statusOrder = { 'Verified': 1, 'Pending': 2, 'Rejected': 3 };
+                        return statusOrder[a.status] - statusOrder[b.status];
+                    });
+                    break;
+            }
+
+            renderInstitutes(sortedInstitutes);
+            renderPagination(sortedInstitutes.length);
+        }
+
+        function renderInstitutes(institutes) {
+            const container = document.getElementById("institute-container");
+            container.innerHTML = "";
+
+            const startIndex = (currentPage - 1) * itemsPerPage;
+            const paginatedInstitutes = institutes.slice(startIndex, startIndex + itemsPerPage);
+
+            if (paginatedInstitutes.length === 0) {
+                container.innerHTML = `<p class="text-center text-muted">No institutes found for the selected criteria.</p>`;
+                return;
+            }
+
+            paginatedInstitutes.forEach((institute) => {
+                const card = document.createElement("div");
+                card.className = "col-md-4 mb-3";
+
+                let statusBadge = `<span class="badge bg-secondary">${institute.status || "Pending"}</span>`;
+                if (institute.status === "Verified") statusBadge = `<span class="badge bg-success">Verified</span>`;
+                if (institute.status === "Rejected") statusBadge = `<span class="badge bg-danger">Rejected</span>`;
+
+                card.innerHTML = `
+                    <div class="card" onclick='openModal(${JSON.stringify(institute).replace(/'/g, "\\'")})'>
+                        <img src="${institute.logo || 'https://via.placeholder.com/300x200?text=No+Logo'}" class="card-img-top" alt="${institute.instituteName}">
+                        <div class="card-body">
+                            <h5 class="card-title">${institute.instituteName}</h5>
+                            <p>Status: ${statusBadge}</p>
+                            <small class="text-muted">Registered: ${new Date(institute.createdAt).toLocaleDateString()}</small>
+                        </div>
+                    </div>
+                `;
+
+                container.appendChild(card);
+            });
+        }
+
+        function renderPagination(totalItems) {
+            const totalPages = Math.ceil(totalItems / itemsPerPage);
+            const paginationContainer = document.getElementById("pagination");
+            paginationContainer.innerHTML = "";
+
+            if (totalPages <= 1) return;
+
+            // Previous button
+            const prevLi = document.createElement("li");
+            prevLi.className = `page-item ${currentPage === 1 ? 'disabled' : ''}`;
+            prevLi.innerHTML = `<a class="page-link" href="#" aria-label="Previous" id="prevPage"><span aria-hidden="true">&laquo;</span></a>`;
+            paginationContainer.appendChild(prevLi);
+
+            // Page numbers
+            const maxVisiblePages = 5;
+            let startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
+            let endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
+
+            if (endPage - startPage + 1 < maxVisiblePages) {
+                startPage = Math.max(1, endPage - maxVisiblePages + 1);
+            }
+
+            if (startPage > 1) {
+                const firstLi = document.createElement("li");
+                firstLi.className = "page-item";
+                firstLi.innerHTML = `<a class="page-link" href="#" data-page="1">1</a>`;
+                paginationContainer.appendChild(firstLi);
+
+                if (startPage > 2) {
+                    const dotsLi = document.createElement("li");
+                    dotsLi.className = "page-item disabled";
+                    dotsLi.innerHTML = `<span class="page-link">...</span>`;
+                    paginationContainer.appendChild(dotsLi);
+                }
+            }
+
+            for (let i = startPage; i <= endPage; i++) {
+                const pageLi = document.createElement("li");
+                pageLi.className = `page-item ${i === currentPage ? 'active' : ''}`;
+                pageLi.innerHTML = `<a class="page-link" href="#" data-page="${i}">${i}</a>`;
+                paginationContainer.appendChild(pageLi);
+            }
+
+            if (endPage < totalPages) {
+                if (endPage < totalPages - 1) {
+                    const dotsLi = document.createElement("li");
+                    dotsLi.className = "page-item disabled";
+                    dotsLi.innerHTML = `<span class="page-link">...</span>`;
+                    paginationContainer.appendChild(dotsLi);
+                }
+
+                const lastLi = document.createElement("li");
+                lastLi.className = "page-item";
+                lastLi.innerHTML = `<a class="page-link" href="#" data-page="${totalPages}">${totalPages}</a>`;
+                paginationContainer.appendChild(lastLi);
+            }
+
+            // Next button
+            const nextLi = document.createElement("li");
+            nextLi.className = `page-item ${currentPage === totalPages ? 'disabled' : ''}`;
+            nextLi.innerHTML = `<a class="page-link" href="#" aria-label="Next" id="nextPage"><span aria-hidden="true">&raquo;</span></a>`;
+            paginationContainer.appendChild(nextLi);
+
+            // Add event listeners
+            document.querySelectorAll('.page-link[data-page]').forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    currentPage = parseInt(link.getAttribute('data-page'));
+                    applySortingAndFiltering();
+                    window.scrollTo(0, 0);
+                });
+            });
+
+            document.getElementById('prevPage')?.addEventListener('click', (e) => {
+                e.preventDefault();
+                if (currentPage > 1) {
+                    currentPage--;
+                    applySortingAndFiltering();
+                    window.scrollTo(0, 0);
+                }
+            });
+
+            document.getElementById('nextPage')?.addEventListener('click', (e) => {
+                e.preventDefault();
+                if (currentPage < totalPages) {
+                    currentPage++;
+                    applySortingAndFiltering();
+                    window.scrollTo(0, 0);
+                }
+            });
+        }
+
+        function openModal(institute) {
+            currentInstituteId = institute._id;
+
+            const contact = institute.contactPerson || {};
+            const affiliations = Array.isArray(institute.affiliations) ? institute.affiliations.join(", ") : "N/A";
+
+            const modalBody = `
+                <div class="row">
+                    <div class="col-md-4">
+                        <img src="${institute.logo || 'https://via.placeholder.com/300x200?text=No+Logo'}" class="img-fluid mb-3 border rounded" alt="Logo">
+                        <p><strong>UGC Certificate:</strong><br> ${institute.ugcCertificate ? `<a href="${institute.ugcCertificate}" target="_blank">View</a>` : 'Not Provided'}</p>
+                        <p><strong>AICTE Approval:</strong><br> ${institute.aicteApproval ? `<a href="${institute.aicteApproval}" target="_blank">View</a>` : 'Not Provided'}</p>
+                        <p><strong>NAAC Accreditation:</strong><br> ${institute.naacAccreditation ? `<a href="${institute.naacAccreditation}" target="_blank">View</a>` : 'Not Provided'}</p>
+                        <p><strong>BCI License:</strong><br> ${institute.bciLicense ? `<a href="${institute.bciLicense}" target="_blank">View</a>` : 'Not Provided'}</p>
+                        <p><strong>ID Proof:</strong><br> ${institute.idProof ? `<a href="${institute.idProof}" target="_blank">View</a>` : 'Not Provided'}</p>
+                        <p><strong>Authorization Letter:</strong><br> ${institute.authorizationLetter ? `<a href="${institute.authorizationLetter}" target="_blank">View</a>` : 'Not Provided'}</p>
+                    </div>
+
+                    <div class="col-md-8">
+                        <p><strong>Institute Name:</strong> ${institute.instituteName}</p>
+                        <p><strong>Institute Type:</strong> ${institute.instituteType}</p>
+                        <p><strong>Email:</strong> ${institute.email}</p>
+                        <p><strong>Phone:</strong> ${institute.phone}</p>
+                        <p><strong>Website:</strong> <a href="${institute.website}" target="_blank">${institute.website}</a></p>
+                        <p><strong>Established Year:</strong> ${institute.establishedYear}</p>
+                        <p><strong>Affiliations:</strong> ${affiliations}</p>
+                        <p><strong>Address:</strong> ${institute.address?.city || ""}, ${institute.address?.state || ""} - ${institute.address?.pinCode || ""}</p>
+                        <p><strong>Status:</strong> <span id="status-text">${institute.status || "Pending"}</span></p>
+                        <p><strong>Registered On:</strong> ${new Date(institute.createdAt).toLocaleString()}</p>
+
+                        <hr>
+                        <h6>Contact Person</h6>
+                        <p><strong>Name:</strong> ${contact.name || "-"}</p>
+                        <p><strong>Designation:</strong> ${contact.designation || "-"}</p>
+                        <p><strong>Email:</strong> ${contact.email || "-"}</p>
+                        <p><strong>Phone:</strong> ${contact.phone || "-"}</p>
+                    </div>
+                </div>
+            `;
+
+            document.getElementById("modalContent").innerHTML = modalBody;
+            currentModal = new bootstrap.Modal(document.getElementById("instituteModal"));
+            currentModal.show();
+        }
+
+        async function updateStatus(status) {
+            if (!currentInstituteId) return;
+
+            const token = localStorage.getItem("Token");
+
+            try {
+                const res = await fetch(`${API_BASE_URL}/api/verify-institute/${currentInstituteId}`, {
+                    method: "PUT",
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${token}`,
+                    },
+                    body: JSON.stringify({ status }),
+                });
+
+                const result = await res.json();
+
+                if (res.ok) {
+                    alert(`Status updated to ${status}`);
+                    document.getElementById("status-text").textContent = status;
+                    currentModal.hide();
+
+                    // Update the status in our local data
+                    const institute = allInstitutes.find(inst => inst._id === currentInstituteId);
+                    if (institute) {
+                        institute.status = status;
+                    }
+
+                    applySortingAndFiltering();
+                } else {
+                    alert(result.message || "Failed to update status");
+                }
+            } catch (err) {
+                console.error(err);
+                alert("Error updating status");
+            }
+        }
+
+        // Initialize event listeners
+        document.addEventListener("DOMContentLoaded", function () {
+            // Sort options
+            document.querySelectorAll('.sort-option').forEach(option => {
+                option.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    currentSort = option.getAttribute('data-sort');
+                    currentPage = 1; // Reset to first page when changing sort
+
+                    // Update active state
+                    document.querySelectorAll('.sort-option').forEach(opt => opt.classList.remove('active-sort'));
+                    option.classList.add('active-sort');
+
+                    applySortingAndFiltering();
+                });
+            });
+
+            // Filter options
+            document.querySelectorAll('.filter-option').forEach(option => {
+                option.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    currentFilter = option.getAttribute('data-filter');
+                    currentPage = 1; // Reset to first page when changing filter
+
+                    // Update active state
+                    document.querySelectorAll('.filter-option').forEach(opt => opt.classList.remove('active-sort'));
+                    option.classList.add('active-sort');
+
+                    applySortingAndFiltering();
+                });
+            });
+
+            // Modal buttons
+            document.getElementById("verifyBtn").addEventListener("click", () => updateStatus("Verified"));
+            document.getElementById("rejectBtn").addEventListener("click", () => updateStatus("Rejected"));
+
+            // Initial fetch
+            fetchInstitutes();
+        });
+    </script>
+</body>
+
+</html>

@@ -2,397 +2,708 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Recruiter Profile</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <style>
         :root {
-            --primary-color: #6200ee;
-            --primary-light: #9e47ff;
-            --primary-dark: #0400ba;
-            --secondary-color: #03dac6;
-            --error-color: #b00020;
-            --surface-color: #ffffff;
-            --background-color: #f5f5f5;
-            --on-primary: #ffffff;
-            --on-secondary: #000000;
-            --on-surface: #000000;
-            --on-error: #ffffff;
+            --primary-color: #3498db;
+            --secondary-color: #2980b9;
+            --success-color: #2ecc71;
+            --error-color: #e74c3c;
+            --light-gray: #f5f5f5;
+            --medium-gray: #e0e0e0;
+            --dark-gray: #757575;
+            --text-color: #333;
         }
 
         body {
-            font-family: 'Roboto', sans-serif;
-            background-color: var(--background-color);
-            color: var(--on-surface);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: var(--light-gray);
+            margin: 0;
+            padding: 20px;
         }
 
-        .profile-container {
-            max-width: 800px;
-            margin: 40px auto;
-        }
-
-        .profile-card {
-            background-color: var(--surface-color);
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
             border-radius: 8px;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
             overflow: hidden;
-        }
-
-        .profile-header {
-            background-color: var(--primary-color);
-            color: var(--on-primary);
-            padding: 24px;
             position: relative;
         }
 
-        .profile-header h2 {
+        .edit-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: white;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            cursor: pointer;
+            color: var(--primary-color);
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s;
+        }
+
+        .edit-btn:hover {
+            background: var(--primary-color);
+            color: white;
+            transform: scale(1.1);
+        }
+
+        .form-header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 20px;
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .form-header h2 {
             margin: 0;
             font-weight: 500;
-            font-size: 24px;
         }
 
-        .profile-body {
-            padding: 32px;
+        form {
+            padding: 0 20px 20px;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
         }
 
-        .section-title {
-            color: var(--primary-dark);
+        .form-section {
+            grid-column: 1 / -1;
+            margin-top: 10px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--medium-gray);
+        }
+
+        .form-section h4 {
+            margin: 0 0 15px 0;
+            color: var(--primary-color);
             font-weight: 500;
-            margin: 24px 0 16px;
-            font-size: 18px;
         }
 
         .form-group {
-            margin-bottom: 24px;
-            position: relative;
+            margin-bottom: 5px;
         }
 
-        .form-label {
-            position: absolute;
-            left: 0;
-            top: 0;
-            transform: translate(0, -50%);
-            background-color: var(--surface-color);
-            padding: 0 4px;
-            font-size: 12px;
-            color: var(--primary-color);
-            margin-left: 12px;
+        .form-group.full-width {
+            grid-column: 1 / -1;
         }
 
-        .form-control,
-        .form-select {
-            border: 1px solid #e0e0e0;
-            border-radius: 4px;
-            padding: 16px;
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        input,
+        select,
+        textarea {
             width: 100%;
-            font-size: 16px;
-            transition: all 0.3s;
+            padding: 10px;
+            border: 1px solid var(--medium-gray);
+            border-radius: 4px;
+            font-family: inherit;
+            font-size: 14px;
+            transition: border-color 0.3s;
+            background-color: var(--light-gray);
+            color: var(--text-color);
         }
 
-        .form-control:focus,
-        .form-select:focus {
-            border-color: var(--primary-color);
+        input:focus,
+        select:focus,
+        textarea:focus {
             outline: none;
-            box-shadow: 0 0 0 2px rgba(98, 0, 238, 0.2);
-        }
-
-        .form-control:disabled,
-        .form-select:disabled {
-            background-color: #f5f5f5;
-            color: #9e9e9e;
-            border-color: #e0e0e0;
-        }
-
-        .btn-edit {
-            position: absolute;
-            right: 24px;
-            top: 24px;
-            background-color: transparent;
-            border: none;
-            color: var(--on-primary);
-            font-weight: 500;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-        }
-
-        .btn-save {
-            background-color: var(--primary-color);
-            color: var(--on-primary);
-            border: none;
-            border-radius: 4px;
-            padding: 12px 24px;
-            font-weight: 500;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            float: right;
-            margin-top: 16px;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-
-        .btn-save:hover {
-            background-color: var(--primary-dark);
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-        }
-
-        .file-upload {
-            border: 2px dashed #e0e0e0;
-            border-radius: 4px;
-            padding: 24px;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-
-        .file-upload:hover {
             border-color: var(--primary-color);
-            background-color: rgba(98, 0, 238, 0.04);
-        }
-
-        .file-upload i {
-            color: var(--primary-color);
-            font-size: 48px;
-            margin-bottom: 16px;
-        }
-
-        .file-upload p {
-            margin: 0;
-            color: var(--on-surface);
-        }
-
-        .file-upload small {
-            color: #757575;
-        }
-
-        .social-input-container {
-            position: relative;
-        }
-
-        .social-icon {
-            position: absolute;
-            left: 16px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: #757575;
-        }
-
-        .social-input {
-            padding-left: 48px;
-        }
-
-        .row {
-            margin-bottom: 16px;
+            box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
         }
 
         textarea {
-            min-height: 120px;
+            min-height: 100px;
             resize: vertical;
+        }
+
+        button {
+            grid-column: 1 / -1;
+            padding: 12px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: var(--secondary-color);
+        }
+
+        .error {
+            color: var(--error-color);
+            font-size: 12px;
+            margin-top: 5px;
+            height: 18px;
+        }
+
+        .success-container {
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .success-actions {
+            margin-top: 30px;
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .success-actions button {
+            width: auto;
+            padding: 10px 20px;
+        }
+
+        @media (max-width: 768px) {
+            form {
+                grid-template-columns: 1fr;
+            }
+
+            .form-group {
+                grid-column: 1 / -1;
+            }
+        }
+
+        /* File input styling */
+        input[type="file"] {
+            padding: 8px;
+            background: var(--light-gray);
+            border: 1px dashed var(--dark-gray);
+        }
+
+        input[type="file"]::file-selector-button {
+            padding: 6px 12px;
+            background: var(--medium-gray);
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+
+        input[type="file"]::file-selector-button:hover {
+            background: #d0d0d0;
+        }
+
+        .file-preview {
+            margin-top: 10px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .file-preview-item {
+            position: relative;
+            width: 100px;
+            height: 100px;
+            border: 1px solid var(--medium-gray);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .file-preview-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .file-preview-item .file-name {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 3px;
+            font-size: 10px;
+            text-align: center;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* Read-only styles */
+        .read-only {
+            pointer-events: none;
+            background-color: #f9f9f9;
+            border: 1px solid #eee;
+            color: #666;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .no-profile {
+            text-align: center;
+            padding: 40px 20px;
+            grid-column: 1 / -1;
+        }
+
+        .no-profile p {
+            margin-bottom: 20px;
         }
     </style>
 </head>
 
 <body>
-    <div class="profile-container">
-        <div class="profile-card">
-            <div class="profile-header">
-                <h2>Recruiter Profile</h2>
-                <button class="btn-edit" onclick="enableEditing()">
-                    <span class="material-icons me-1">edit</span> Edit
-                </button>
-            </div>
+    <div class="container">
+        <div class="form-header">
+            <h2>Recruiter Profile</h2>
+            <button class="edit-btn hidden" id="editProfileBtn" title="Edit Profile">
+                <i class="fas fa-pencil-alt"></i>
+            </button>
+        </div>
 
-            <div class="profile-body">
-                <form id="recruiterProfile">
-                    <h5 class="section-title">Basic Information</h5>
-                    <div class="row g-3">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label class="form-label">Recruiter Name</label>
-                                <input type="text" class="form-control" id="recruiterName" disabled>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label class="form-label">Contact Number</label>
-                                <input type="text" class="form-control" id="contact" disabled>
-                            </div>
-                        </div>
-                        <div class="col-12">
-                            <div class="form-group">
-                                <label class="form-label">Official Email ID</label>
-                                <input type="email" class="form-control" id="email" disabled>
-                            </div>
-                        </div>
-                    </div>
+        <div id="formContainer">
+            <form id="profileForm" enctype="multipart/form-data">
+                <div class="form-group">
+                    <label for="recruiterName">Recruiter Name</label>
+                    <input type="text" id="recruiterName" name="recruiterName" required class="read-only" />
+                    <div class="error" id="recruiterNameError"></div>
+                </div>
 
-                    <h5 class="section-title">Company Information</h5>
-                    <div class="row g-3">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label class="form-label">Company Name</label>
-                                <input type="text" class="form-control" id="companyName" disabled>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label class="form-label">Company Website</label>
-                                <input type="url" class="form-control" id="website" disabled>
-                            </div>
-                        </div>
-                        <div class="col-12">
-                            <div class="form-group">
-                                <label class="form-label">Company Address</label>
-                                <input type="text" class="form-control" id="address" disabled>
-                            </div>
-                        </div>
-                    </div>
+                <div class="form-group">
+                    <label for="contact">Contact Number</label>
+                    <input type="text" id="contact" name="contact" required pattern="[0-9]{10}" class="read-only" />
+                    <div class="error" id="contactError"></div>
+                </div>
 
-                    <h5 class="section-title">Job Posting Details</h5>
-                    <div class="row g-3">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label class="form-label">Available Job Positions</label>
-                                <input type="text" class="form-control" id="jobPositions" disabled>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label class="form-label">Job Location</label>
-                                <input type="text" class="form-control" id="jobLocation" disabled>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label class="form-label">Work Type</label>
-                                <select class="form-select" id="workType" disabled>
-                                    <option>Office</option>
-                                    <option>Remote</option>
-                                    <option>Hybrid</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label class="form-label">Experience Required</label>
-                                <select class="form-select" id="experience" disabled>
-                                    <option>0 Years</option>
-                                    <option>1 Year</option>
-                                    <option>2 Years</option>
-                                    <option>3+ Years</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label class="form-label">Salary Range (LPA)</label>
-                                <input type="text" class="form-control" id="salary" disabled>
-                            </div>
-                        </div>
-                        <div class="col-12">
-                            <div class="form-group">
-                                <label class="form-label">Job Description</label>
-                                <textarea class="form-control" id="jobDescription" disabled></textarea>
-                            </div>
-                        </div>
-                    </div>
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" required class="read-only" />
+                    <div class="error" id="emailError"></div>
+                </div>
 
-                    <h5 class="section-title">Documents</h5>
-                    <div class="row g-3">
-                        <div class="col-md-6">
-                            <label>Company Logo</label>
-                            <div class="file-upload" id="logoUpload">
-                                <i class="material-icons">cloud_upload</i>
-                                <p>Drag & drop files here</p>
-                                <small>PNG or JPG (Max. 2MB)</small>
-                                <input type="file" class="d-none" id="companyLogo" accept=".png,.jpg,.jpeg" disabled>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <label>Recruiter ID</label>
-                            <div class="file-upload" id="idUpload">
-                                <i class="material-icons">description</i>
-                                <p>Drag & drop files here</p>
-                                <small>PDF, PNG or JPG (Max. 5MB)</small>
-                                <input type="file" class="d-none" id="recruiterID" accept=".png,.jpg,.jpeg,.pdf"
-                                    disabled>
-                            </div>
-                        </div>
-                    </div>
+                <div class="form-group">
+                    <label for="companyName">Company Name</label>
+                    <input type="text" id="companyName" name="companyName" required class="read-only" />
+                    <div class="error" id="companyNameError"></div>
+                </div>
 
-                    <button type="submit" class="btn-save" id="saveBtn" style="display: none;">
-                        <span class="material-icons me-1">save</span> Save Changes
-                    </button>
-                </form>
+                <div class="form-section">
+                    <h4>Company Details</h4>
+                </div>
+
+                <div class="form-group">
+                    <label for="website">Company Website</label>
+                    <input type="text" id="website" name="website" pattern="https?://.+"
+                        placeholder="https://example.com" class="read-only" />
+                    <div class="error" id="websiteError"></div>
+                </div>
+
+                <div class="form-group full-width">
+                    <label for="address">Company Address</label>
+                    <input type="text" id="address" name="address" required class="read-only" />
+                    <div class="error" id="addressError"></div>
+                </div>
+
+                <div class="form-group">
+                    <label for="logo">Company Logo</label>
+                    <input type="file" id="logo" name="logo" accept="image/*" class="read-only" />
+                    <div id="logoPreview" class="file-preview"></div>
+                    <div class="error" id="logoError"></div>
+                </div>
+
+                <div class="form-section">
+                    <h4>Job Details</h4>
+                </div>
+
+                <div class="form-group">
+                    <label for="jobPositions">Job Positions</label>
+                    <input type="text" id="jobPositions" name="jobPositions" required
+                        placeholder="e.g. Software Engineer, Product Manager" class="read-only" />
+                    <div class="error" id="jobPositionsError"></div>
+                </div>
+
+                <div class="form-group">
+                    <label for="jobLocation">Job Location</label>
+                    <input type="text" id="jobLocation" name="jobLocation" required class="read-only" />
+                    <div class="error" id="jobLocationError"></div>
+                </div>
+
+                <div class="form-group">
+                    <label for="workType">Work Type</label>
+                    <select id="workType" name="workType" required class="read-only">
+                        <option value="">Select Work Type</option>
+                        <option value="Office">Office</option>
+                        <option value="Remote">Remote</option>
+                        <option value="Hybrid">Hybrid</option>
+                    </select>
+                    <div class="error" id="workTypeError"></div>
+                </div>
+
+                <div class="form-group">
+                    <label for="experience">Experience</label>
+                    <select id="experience" name="experience" required class="read-only">
+                        <option value="">Select Experience</option>
+                        <option value="0 Years">0 Years</option>
+                        <option value="1 Year">1 Year</option>
+                        <option value="2 Years">2 Years</option>
+                        <option value="3+ Years">3+ Years</option>
+                    </select>
+                    <div class="error" id="experienceError"></div>
+                </div>
+
+                <div class="form-group">
+                    <label for="salary">Salary</label>
+                    <input type="text" id="salary" name="salary" placeholder="e.g. ₹5,00,000 - ₹8,00,000"
+                        class="read-only" />
+                    <div class="error" id="salaryError"></div>
+                </div>
+
+                <div class="form-group full-width">
+                    <label for="jobDescription">Job Description</label>
+                    <textarea id="jobDescription" name="jobDescription" class="read-only"
+                        placeholder="Describe the job responsibilities, requirements, and benefits..."></textarea>
+                    <div class="error" id="jobDescriptionError"></div>
+                </div>
+
+                <div class="form-section">
+                    <h4>Documents</h4>
+                </div>
+
+                <div class="form-group">
+                    <label for="recruiterID">Recruiter ID Proof</label>
+                    <input type="file" id="recruiterID" name="recruiterID" class="read-only" />
+                    <div id="recruiterIDPreview" class="file-preview"></div>
+                    <div class="error" id="recruiterIDError"></div>
+                </div>
+
+                <button type="submit" class="hidden" id="submitBtn">Update Profile</button>
+            </form>
+
+            <div id="noProfileMessage" class="no-profile hidden">
+                <p>No profile found. Please create your profile.</p>
+                <button id="createProfileBtn">Create Profile</button>
             </div>
         </div>
     </div>
 
+
     <script>
-        function enableEditing() {
-            document.querySelectorAll("#recruiterProfile input, #recruiterProfile select, #recruiterProfile textarea").forEach(input => {
-                input.disabled = false;
+        document.addEventListener('DOMContentLoaded', function () {
+            const form = document.getElementById("profileForm");
+            const formContainer = document.getElementById("formContainer");
+            const editProfileBtn = document.getElementById("editProfileBtn");
+            const submitBtn = document.getElementById("submitBtn");
+            const createProfileBtn = document.getElementById("createProfileBtn");
+            const noProfileMessage = document.getElementById("noProfileMessage");
+            const Token = localStorage.getItem("Token");
+
+            // const baseURL = "http://localhost:3000";
+            const baseURL = "https://alumni-web-api.onrender.com";
+
+            if (!Token) {
+                alert("Please login first!");
+                window.location.href = "/html/login.html";
+                return;
+            }
+
+            // Track existing files
+            let existingFiles = {
+                logo: null,
+                recruiterID: null
+            };
+
+            function toggleEditMode(enable) {
+                const regularInputs = form.querySelectorAll('input:not([type="file"]), select, textarea');
+                const fileInputs = form.querySelectorAll('input[type="file"]');
+
+                // Handle regular inputs
+                regularInputs.forEach(input => {
+                    input.classList.toggle('read-only', !enable);
+                    input.disabled = !enable;
+                });
+
+                // Handle file inputs - enable/disable but don't add read-only class
+                fileInputs.forEach(input => {
+                    input.disabled = !enable;
+                    input.classList.remove('read-only'); // Always remove read-only class for file inputs
+                });
+
+                submitBtn.classList.toggle('hidden', !enable);
+                editProfileBtn.classList.toggle('hidden', enable);
+            }
+            async function fetchProfileData() {
+                try {
+                    const response = await fetch(`${baseURL}/api/auth/profile`, {
+                        method: "GET",
+                        headers: { "Authorization": `Bearer ${Token}` }
+                    });
+
+                    if (!response.ok) throw new Error("Failed to fetch profile data");
+
+                    const result = await response.json();
+                    const data = result.profile;
+                    console.log("Fetched profile data:", data);
+                    return data;
+                } catch (error) {
+                    console.error("Error fetching profile:", error);
+                    return null;
+                }
+            }
+
+            function populateForm(profileData) {
+                if (!profileData) {
+                    noProfileMessage?.classList.remove('hidden');
+                    form?.classList.add('hidden');
+                    return;
+                }
+
+                form.classList.remove('hidden');
+                noProfileMessage.classList.add('hidden');
+
+                // Basic info
+                document.getElementById("recruiterName").value = profileData.recruiterName || "";
+                document.getElementById("contact").value = profileData.contact || "";
+                document.getElementById("email").value = profileData.email || "";
+
+                // Company info
+                document.getElementById("companyName").value = profileData.company?.name || "";
+                document.getElementById("website").value = profileData.company?.website || "";
+                document.getElementById("address").value = profileData.company?.address || "";
+
+                // Job details
+                document.getElementById("jobPositions").value = profileData.jobDetails?.jobPositions || "";
+                document.getElementById("jobLocation").value = profileData.jobDetails?.jobLocation || "";
+                document.getElementById("workType").value = profileData.jobDetails?.workType || "";
+                document.getElementById("experience").value = profileData.jobDetails?.experience || "";
+                document.getElementById("salary").value = profileData.jobDetails?.salary || "";
+                document.getElementById("jobDescription").value = profileData.jobDetails?.jobDescription || "";
+
+                // Store existing files and show previews
+                existingFiles.logo = profileData.company?.logo || null;
+                existingFiles.recruiterID = profileData.documents?.recruiterID || null;
+
+                showFilePreview(existingFiles.logo, "logoPreview");
+                showFilePreview(existingFiles.recruiterID, "recruiterIDPreview");
+
+                editProfileBtn.classList.remove('hidden');
+            }
+
+            function showFilePreview(filename, containerId) {
+                const container = document.getElementById(containerId);
+                if (!container) return;
+
+                container.innerHTML = '';
+
+                if (!filename) return;
+
+                const fileUrl = `${filename}`;
+                const fileExt = filename.split('.').pop().toLowerCase();
+                const isImage = ['jpg', 'jpeg', 'png', 'gif'].includes(fileExt);
+
+                const previewItem = document.createElement('div');
+                previewItem.className = 'file-preview-item';
+
+                if (isImage) {
+                    const img = document.createElement('img');
+                    img.src = fileUrl;
+                    img.alt = filename;
+                    previewItem.appendChild(img);
+                } else {
+                    previewItem.style.display = 'flex';
+                    previewItem.style.alignItems = 'center';
+                    previewItem.style.justifyContent = 'center';
+                    previewItem.innerHTML = `<i class="fas fa-file" style="font-size: 24px;"></i>`;
+                }
+
+                const fileNameEl = document.createElement('div');
+                fileNameEl.className = 'file-name';
+                fileNameEl.textContent = filename;
+                previewItem.appendChild(fileNameEl);
+
+                container.appendChild(previewItem);
+            }
+
+            function validateForm(formData) {
+                let isValid = true;
+                document.querySelectorAll('.error').forEach(el => el.textContent = '');
+
+                const contact = formData.get('contact');
+                if (!/^\d{10}$/.test(contact)) {
+                    document.getElementById('contactError').textContent = 'Please enter a valid 10-digit phone number';
+                    isValid = false;
+                }
+
+                const email = formData.get('email');
+                if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+                    document.getElementById('emailError').textContent = 'Please enter a valid email address';
+                    isValid = false;
+                }
+
+                const website = formData.get('website');
+                if (website && !/^https?:\/\/.+\..+/.test(website)) {
+                    document.getElementById('websiteError').textContent = 'Please enter a valid URL (http/https)';
+                    isValid = false;
+                }
+
+                return isValid;
+            }
+
+            if (form) {
+                form.addEventListener("submit", async (e) => {
+                    e.preventDefault();
+
+                    const formData = new FormData(form);
+
+                    // Include existing files if no new files were uploaded
+                    if (!formData.get('logo') && existingFiles.logo) {
+                        formData.append('existingLogo', existingFiles.logo);
+                    }
+                    if (!formData.get('recruiterID') && existingFiles.recruiterID) {
+                        formData.append('existingRecruiterID', existingFiles.recruiterID);
+                    }
+
+                    if (!validateForm(formData)) return;
+
+                    try {
+                        const existingProfile = await fetchProfileData();
+                        const method = existingProfile ? "PUT" : "POST";
+                        const url = existingProfile
+                            ? `${baseURL}/api/profile/me`
+                            : `${baseURL}/api/profile`;
+
+                        const res = await fetch(url, {
+                            method: method,
+                            headers: {
+                                "Authorization": `Bearer ${Token}`
+                            },
+                            body: formData
+                        });
+
+                        const data = await res.json();
+
+                        if (res.ok) {
+                            alert(`Profile ${existingProfile ? "updated" : "created"} successfully!`);
+                            toggleEditMode(false);
+
+                            if (method === "POST") {
+                                // ✅ Redirect to recruiter dashboard on profile creation
+                                window.location.href = "/html/recruiter-dashboard.html";
+                            }
+                            const updatedProfile = await fetchProfileData();
+                            console.log("Updated profile:", updatedProfile);
+                            populateForm(updatedProfile);
+                        } else if (data.errors) {
+                            Object.keys(data.errors).forEach(field => {
+                                const errorEl = document.getElementById(`${field}Error`);
+                                if (errorEl) errorEl.textContent = data.errors[field].message;
+                            });
+                        } else {
+                            alert("Error: " + (data.message || "Unknown error occurred"));
+                        }
+                    } catch (err) {
+                        console.error("Error:", err);
+                        alert("Something went wrong.");
+                    }
+                });
+            }
+
+            editProfileBtn?.addEventListener("click", () => toggleEditMode(true));
+            createProfileBtn?.addEventListener("click", () => {
+                form.classList.remove('hidden');
+                noProfileMessage.classList.add('hidden');
+                toggleEditMode(true);
             });
 
-            document.getElementById("saveBtn").style.display = "block";
+            // Handle file input changes to show previews of newly selected files
+            document.getElementById('logo')?.addEventListener('change', function (e) {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function (event) {
+                        const container = document.getElementById('logoPreview');
+                        container.innerHTML = '';
 
-            const editBtn = document.querySelector('.btn-edit');
-            editBtn.innerHTML = '<span class="material-icons me-1">close</span> Cancel';
-            editBtn.onclick = cancelEditing;
-        }
+                        const previewItem = document.createElement('div');
+                        previewItem.className = 'file-preview-item';
 
-        function cancelEditing() {
-            document.querySelectorAll("#recruiterProfile input, #recruiterProfile select, #recruiterProfile textarea").forEach(input => {
-                input.disabled = true;
+                        if (file.type.startsWith('image/')) {
+                            const img = document.createElement('img');
+                            img.src = event.target.result;
+                            img.alt = file.name;
+                            previewItem.appendChild(img);
+                        } else {
+                            previewItem.innerHTML = `<i class="fas fa-file" style="font-size: 24px;"></i>`;
+                        }
+
+                        const fileNameEl = document.createElement('div');
+                        fileNameEl.className = 'file-name';
+                        fileNameEl.textContent = file.name;
+                        previewItem.appendChild(fileNameEl);
+
+                        container.appendChild(previewItem);
+                    };
+                    reader.readAsDataURL(file);
+                }
             });
 
-            document.getElementById("saveBtn").style.display = "none";
+            document.getElementById('recruiterID')?.addEventListener('change', function (e) {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function (event) {
+                        const container = document.getElementById('recruiterIDPreview');
+                        container.innerHTML = '';
 
-            const editBtn = document.querySelector('.btn-edit');
-            editBtn.innerHTML = '<span class="material-icons me-1">edit</span> Edit';
-            editBtn.onclick = enableEditing;
-        }
+                        const previewItem = document.createElement('div');
+                        previewItem.className = 'file-preview-item';
 
-        document.getElementById('recruiterProfile').addEventListener('submit', function (e) {
-            e.preventDefault();
-            alert('Profile updated successfully!');
-            cancelEditing();
-        });
+                        if (file.type.startsWith('image/')) {
+                            const img = document.createElement('img');
+                            img.src = event.target.result;
+                            img.alt = file.name;
+                            previewItem.appendChild(img);
+                        } else {
+                            previewItem.innerHTML = `<i class="fas fa-file" style="font-size: 24px;"></i>`;
+                        }
 
-        // File upload interactions
-        document.getElementById('logoUpload').addEventListener('click', function () {
-            document.getElementById('companyLogo').click();
-        });
+                        const fileNameEl = document.createElement('div');
+                        fileNameEl.className = 'file-name';
+                        fileNameEl.textContent = file.name;
+                        previewItem.appendChild(fileNameEl);
 
-        document.getElementById('idUpload').addEventListener('click', function () {
-            document.getElementById('recruiterID').click();
-        });
+                        container.appendChild(previewItem);
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
 
-        document.getElementById('companyLogo').addEventListener('change', function (e) {
-            if (this.files.length > 0) {
-                document.getElementById('logoUpload').innerHTML = `
-                    <i class="material-icons">check_circle</i>
-                    <p>${this.files[0].name}</p>
-                    <small>${(this.files[0].size / 1024 / 1024).toFixed(2)} MB</small>
-                `;
+            async function init() {
+                const profileData = await fetchProfileData();
+                populateForm(profileData);
+                if (!profileData) toggleEditMode(true);
             }
-        });
 
-        document.getElementById('recruiterID').addEventListener('change', function (e) {
-            if (this.files.length > 0) {
-                document.getElementById('idUpload').innerHTML = `
-                    <i class="material-icons">check_circle</i>
-                    <p>${this.files[0].name}</p>
-                    <small>${(this.files[0].size / 1024 / 1024).toFixed(2)} MB</small>
-                `;
-            }
+            init();
         });
     </script>
+
 </body>
 
 </html>

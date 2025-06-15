@@ -571,98 +571,110 @@
             </div>
 
             <!-- Step 3: Affiliations -->
+            <!-- ---- STEP‑3 : Affiliations & Accreditations ---- -->
             <div class="form-step" id="step3">
-                <h4 class="mb-4"><i class="fas fa-certificate me-2"></i>Affiliations & Accreditations</h4>
+                <h4 class="mb-4">
+                    <i class="fas fa-certificate me-2"></i>Affiliations &amp; Accreditations
+                </h4>
                 <p class="text-muted mb-4">Select all that apply to your institution</p>
 
-                <!-- UGC -->
-                <input type="checkbox" class="affiliation-checkbox" value="UGC" id="ugc" name="affiliations[]">
+                <!-- === UGC === -->
+                <input type="checkbox" class="affiliation-checkbox" id="ugc" value="UGC" name="affiliations[]">
                 <div class="affiliation-card">
                     <label for="ugc" class="affiliation-label">
                         <span class="checkmark"></span>
                         <div>
                             <div class="affiliation-title">University Grants Commission (UGC)</div>
-                            <div class="affiliation-description">Recognized by the University Grants Commission of India
+                            <div class="affiliation-description">
+                                Recognized by the University Grants Commission of India
                             </div>
                         </div>
                     </label>
+
                     <div id="ugc-upload" class="mt-3" style="display:none;">
                         <div class="file-upload-container" onclick="document.getElementById('ugc-file').click()">
                             <i class="fas fa-cloud-upload-alt"></i>
                             <h5>Upload UGC Certificate</h5>
                             <p class="text-muted">Click to browse or drag & drop</p>
-                            <input type="file" name="ugcCertificate" class="file-input" id="ugc-file">
+                            <input type="file" id="ugc-file" name="ugcCertificate" class="file-input">
                         </div>
-                        <div class="file-preview" id="ugc-preview"></div>
+                        <div class="file-preview" id="ugc-file-preview"></div>
                     </div>
                 </div>
 
-                <!-- AICTE -->
-                <input type="checkbox" class="affiliation-checkbox" value="AICTE" id="aicte" name="affiliations[]">
+                <!-- === AICTE === -->
+                <input type="checkbox" class="affiliation-checkbox" id="aicte" value="AICTE" name="affiliations[]">
                 <div class="affiliation-card">
                     <label for="aicte" class="affiliation-label">
                         <span class="checkmark"></span>
                         <div>
                             <div class="affiliation-title">AICTE Approval</div>
-                            <div class="affiliation-description">Approved by All India Council for Technical Education
+                            <div class="affiliation-description">
+                                Approved by All India Council for Technical Education
                             </div>
                         </div>
                     </label>
+
                     <div id="aicte-upload" class="mt-3" style="display:none;">
                         <div class="file-upload-container" onclick="document.getElementById('aicte-file').click()">
                             <i class="fas fa-cloud-upload-alt"></i>
                             <h5>Upload AICTE Approval</h5>
                             <p class="text-muted">Click to browse or drag & drop</p>
-                            <input type="file" name="aicteApproval" class="file-input" id="aicte-file">
+                            <input type="file" id="aicte-file" name="aicteApproval" class="file-input">
                         </div>
-                        <div class="file-preview" id="aicte-preview"></div>
+                        <div class="file-preview" id="aicte-file-preview"></div>
                     </div>
                 </div>
 
-                <!-- NAAC -->
-                <input type="checkbox" class="affiliation-checkbox" value="NAAC" id="naac" name="affiliations[]">
+                <!-- === NAAC === -->
+                <input type="checkbox" class="affiliation-checkbox" id="naac" value="NAAC" name="affiliations[]">
                 <div class="affiliation-card">
                     <label for="naac" class="affiliation-label">
                         <span class="checkmark"></span>
                         <div>
                             <div class="affiliation-title">NAAC Accreditation</div>
-                            <div class="affiliation-description">Accredited by National Assessment and Accreditation
-                                Council</div>
+                            <div class="affiliation-description">
+                                Accredited by National Assessment and Accreditation Council
+                            </div>
                         </div>
                     </label>
+
                     <div id="naac-upload" class="mt-3" style="display:none;">
                         <div class="file-upload-container" onclick="document.getElementById('naac-file').click()">
                             <i class="fas fa-cloud-upload-alt"></i>
                             <h5>Upload NAAC Accreditation</h5>
                             <p class="text-muted">Click to browse or drag & drop</p>
-                            <input type="file" name="naacAccreditation" class="file-input" id="naac-file">
+                            <input type="file" id="naac-file" name="naacAccreditation" class="file-input">
                         </div>
-                        <div class="file-preview" id="naac-preview"></div>
+                        <div class="file-preview" id="naac-file-preview"></div>
                     </div>
                 </div>
 
-                <!-- BCI -->
-                <input type="checkbox" class="affiliation-checkbox" value="BCI" id="bci" name="affiliations[]">
+                <!-- === BCI === -->
+                <input type="checkbox" class="affiliation-checkbox" id="bci" value="BCI" name="affiliations[]">
                 <div class="affiliation-card">
                     <label for="bci" class="affiliation-label">
                         <span class="checkmark"></span>
                         <div>
                             <div class="affiliation-title">Bar Council of India (BCI)</div>
-                            <div class="affiliation-description">Recognized by Bar Council of India for law programs
+                            <div class="affiliation-description">
+                                Recognized by Bar Council of India for law programs
                             </div>
                         </div>
                     </label>
+
                     <div id="bci-upload" class="mt-3" style="display:none;">
                         <div class="file-upload-container" onclick="document.getElementById('bci-file').click()">
                             <i class="fas fa-cloud-upload-alt"></i>
                             <h5>Upload BCI License</h5>
                             <p class="text-muted">Click to browse or drag & drop</p>
-                            <input type="file" name="bciLicense" class="file-input" id="bci-file">
+                            <input type="file" id="bci-file" name="bciLicense" class="file-input">
                         </div>
-                        <div class="file-preview" id="bci-preview"></div>
+                        <div class="file-preview" id="bci-file-preview"></div>
                     </div>
                 </div>
 
+                <!-- Navigation buttons -->
                 <div class="step-buttons">
                     <button type="button" class="btn btn-secondary prev-step" data-prev="step2">
                         <i class="fas fa-arrow-left me-2"></i>Previous
@@ -672,6 +684,7 @@
                     </button>
                 </div>
             </div>
+            <!-- ---- / STEP‑3 ---- -->
 
             <!-- Step 4: Contact Person -->
             <div class="form-step" id="step4">
@@ -800,15 +813,25 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        // Initialize tooltips
+        // ✅ JWT Check on Page Load
         document.addEventListener('DOMContentLoaded', function () {
+            const Token = localStorage.getItem('Token');
+            if (!Token) {
+                window.location.href = "/login.html"; // 👈 redirect to login if Token missing
+                return;
+            }
+            const API_BASE_URL = `https://alumni-web-api.onrender.com`;
+            // const API_BASE_URL = "http://localhost:3000";
+            // Tooltip init
             var tooltipTriggerList = [].slice.call(document.querySelectorAll('[title]'));
             var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
                 return new bootstrap.Tooltip(tooltipTriggerEl);
             });
+
+            initFileUploads();
         });
 
-        // Multi-step form functionality
+        // ✅ Multi-step form logic
         document.querySelectorAll('.next-step').forEach(button => {
             button.addEventListener('click', function () {
                 const currentStep = this.closest('.form-step');
@@ -843,8 +866,6 @@
                 if (!input.value.trim()) {
                     input.classList.add('is-invalid');
                     isValid = false;
-
-                    // For floating labels, we need to add invalid class to parent
                     if (input.closest('.floating-label')) {
                         input.closest('.floating-label').classList.add('is-invalid');
                     }
@@ -857,11 +878,8 @@
             });
 
             if (!isValid) {
-                // Scroll to first invalid input
                 const firstInvalid = step.querySelector('.is-invalid');
                 firstInvalid.scrollIntoView({ behavior: 'smooth', block: 'center' });
-
-                // Add shake animation to highlight error
                 firstInvalid.classList.add('animate__animated', 'animate__headShake');
                 setTimeout(() => {
                     firstInvalid.classList.remove('animate__animated', 'animate__headShake');
@@ -875,133 +893,151 @@
             const steps = ['step1', 'step2', 'step3', 'step4', 'step5'];
             const currentIndex = steps.indexOf(currentStepId);
             const progressPercentage = ((currentIndex + 1) / steps.length) * 100;
-
             document.getElementById('formProgress').style.width = `${progressPercentage}%`;
         }
 
         function updateProgressSteps(currentStepId) {
             const steps = ['step1', 'step2', 'step3', 'step4', 'step5'];
             const currentIndex = steps.indexOf(currentStepId);
-
-            // Reset all steps
             document.querySelectorAll('.progress-step').forEach(step => {
                 step.classList.remove('active', 'completed');
             });
 
-            // Mark previous steps as completed
             for (let i = 0; i < currentIndex; i++) {
                 document.getElementById(`progress-step${i + 1}`).classList.add('completed');
             }
-
-            // Mark current step as active
             document.getElementById(`progress-step${currentIndex + 1}`).classList.add('active');
         }
 
-        // File upload preview functionality
-        document.querySelectorAll('input[type="file"]').forEach(input => {
-            input.addEventListener('change', function () {
-                const previewId = this.name + '-preview';
-                const previewDiv = document.getElementById(previewId);
+        function initFileUploads() {
+            document.querySelectorAll('.file-input').forEach(input => {
+                input.addEventListener('change', function () {
+                    const previewId = this.id + '-preview';
+                    const previewDiv = document.getElementById(previewId);
 
-                if (this.files && this.files[0]) {
-                    previewDiv.innerHTML = '';
+                    if (this.files && this.files[0]) {
+                        previewDiv.innerHTML = '';
+                        const fileInfo = document.createElement('div');
+                        fileInfo.className = 'file-info';
 
-                    const fileInfo = document.createElement('div');
-                    fileInfo.className = 'file-info';
+                        const checkboxId = this.id.replace('-file', '');
+                        const checkbox = document.getElementById(checkboxId);
 
-                    if (this.files[0].type.startsWith('image/')) {
-                        const reader = new FileReader();
-                        reader.onload = function (e) {
-                            const img = document.createElement('img');
-                            img.src = e.target.result;
-                            img.classList.add('file-preview-img');
-                            previewDiv.appendChild(img);
+                        if (checkbox) {
+                            checkbox.checked = true;
+                            const uploadDiv = document.getElementById(checkboxId + '-upload');
+                            if (uploadDiv) uploadDiv.style.display = 'block';
+                        }
 
-                            fileInfo.innerHTML = `
-                                <i class="fas fa-file-image"></i>
-                                <span>${this.files[0].name}</span>
-                                <span class="remove-file" onclick="removeFile('${this.id}')">
+                        if (this.files[0].type.startsWith('image/')) {
+                            const reader = new FileReader();
+                            reader.onload = function (e) {
+                                const img = document.createElement('img');
+                                img.src = e.target.result;
+                                img.classList.add('file-preview-img');
+                                previewDiv.appendChild(img);
+
+                                fileInfo.innerHTML = `
+                                <div class="file-meta">
+                                    <i class="fas fa-file-image me-2"></i>
+                                    <span>${this.files[0].name}</span>
+                                </div>
+                                <button type="button" class="btn btn-sm btn-danger remove-file" data-input="${this.id}">
                                     <i class="fas fa-times"></i>
-                                </span>
+                                </button>
                             `;
+                                previewDiv.appendChild(fileInfo);
+                            }.bind(this);
+                            reader.readAsDataURL(this.files[0]);
+                        } else {
+                            fileInfo.innerHTML = `
+                            <div class="file-meta">
+                                <i class="fas fa-file-pdf me-2"></i>
+                                <span>${this.files[0].name}</span>
+                            </div>
+                            <button type="button" class="btn btn-sm btn-danger remove-file" data-input="${this.id}">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        `;
                             previewDiv.appendChild(fileInfo);
                         }
-                        reader.readAsDataURL(this.files[0]);
-                    } else {
-                        fileInfo.innerHTML = `
-                            <i class="fas fa-file"></i>
-                            <span>${this.files[0].name}</span>
-                            <span class="remove-file" onclick="removeFile('${this.id}')">
-                                <i class="fas fa-times"></i>
-                            </span>
-                        `;
-                        previewDiv.appendChild(fileInfo);
                     }
+                });
+            });
+
+            document.addEventListener('click', function (e) {
+                if (e.target.closest('.remove-file')) {
+                    const button = e.target.closest('.remove-file');
+                    const inputId = button.getAttribute('data-input');
+                    removeFile(inputId);
                 }
             });
-        });
+
+            document.querySelectorAll('.affiliation-checkbox').forEach(checkbox => {
+                checkbox.addEventListener('change', function () {
+                    const uploadDivId = this.id + '-upload';
+                    const uploadDiv = document.getElementById(uploadDivId);
+                    if (this.checked) {
+                        if (uploadDiv) uploadDiv.style.display = 'block';
+                    } else {
+                        if (uploadDiv) {
+                            uploadDiv.style.display = 'none';
+                            const fileInput = uploadDiv.querySelector('.file-input');
+                            if (fileInput) {
+                                fileInput.value = '';
+                                const previewDiv = document.getElementById(fileInput.id + '-preview');
+                                if (previewDiv) previewDiv.innerHTML = '';
+                            }
+                        }
+                    }
+                });
+            });
+
+            document.querySelectorAll('.file-upload-container').forEach(container => {
+                container.addEventListener('dragover', (e) => {
+                    e.preventDefault();
+                    container.style.borderColor = 'var(--primary-color)';
+                    container.style.backgroundColor = 'rgba(78, 115, 223, 0.1)';
+                });
+
+                container.addEventListener('dragleave', () => {
+                    container.style.borderColor = '#d1d3e2';
+                    container.style.backgroundColor = '';
+                });
+
+                container.addEventListener('drop', (e) => {
+                    e.preventDefault();
+                    container.style.borderColor = '#d1d3e2';
+                    container.style.backgroundColor = '';
+                    const fileInput = container.querySelector('input[type="file"]');
+                    if (fileInput && e.dataTransfer.files.length) {
+                        fileInput.files = e.dataTransfer.files;
+                        const event = new Event('change');
+                        fileInput.dispatchEvent(event);
+                    }
+                });
+            });
+        }
 
         function removeFile(inputId) {
             const input = document.getElementById(inputId);
+            const previewDiv = document.getElementById(inputId + '-preview');
             input.value = '';
-            const previewDiv = document.getElementById(input.name + '-preview');
-            previewDiv.innerHTML = '';
+            if (previewDiv) previewDiv.innerHTML = '';
+
+            const checkboxId = inputId.replace('-file', '');
+            const checkbox = document.getElementById(checkboxId);
+            if (checkbox) {
+                checkbox.checked = false;
+                const uploadDiv = document.getElementById(checkboxId + '-upload');
+                if (uploadDiv) uploadDiv.style.display = 'none';
+            }
         }
 
-        // Affiliation checkbox functionality
-        document.querySelectorAll('.affiliation-checkbox').forEach(checkbox => {
-            checkbox.addEventListener('change', function () {
-                const uploadDivId = this.value.toLowerCase() + '-upload';
-                const uploadDiv = document.getElementById(uploadDivId);
-
-                if (this.checked) {
-                    uploadDiv.style.display = 'block';
-                } else {
-                    uploadDiv.style.display = 'none';
-                    // Clear the file input if unchecked
-                    const fileInput = uploadDiv.querySelector('input[type="file"]');
-                    if (fileInput) {
-                        fileInput.value = '';
-                        // Clear the preview
-                        const previewDiv = document.getElementById(fileInput.name + '-preview');
-                        if (previewDiv) previewDiv.innerHTML = '';
-                    }
-                }
-            });
-        });
-
-        // Drag and drop functionality for file uploads
-        document.querySelectorAll('.file-upload-container').forEach(container => {
-            container.addEventListener('dragover', (e) => {
-                e.preventDefault();
-                container.style.borderColor = 'var(--primary-color)';
-                container.style.backgroundColor = 'rgba(78, 115, 223, 0.1)';
-            });
-
-            container.addEventListener('dragleave', () => {
-                container.style.borderColor = '#d1d3e2';
-                container.style.backgroundColor = '';
-            });
-
-            container.addEventListener('drop', (e) => {
-                e.preventDefault();
-                container.style.borderColor = '#d1d3e2';
-                container.style.backgroundColor = '';
-
-                const fileInput = container.querySelector('input[type="file"]');
-                if (fileInput && e.dataTransfer.files.length) {
-                    fileInput.files = e.dataTransfer.files;
-                    const event = new Event('change');
-                    fileInput.dispatchEvent(event);
-                }
-            });
-        });
-
-        // Form submission
+        // ✅ Final Form Submit With Token
         document.getElementById('submit-btn').addEventListener('click', async function (e) {
             e.preventDefault();
 
-            // Validate all steps before submission
             let allValid = true;
             document.querySelectorAll('.form-step').forEach(step => {
                 if (!validateStep(step)) allValid = false;
@@ -1012,41 +1048,53 @@
                 return;
             }
 
-            // Show loading state
             const submitBtn = document.getElementById('submit-btn');
             submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Submitting...';
             submitBtn.disabled = true;
 
             const formData = new FormData(document.getElementById('instituteForm'));
+            const Token = localStorage.getItem('Token'); // ✅ Get Token
 
             try {
-                const response = await fetch('http://localhost:3000/api/institute/register', {
+                const response = await fetch(`${API_BASE_URL}/api/institute/register`, {
                     method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${Token}` // ✅ Include Token
+                    },
                     body: formData
                 });
 
                 const result = await response.json();
 
                 if (response.ok) {
-                    // Show success modal
                     var confirmationModal = new bootstrap.Modal(document.getElementById('confirmationModal'));
                     confirmationModal.show();
 
-                    // Reset form
+                    // ✅ 2 second ke baad redirect karo relative path se
+                    setTimeout(() => {
+                        window.location.href = "/html/university-dashboard.html";
+                    }, 2000); // 2000ms = 2 seconds
+
+                    // ✅ Form reset and UI cleanup
                     document.getElementById('instituteForm').reset();
+
+                    // File previews clear karo
                     document.querySelectorAll('.file-preview').forEach(div => div.innerHTML = '');
+
+                    // Form steps reset
                     document.querySelectorAll('.form-step').forEach(step => step.classList.remove('active'));
                     document.getElementById('step1').classList.add('active');
                     updateProgressBar('step1');
                     updateProgressSteps('step1');
 
-                    // Reset affiliation upload sections
+                    // Affiliation checkboxes reset
                     document.querySelectorAll('.affiliation-checkbox').forEach(checkbox => {
                         checkbox.checked = false;
-                        const uploadDivId = checkbox.value.toLowerCase() + '-upload';
+                        const uploadDivId = checkbox.id + '-upload';
                         document.getElementById(uploadDivId).style.display = 'none';
                     });
-                } else {
+                }
+                else {
                     alert('Error: ' + (result.message || 'Registration failed'));
                 }
 
@@ -1060,6 +1108,9 @@
             }
         });
     </script>
+
+
+
 </body>
 
 </html>

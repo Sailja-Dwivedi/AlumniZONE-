@@ -5,37 +5,362 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Alumni Dashboard</title>
-    <link rel="stylesheet" href="../css/dashboard.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #3498db;
+            --secondary-color: #2980b9;
+            --dark-color: #2c3e50;
+            --light-color: #ecf0f1;
+            --success-color: #2ecc71;
+            --warning-color: #f39c12;
+            --danger-color: #e74c3c;
+            --white: #fff;
+            --gray: #95a5a6;
+            --dark-gray: #7f8c8d;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .dashboard-header {
+            background-color: var(--dark-color);
+            color: var(--white);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+        }
+
+        nav ul li {
+            margin-left: 1.5rem;
+        }
+
+        nav ul li a {
+            color: var(--white);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        nav ul li a:hover {
+            color: var(--light-color);
+        }
+
+        nav ul li a.active {
+            color: var(--light-color);
+            border-bottom: 2px solid var(--light-color);
+            padding-bottom: 0.3rem;
+        }
+
+        .logout-btn {
+            background-color: var(--danger-color);
+            color: var(--white);
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: background-color 0.3s;
+        }
+
+        .logout-btn:hover {
+            background-color: #c0392b;
+        }
+
+        .container {
+            display: flex;
+            min-height: calc(100vh - 68px);
+        }
+
+        .sidebar {
+            width: 250px;
+            background-color: var(--white);
+            padding: 1.5rem;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .profile-summary {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .profile-pic {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-bottom: 1rem;
+            border: 3px solid var(--primary-color);
+        }
+
+        .side-menu {
+            list-style: none;
+        }
+
+        .side-menu li {
+            margin-bottom: 0.5rem;
+        }
+
+        .side-menu li a {
+            display: flex;
+            align-items: center;
+            padding: 0.8rem 1rem;
+            color: var(--dark-color);
+            text-decoration: none;
+            border-radius: 4px;
+            transition: all 0.3s;
+        }
+
+        .side-menu li a:hover {
+            background-color: var(--light-color);
+            color: var(--primary-color);
+        }
+
+        .side-menu li a.active {
+            background-color: var(--primary-color);
+            color: var(--white);
+        }
+
+        .side-menu li a i {
+            margin-right: 0.8rem;
+            width: 20px;
+            text-align: center;
+        }
+
+        .main-content {
+            flex: 1;
+            padding: 2rem;
+            overflow-y: auto;
+        }
+
+        .welcome-banner {
+            background-color: var(--white);
+            padding: 2rem;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .welcome-banner h1 {
+            color: var(--dark-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .welcome-banner p {
+            color: var(--gray);
+        }
+
+        .stats-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .card {
+            background-color: var(--white);
+            padding: 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        .card h3 {
+            color: var(--dark-gray);
+            font-size: 1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .card p {
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--dark-color);
+        }
+
+        .recent-activity {
+            background-color: var(--white);
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .recent-activity h2 {
+            color: var(--dark-color);
+            margin-bottom: 1.5rem;
+        }
+
+        .activity-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .activity-item {
+            display: flex;
+            align-items: flex-start;
+            padding: 1rem;
+            border-radius: 8px;
+            background-color: var(--light-color);
+        }
+
+        .activity-icon {
+            font-size: 1.5rem;
+            margin-right: 1rem;
+            padding: 0.5rem;
+        }
+
+        .activity-content p {
+            margin-bottom: 0.3rem;
+            color: var(--dark-color);
+        }
+
+        .activity-content small {
+            color: var(--gray);
+            font-size: 0.8rem;
+        }
+
+        /* Mobile Menu Button */
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--white);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        /* Responsive Styles */
+        @media (max-width: 992px) {
+            .container {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                width: 100%;
+                transform: translateX(-100%);
+                position: fixed;
+                top: 68px;
+                left: 0;
+                height: calc(100vh - 68px);
+                z-index: 1000;
+                overflow-y: auto;
+            }
+
+            .sidebar.active {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-top: 0;
+                padding: 1.5rem;
+            }
+
+            .mobile-menu-btn {
+                display: block;
+            }
+
+            nav ul {
+                display: none;
+            }
+
+            nav ul.show {
+                display: flex;
+                flex-direction: column;
+                position: absolute;
+                top: 68px;
+                left: 0;
+                width: 100%;
+                background-color: var(--dark-color);
+                padding: 1rem 0;
+                z-index: 999;
+            }
+
+            nav ul.show li {
+                margin: 0;
+                padding: 0.5rem 2rem;
+            }
+
+            nav ul.show li a {
+                display: block;
+                padding: 0.5rem 0;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .dashboard-header {
+                padding: 1rem;
+            }
+
+            .welcome-banner,
+            .recent-activity {
+                padding: 1.5rem;
+            }
+
+            .stats-cards {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
 </head>
 
 <body>
     <header class="dashboard-header">
         <div class="logo">Alumni Connect</div>
+        <button class="mobile-menu-btn" id="mobileMenuBtn">
+            <i class="fas fa-bars"></i>
+        </button>
         <nav>
-            <ul>
+            <ul id="navMenu">
                 <li><a href="#" class="active">Dashboard</a></li>
                 <li><a href="profile.html">Profile</a></li>
-                <li><a href="jobs.html">Jobs</a></li>
-                <li><a href="network.html">Network</a></li>
+                <!-- <li><a href="jobs.html">Jobs</a></li> -->
+                <!-- <li><a href="network.html">Network</a></li> -->
                 <li><button onclick="logout()" class="logout-btn">Logout</button></li>
             </ul>
         </nav>
     </header>
 
     <div class="container">
-        <aside class="sidebar">
+        <aside class="sidebar" id="sidebar">
             <div class="profile-summary">
-                <img src="../images/avatar.png" alt="Profile" class="profile-pic">
+                <img src="../images/avatar.png" alt="Profile" class="profile-pic" id="logo">
                 <h3 id="alumniName">Loading...</h3>
                 <p id="alumniUniversity">University</p>
             </div>
             <ul class="side-menu">
-                <li><a href="#" class="active"><i class="icon-dashboard"></i> Dashboard</a></li>
-                <li><a href="profile.html"><i class="icon-profile"></i> My Profile</a></li>
-                <li><a href="jobs.html"><i class="icon-jobs"></i> Job Opportunities</a></li>
-                <li><a href="events.html"><i class="icon-events"></i> Events</a></li>
-                <li><a href="messages.html"><i class="icon-messages"></i> Messages</a></li>
-                <li><a href="settings.html"><i class="icon-settings"></i> Settings</a></li>
+                <li><a href="#" class="active"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+                <li><a href="alumni-updateProfile.html"><i class="fas fa-user"></i> My Profile</a></li>
+                <!-- <li><a href="jobs.html"><i class="fas fa-briefcase"></i> Job Opportunities</a></li> -->
+                <!-- <li><a href="events.html"><i class="fas fa-calendar-alt"></i> Events</a></li>
+                <li><a href="messages.html"><i class="fas fa-envelope"></i> Messages</a></li>
+                <li><a href="settings.html"><i class="fas fa-cog"></i> Settings</a></li> -->
             </ul>
         </aside>
 
@@ -72,63 +397,116 @@
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             // Check authentication
-            const authToken = localStorage.getItem('authToken');
+            const Token = localStorage.getItem('Token');
             const userRole = localStorage.getItem('userRole');
+            // const API_BASE_URL = 'http://localhost:3000'; // Replace with your actual API base URL
+            const API_BASE_URL = `https://alumni-web-api.onrender.com`;
 
-            if (!authToken || userRole !== 'alumni') {
-                window.location.href = '../index.html';
+            // if (!Token || userRole !== 'alumni') {
+            //     window.location.href = '../index.html';
+            // }
+
+            // Mobile menu toggle
+            const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+            const navMenu = document.getElementById('navMenu');
+            const sidebar = document.getElementById('sidebar');
+
+            mobileMenuBtn.addEventListener('click', function () {
+                navMenu.classList.toggle('show');
+            });
+
+            // Sidebar toggle for mobile
+            function toggleSidebar() {
+                sidebar.classList.toggle('active');
             }
 
+            // Close sidebar when clicking outside on mobile
+            document.addEventListener('click', function (event) {
+                if (window.innerWidth <= 992) {
+                    if (!sidebar.contains(event.target) && !mobileMenuBtn.contains(event.target)) {
+                        sidebar.classList.remove('active');
+                    }
+                }
+            });
+
             // Load alumni data
-            loadAlumniData();
+            loadAlumniData(API_BASE_URL);
 
             // Load recent activities
             loadRecentActivities();
         });
 
-        async function loadAlumniData() {
+        async function loadAlumniData(API_BASE_URL) {
             try {
-                const response = await fetch('http://localhost:3000/api/alumni/profile', {
+                const response = await fetch(`${API_BASE_URL}/api/auth/profile`, {
                     headers: {
-                        'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+                        'Authorization': `Bearer ${localStorage.getItem('Token')}`
                     }
                 });
 
-                const data = await response.json();
+                if (!response.ok) {
+                    throw new Error('Failed to fetch profile data');
+                }
 
-                // Update UI
-                document.getElementById('alumniName').textContent = data.name;
-                document.getElementById('alumniUniversity').textContent = data.university;
-                document.getElementById('welcomeName').textContent = data.firstName || data.name.split(' ')[0];
+                const data = await response.json();
+                const result = data.user;
+                console.log('Profile data:', data);
+
+                // Update UI with profile data
+                document.getElementById('alumniName').textContent = result.name || 'Alumni User';
+                document.getElementById('alumniUniversity').textContent = result.role || 'University';
+                document.getElementById('welcomeName').textContent = result.fullName?.split(' ')[0] || 'Alumni';
+
+                if (data.imageUrl) {
+                    document.getElementById('logo').src = data.imageUrl;
+                }
+
 
             } catch (error) {
                 console.error('Error loading alumni data:', error);
+                alert('Error loading profile data: ' + error.message);
             }
         }
 
         async function loadRecentActivities() {
             try {
-                const response = await fetch('http://localhost:3000/api/alumni/activities', {
-                    headers: {
-                        'Authorization': `Bearer ${localStorage.getItem('authToken')}`
-                    }
-                });
+                // Simulate API call
+                // In a real app, you would fetch from your backend
+                setTimeout(() => {
+                    const mockActivities = [
+                        {
+                            type: 'connection',
+                            message: 'You have 3 new connection requests',
+                            timestamp: new Date()
+                        },
+                        {
+                            type: 'job',
+                            message: 'New job posted matching your profile: Senior Developer at Tech Corp',
+                            timestamp: new Date(Date.now() - 3600000)
+                        },
+                        {
+                            type: 'event',
+                            message: 'Alumni networking event next Friday at 6 PM',
+                            timestamp: new Date(Date.now() - 86400000)
+                        }
+                    ];
 
-                const activities = await response.json();
-                const activityFeed = document.getElementById('activityFeed');
+                    const activityFeed = document.getElementById('activityFeed');
+                    activityFeed.innerHTML = '';
 
-                activities.forEach(activity => {
-                    const activityItem = document.createElement('div');
-                    activityItem.className = 'activity-item';
-                    activityItem.innerHTML = `
-                <div class="activity-icon">${getActivityIcon(activity.type)}</div>
-                <div class="activity-content">
-                    <p>${activity.message}</p>
-                    <small>${new Date(activity.timestamp).toLocaleString()}</small>
-                </div>
-            `;
-                    activityFeed.appendChild(activityItem);
-                });
+                    mockActivities.forEach(activity => {
+                        const activityItem = document.createElement('div');
+                        activityItem.className = 'activity-item';
+                        activityItem.innerHTML = `
+                    <div class="activity-icon">${getActivityIcon(activity.type)}</div>
+                    <div class="activity-content">
+                        <p>${activity.message}</p>
+                        <small>${new Date(activity.timestamp).toLocaleString()}</small>
+                    </div>
+                `;
+                        activityFeed.appendChild(activityItem);
+                    });
+                }, 800);
 
             } catch (error) {
                 console.error('Error loading activities:', error);
@@ -147,12 +525,10 @@
         }
 
         function logout() {
-            localStorage.removeItem('authToken');
+            localStorage.removeItem('Token');
             localStorage.removeItem('userRole');
             window.location.href = '../index.html';
-        }
-    </script>
-    <script src="../js/alumni-dashboard.js"></script>
+        }    </script>
 </body>
 
 </html>
