@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verified Alumni</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <style>
+        :root {
+            --primary-color: #3498db;
+            --secondary-color: #2c3e50;
+            --accent-color: #e74c3c;
+            --light-bg: #f8f9fa;
+        }
+
+        body {
+            background-color: var(--light-bg);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .header {
+            background: linear-gradient(135deg, var(--secondary-color), var(--primary-color));
+            color: white;
+            padding: 2rem 0;
+            margin-bottom: 2rem;
+            border-radius: 0 0 20px 20px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .alumni-card {
+            border: none;
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+            background: white;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .alumni-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .alumni-card img {
+            width: 120px;
+            height: 120px;
+            object-fit: cover;
+            border-radius: 50%;
+            margin-bottom: 15px;
+            border: 4px solid var(--primary-color);
+        }
+
+        .verified-mark {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            color: var(--primary-color);
+            font-size: 24px;
+            background: white;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .search-container {
+            max-width: 600px;
+            margin: 0 auto 30px;
+        }
+
+        .search-box {
+            border-radius: 50px;
+            padding: 12px 20px;
+            border: 2px solid #e0e0e0;
+            transition: all 0.3s;
+        }
+
+        .search-box:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.25rem rgba(52, 152, 219, 0.25);
+        }
+
+        .filter-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            border-radius: 50px;
+            padding: 8px 20px;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+
+        .filter-btn.active {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .modal-content {
+            border-radius: 15px;
+            border: none;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .modal-header {
+            background: linear-gradient(135deg, var(--secondary-color), var(--primary-color));
+            color: white;
+            border-radius: 15px 15px 0 0 !important;
+        }
+
+        .modal-body {
+            padding: 25px;
+        }
+
+        .profile-section {
+            border-right: 1px solid #eee;
+        }
+
+        @media (max-width: 768px) {
+            .profile-section {
+                border-right: none;
+                border-bottom: 1px solid #eee;
+                padding-bottom: 20px;
+                margin-bottom: 20px;
+            }
+        }
+
+        .info-item {
+            margin-bottom: 12px;
+            padding-bottom: 12px;
+            border-bottom: 1px dashed #eee;
+        }
+
+        .info-item:last-child {
+            border-bottom: none;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 50px 20px;
+        }
+
+        .empty-state i {
+            font-size: 60px;
+            color: #ccc;
+            margin-bottom: 20px;
+        }
+
+        .loading-spinner {
+            display: none;
+            text-align: center;
+            padding: 30px;
+        }
+
+        .spinner-border {
+            width: 3rem;
+            height: 3rem;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Header -->
+    <div class="header">
+        <div class="container">
+            <div class="row">
+                <div class="col-12 text-center">
+                    <h1><i class="bi bi-patch-check-fill"></i> Verified Alumni</h1>
+                    <p class="lead">Connect with our verified alumni network</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container my-4">
+        <!-- Search Box -->
+        <div class="search-container">
+            <div class="input-group mb-3">
+                <input type="text" id="searchInput" class="form-control search-box"
+                    placeholder="Search alumni by name, company, or course..." aria-label="Search alumni">
+                <button class="btn btn-primary" type="button" id="searchButton" style="border-radius: 0 50px 50px 0;">
+                    <i class="bi bi-search"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Filter Buttons -->
+        <div class="filter-buttons">
+            <button class="btn btn-outline-primary filter-btn active" data-filter="all">All</button>
+            <button class="btn btn-outline-primary filter-btn" data-filter="recent">Recent Graduates</button>
+            <button class="btn btn-outline-primary filter-btn" data-filter="experienced">Experienced (5+ years)</button>
+            <button class="btn btn-outline-primary filter-btn" data-filter="tech">Tech Industry</button>
+            <button class="btn btn-outline-primary filter-btn" data-filter="management">Management</button>
+        </div>
+
+        <!-- Loading Spinner -->
+        <div class="loading-spinner" id="loadingSpinner">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+            <p class="mt-3">Loading alumni data...</p>
+        </div>
+
+        <!-- Alumni Grid -->
+        <div id="alumniList" class="row g-4"></div>
+
+        <!-- Empty State -->
+        <div id="emptyState" class="empty-state" style="display: none;">
+            <i class="bi bi-people"></i>
+            <h3>No Alumni Found</h3>
+            <p class="text-muted">We couldn't find any alumni matching your criteria.</p>
+            <button class="btn btn-primary" onclick="resetFilters()">Reset Filters</button>
+        </div>
+    </div>
+
+    <!-- MODAL -->
+    <div class="modal fade" id="alumniModal" tabindex="-1" aria-labelledby="alumniModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="alumniModalLabel">Alumni Profile</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+                </div>
+                <div class="modal-body row">
+                    <div class="col-md-4 text-center profile-section">
+                        <img id="modalPhoto" src="" class="rounded-circle mb-3" width="150" height="150" />
+                        <h4 class="mt-2" id="modalName"></h4>
+                        <div class="text-primary fw-bold mb-3">
+                            <i class="bi bi-patch-check-fill"></i> Verified Alumni
+                        </div>
+                        <div class="d-flex justify-content-center gap-3">
+                            <button class="btn btn-outline-primary btn-sm">
+                                <i class="bi bi-envelope"></i> Message
+                            </button>
+                            <button class="btn btn-outline-secondary btn-sm">
+                                <i class="bi bi-linkedin"></i> Connect
+                            </button>
+                        </div>
+                    </div>
+                    <div class="col-md-8">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="info-item">
+                                    <h6><i class="bi bi-envelope me-2"></i> Email</h6>
+                                    <p id="modalEmail" class="text-muted"></p>
+                                </div>
+                                <div class="info-item">
+                                    <h6><i class="bi bi-phone me-2"></i> Mobile</h6>
+                                    <p id="modalMobile" class="text-muted"></p>
+                                </div>
+                                <div class="info-item">
+                                    <h6><i class="bi bi-person-badge me-2"></i> Enrollment No.</h6>
+                                    <p id="modalEnrollment" class="text-muted"></p>
+                                </div>
+                                <div class="info-item">
+                                    <h6><i class="bi bi-book me-2"></i> Course</h6>
+                                    <p id="modalCourse" class="text-muted"></p>
+                                </div>
+                                <div class="info-item">
+                                    <h6><i class="bi bi-building me-2"></i> Department</h6>
+                                    <p id="modalDept" class="text-muted"></p>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="info-item">
+                                    <h6><i class="bi bi-calendar me-2"></i> Passing Year</h6>
+                                    <p id="modalYear" class="text-muted"></p>
+                                </div>
+                                <div class="info-item">
+                                    <h6><i class="bi bi-briefcase me-2"></i> Experience</h6>
+                                    <p id="modalExp" class="text-muted"></p>
+                                </div>
+                                <div class="info-item">
+                                    <h6><i class="bi bi-person-workspace me-2"></i> Designation</h6>
+                                    <p id="modalDesg" class="text-muted"></p>
+                                </div>
+                                <div class="info-item">
+                                    <h6><i class="bi bi-building me-2"></i> Company</h6>
+                                    <p id="modalCompany" class="text-muted"></p>
+                                </div>
+                                <div class="info-item">
+                                    <h6><i class="bi bi-geo-alt me-2"></i> Job Location</h6>
+                                    <p id="modalLocation" class="text-muted"></p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="info-item mt-3">
+                            <h6><i class="bi bi-house me-2"></i> Address</h6>
+                            <p id="modalAddress" class="text-muted"></p>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        const token = localStorage.getItem("Token");
+        let allAlumni = [];
+        let currentFilter = 'all';
+        let currentSearchTerm = '';
+
+        // DOM Elements
+        const alumniList = document.getElementById("alumniList");
+        const loadingSpinner = document.getElementById("loadingSpinner");
+        const emptyState = document.getElementById("emptyState");
+        const searchInput = document.getElementById("searchInput");
+        const searchButton = document.getElementById("searchButton");
+        const filterButtons = document.querySelectorAll(".filter-btn");
+
+        async function loadVerifiedAlumni() {
+            try {
+                // const API_BASE_URL = 'http://localhost:3000';
+                const API_BASE_URL = `https://alumni-web-api.onrender.com`;
+                showLoading();
+
+                const res = await fetch(`${API_BASE_URL}/api/alumni-record/verified-alumni`, {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                });
+
+                if (!res.ok) {
+                    throw new Error('Failed to fetch alumni data');
+                }
+
+                allAlumni = await res.json();
+                applyFilters();
+
+            } catch (err) {
+                console.error("Error:", err);
+                showError("Error fetching alumni data. Please try again later.");
+            } finally {
+                hideLoading();
+            }
+        }
+
+        function renderAlumniList(alumni) {
+            alumniList.innerHTML = '';
+
+            if (alumni.length === 0) {
+                emptyState.style.display = 'block';
+                alumniList.style.display = 'none';
+                return;
+            }
+
+            emptyState.style.display = 'none';
+            alumniList.style.display = 'flex';
+
+            alumni.forEach(person => {
+                const div = document.createElement("div");
+                div.className = "col-md-3 col-sm-6";
+                div.innerHTML = `
+                    <div class="alumni-card" onclick='showModal(${JSON.stringify(person).replace(/'/g, "\\'")})'>
+                        <div class="verified-mark" title="Verified Alumni">
+                            <i class="bi bi-patch-check-fill"></i>
+                        </div>
+                        <img src="${person.photoUrl || 'https://via.placeholder.com/150'}" alt="${person.fullName}" onerror="this.src='https://via.placeholder.com/150'" />
+                        <h5 class="mt-2">${person.fullName}</h5>
+                        <p class="text-muted mb-1">${person.courseName || 'Alumni'}</p>
+                        <small class="text-primary">
+                            ${person.designation || ''} ${person.companyName ? 'at ' + person.companyName : ''}
+                        </small>
+                    </div>
+                `;
+                alumniList.appendChild(div);
+            });
+        }
+
+        function applyFilters() {
+            let filtered = [...allAlumni];
+
+            // Apply search filter first
+            if (currentSearchTerm) {
+                filtered = filtered.filter(alumni =>
+                    (alumni.fullName && alumni.fullName.toLowerCase().includes(currentSearchTerm)) ||
+                    (alumni.companyName && alumni.companyName.toLowerCase().includes(currentSearchTerm)) ||
+                    (alumni.courseName && alumni.courseName.toLowerCase().includes(currentSearchTerm)) ||
+                    (alumni.designation && alumni.designation.toLowerCase().includes(currentSearchTerm)) ||
+                    (alumni.departmentName && alumni.departmentName.toLowerCase().includes(currentSearchTerm))
+                );
+            }
+
+            // Apply category filter
+            switch (currentFilter) {
+                case 'recent':
+                    const currentYear = new Date().getFullYear();
+                    filtered = filtered.filter(alumni =>
+                        alumni.passingYear && (currentYear - alumni.passingYear <= 5)
+                    );
+                    break;
+
+                case 'experienced':
+                    filtered = filtered.filter(alumni =>
+                        alumni.experience && alumni.experience >= 5
+                    );
+                    break;
+
+                case 'tech':
+                    filtered = filtered.filter(alumni =>
+                        (alumni.departmentName && (
+                            alumni.departmentName.toLowerCase().includes('computer') ||
+                            alumni.departmentName.toLowerCase().includes('engineering') ||
+                            alumni.departmentName.toLowerCase().includes('technology') ||
+                            alumni.departmentName.toLowerCase().includes('it')
+                        )) ||
+                        (alumni.companyName && (
+                            alumni.companyName.toLowerCase().includes('tech') ||
+                            alumni.companyName.toLowerCase().includes('software')
+                        )) ||
+                        (alumni.designation && (
+                            alumni.designation.toLowerCase().includes('developer') ||
+                            alumni.designation.toLowerCase().includes('engineer')
+                        ))
+                    );
+                    break;
+
+                case 'management':
+                    filtered = filtered.filter(alumni =>
+                        (alumni.departmentName && (
+                            alumni.departmentName.toLowerCase().includes('management') ||
+                            alumni.departmentName.toLowerCase().includes('business')
+                        )) ||
+                        (alumni.designation && (
+                            alumni.designation.toLowerCase().includes('manager') ||
+                            alumni.designation.toLowerCase().includes('director') ||
+                            alumni.designation.toLowerCase().includes('executive')
+                        ))
+                    );
+                    break;
+
+                // 'all' case - no additional filtering needed
+            }
+
+            renderAlumniList(filtered);
+        }
+
+        function showModal(person) {
+            document.getElementById("modalPhoto").src = person.photoUrl || 'https://via.placeholder.com/150';
+            document.getElementById("modalPhoto").onerror = "this.src='https://via.placeholder.com/150'";
+            document.getElementById("modalName").textContent = person.fullName;
+            document.getElementById("modalEmail").textContent = person.email || 'Not available';
+            document.getElementById("modalMobile").textContent = person.mobile || 'Not available';
+            document.getElementById("modalEnrollment").textContent = person.enrollment || 'Not available';
+            document.getElementById("modalCourse").textContent = person.courseName || 'Not available';
+            document.getElementById("modalDept").textContent = person.departmentName || 'Not available';
+            document.getElementById("modalYear").textContent = person.passingYear || 'Not available';
+            document.getElementById("modalExp").textContent = person.experience ? `${person.experience} years` : 'Not available';
+            document.getElementById("modalDesg").textContent = person.designation || 'Not available';
+            document.getElementById("modalCompany").textContent = person.companyName || 'Not available';
+            document.getElementById("modalLocation").textContent = person.jobLocation || 'Not available';
+            document.getElementById("modalAddress").textContent = person.address || 'Not available';
+
+            const modal = new bootstrap.Modal(document.getElementById('alumniModal'));
+            modal.show();
+        }
+
+        function showLoading() {
+            loadingSpinner.style.display = 'block';
+            alumniList.style.display = 'none';
+            emptyState.style.display = 'none';
+        }
+
+        function hideLoading() {
+            loadingSpinner.style.display = 'none';
+            alumniList.style.display = 'flex';
+        }
+
+        function showError(message) {
+            alumniList.innerHTML = `
+                <div class="col-12 text-center py-5">
+                    <i class="bi bi-exclamation-triangle-fill text-danger" style="font-size: 3rem;"></i>
+                    <h4 class="mt-3">${message}</h4>
+                    <button class="btn btn-primary mt-3" onclick="loadVerifiedAlumni()">
+                        <i class="bi bi-arrow-repeat"></i> Try Again
+                    </button>
+                </div>
+            `;
+            alumniList.style.display = 'block';
+            emptyState.style.display = 'none';
+        }
+
+        function searchAlumni() {
+            currentSearchTerm = searchInput.value.toLowerCase().trim();
+            applyFilters();
+        }
+
+        function resetFilters() {
+            currentFilter = 'all';
+            currentSearchTerm = '';
+            searchInput.value = '';
+
+            // Update active button
+            filterButtons.forEach(btn => {
+                if (btn.dataset.filter === 'all') {
+                    btn.classList.add('active');
+                } else {
+                    btn.classList.remove('active');
+                }
+            });
+
+            applyFilters();
+        }
+
+        // Event Listeners
+        document.addEventListener("DOMContentLoaded", loadVerifiedAlumni);
+
+        searchButton.addEventListener('click', searchAlumni);
+        searchInput.addEventListener('keyup', (e) => {
+            if (e.key === 'Enter') searchAlumni();
+        });
+
+        filterButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                currentFilter = button.dataset.filter;
+                filterButtons.forEach(btn => btn.classList.remove('active'));
+                button.classList.add('active');
+                applyFilters();
+            });
+        });
+    </script>
+</body>
+
+</html>

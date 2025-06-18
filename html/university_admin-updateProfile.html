@@ -2,1115 +2,677 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Institute Registration</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        :root {
-            --primary-color: #4e73df;
-            --secondary-color: #f8f9fc;
-            --accent-color: #2e59d9;
-            --text-color: #5a5c69;
-            --success-color: #1cc88a;
-        }
-
         body {
-            background-color: #f8f9fc;
-            color: var(--text-color);
-            font-family: 'Nunito', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background-color: #f8f9fa;
+            padding: 20px;
         }
 
         .form-container {
-            max-width: 900px;
-            margin: 30px auto;
-            padding: 40px;
             background: white;
-            box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
-            border-radius: 0.35rem;
-            animation: fadeIn 0.5s ease-in-out;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+            max-width: 900px;
+            margin: 0 auto;
         }
 
         .form-header {
             text-align: center;
-            margin-bottom: 2rem;
+            margin-bottom: 30px;
             position: relative;
         }
 
         .form-header h2 {
-            color: var(--primary-color);
-            font-weight: 700;
-            margin-bottom: 0.5rem;
+            color: #4e73df;
         }
 
-        .form-header .subtitle {
-            color: var(--text-color);
-            font-size: 1.1rem;
+        .form-section {
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #eee;
         }
 
-        .progress-container {
-            margin: 2rem 0;
-            position: relative;
+        .form-section h4 {
+            color: #4e73df;
+            margin-bottom: 20px;
         }
 
-        .progress {
-            height: 1rem;
-            border-radius: 0.5rem;
-            background-color: var(--secondary-color);
-            overflow: visible;
+        .required-field::after {
+            content: " *";
+            color: red;
         }
 
-        .progress-bar {
-            background-color: var(--primary-color);
-            transition: width 0.6s ease;
-            position: relative;
-            overflow: visible;
-        }
-
-        .progress-steps {
-            display: flex;
-            justify-content: space-between;
-            position: relative;
-            margin-bottom: 1.5rem;
-        }
-
-        .progress-step {
-            position: relative;
-            text-align: center;
-            flex: 1;
-            z-index: 2;
-        }
-
-        .progress-step:not(:last-child)::after {
-            content: '';
-            position: absolute;
-            top: 1.25rem;
-            left: 50%;
-            width: 100%;
-            height: 2px;
-            background-color: #e3e6f0;
-            z-index: -1;
-        }
-
-        .progress-step.active .step-number {
-            background-color: var(--primary-color);
-            color: white;
-            box-shadow: 0 0 0 2px var(--primary-color);
-        }
-
-        .progress-step.completed .step-number {
-            background-color: var(--success-color);
-            color: white;
-        }
-
-        .progress-step.completed::after {
-            background-color: var(--success-color);
-        }
-
-        .step-number {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            width: 2.5rem;
-            height: 2.5rem;
-            border-radius: 50%;
-            background-color: var(--secondary-color);
-            margin-bottom: 0.5rem;
-            border: 3px solid white;
-            box-shadow: 0 0 0 2px var(--secondary-color);
-            transition: all 0.3s ease;
-        }
-
-        .step-title {
-            font-size: 0.85rem;
-            font-weight: 600;
-            color: #858796;
-            display: block;
-        }
-
-        .progress-step.active .step-title {
-            color: var(--primary-color);
-            font-weight: 700;
-        }
-
-        .progress-step.completed .step-title {
-            color: var(--success-color);
-        }
-
-        .form-step {
-            display: none;
-            animation: fadeIn 0.5s ease-in-out;
-        }
-
-        .form-step.active {
-            display: block;
-        }
-
-        .form-label {
-            font-weight: 600;
-            margin-bottom: 0.5rem;
-            color: var(--text-color);
-        }
-
-        .form-control,
-        .form-select {
-            padding: 0.75rem 1rem;
-            border-radius: 0.35rem;
-            border: 1px solid #d1d3e2;
-            transition: border-color 0.3s ease, box-shadow 0.3s ease;
-        }
-
-        .form-control:focus,
-        .form-select:focus {
-            border-color: var(--primary-color);
-            box-shadow: 0 0 0 0.25rem rgba(78, 115, 223, 0.25);
-        }
-
-        .step-buttons {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 2rem;
-        }
-
-        .btn {
-            padding: 0.75rem 1.5rem;
-            border-radius: 0.35rem;
-            font-weight: 600;
-            transition: all 0.3s ease;
-        }
-
-        .btn-primary {
-            background-color: var(--primary-color);
-            border-color: var(--primary-color);
-        }
-
-        .btn-primary:hover {
-            background-color: var(--accent-color);
-            border-color: var(--accent-color);
-            transform: translateY(-2px);
-        }
-
-        .btn-secondary {
-            background-color: #858796;
-            border-color: #858796;
-        }
-
-        .btn-secondary:hover {
-            background-color: #717384;
-            border-color: #6b6d7d;
-            transform: translateY(-2px);
-        }
-
-        .btn-success {
-            background-color: var(--success-color);
-            border-color: var(--success-color);
-        }
-
-        .btn-success:hover {
-            background-color: #17a673;
-            border-color: #169b6b;
-            transform: translateY(-2px);
+        .affiliation-card {
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 15px;
+            margin-bottom: 15px;
         }
 
         .file-upload-container {
-            border: 2px dashed #d1d3e2;
-            border-radius: 0.35rem;
-            padding: 1.5rem;
+            border: 2px dashed #ccc;
+            border-radius: 5px;
+            padding: 15px;
             text-align: center;
-            margin-bottom: 1rem;
-            transition: all 0.3s ease;
+            margin-top: 10px;
             cursor: pointer;
         }
 
         .file-upload-container:hover {
-            border-color: var(--primary-color);
-            background-color: rgba(78, 115, 223, 0.05);
-        }
-
-        .file-upload-container i {
-            font-size: 2.5rem;
-            color: var(--primary-color);
-            margin-bottom: 1rem;
-        }
-
-        .file-upload-container .file-input {
-            display: none;
+            border-color: #4e73df;
+            background-color: #f8f9ff;
         }
 
         .file-preview {
-            margin-top: 1rem;
+            margin-top: 10px;
         }
 
         .file-preview-img {
-            max-width: 120px;
-            max-height: 120px;
+            max-width: 100px;
+            max-height: 100px;
             margin-right: 10px;
             border: 1px solid #ddd;
-            padding: 5px;
-            border-radius: 0.25rem;
-            object-fit: contain;
-            background-color: #f8f9fc;
+            border-radius: 4px;
         }
 
-        .file-info {
-            display: flex;
-            align-items: center;
-            margin-top: 0.5rem;
-            padding: 0.5rem;
-            background-color: #f8f9fc;
-            border-radius: 0.25rem;
-        }
-
-        .file-info i {
-            margin-right: 0.5rem;
-            color: var(--primary-color);
-        }
-
-        .remove-file {
-            color: #e74a3b;
-            cursor: pointer;
-            margin-left: auto;
-        }
-
-        .affiliation-card {
-            border: 1px solid #d1d3e2;
-            border-radius: 0.35rem;
-            padding: 1rem;
-            margin-bottom: 1rem;
-            transition: all 0.3s ease;
-        }
-
-        .affiliation-checkbox:checked~.affiliation-card {
-            border-color: var(--primary-color);
-            background-color: rgba(78, 115, 223, 0.05);
-        }
-
-        .affiliation-checkbox {
+        .edit-btn {
             position: absolute;
-            opacity: 0;
-        }
-
-        .affiliation-label {
-            display: flex;
-            align-items: center;
+            top: 0;
+            right: 0;
             cursor: pointer;
+            color: #4e73df;
         }
 
-        .affiliation-label .checkmark {
-            display: inline-block;
-            width: 1.5rem;
-            height: 1.5rem;
-            border: 2px solid #d1d3e2;
-            border-radius: 0.25rem;
-            margin-right: 1rem;
-            position: relative;
-            transition: all 0.3s ease;
+        .form-disabled {
+            opacity: 0.7;
+            pointer-events: none;
         }
 
-        .affiliation-checkbox:checked~.affiliation-label .checkmark {
-            background-color: var(--primary-color);
-            border-color: var(--primary-color);
-        }
-
-        .affiliation-checkbox:checked~.affiliation-label .checkmark::after {
-            content: '\f00c';
-            font-family: 'Font Awesome 6 Free';
-            font-weight: 900;
-            position: absolute;
-            color: white;
-            top: 50%;
+        .alert-fixed-top {
+            position: fixed;
+            top: 20px;
             left: 50%;
-            transform: translate(-50%, -50%);
-            font-size: 0.8rem;
+            transform: translateX(-50%);
+            z-index: 1050;
+            min-width: 400px;
+            text-align: center;
+            animation: fadeInDown 0.5s, fadeOutUp 0.5s 2.5s forwards;
         }
 
-        .affiliation-title {
-            font-weight: 600;
-            font-size: 1.1rem;
-            margin-bottom: 0.5rem;
-        }
-
-        .affiliation-description {
-            color: #6c757d;
-            font-size: 0.9rem;
-        }
-
-        @keyframes fadeIn {
+        @keyframes fadeInDown {
             from {
                 opacity: 0;
-                transform: translateY(10px);
+                transform: translate(-50%, -20px);
             }
 
             to {
                 opacity: 1;
-                transform: translateY(0);
+                transform: translate(-50%, 0);
             }
         }
 
-        .floating-label {
-            position: relative;
-            margin-bottom: 1.5rem;
-        }
-
-        .floating-label input,
-        .floating-label select {
-            height: calc(3.5rem + 2px);
-            padding-top: 1.5rem;
-        }
-
-        .floating-label label {
-            position: absolute;
-            top: 0.5rem;
-            left: 1rem;
-            color: #6c757d;
-            transition: all 0.3s ease;
-            pointer-events: none;
-            font-size: 0.85rem;
-        }
-
-        .floating-label input:focus~label,
-        .floating-label input:not(:placeholder-shown)~label,
-        .floating-label select:focus~label,
-        .floating-label select:not([value=""])~label {
-            top: 0.2rem;
-            font-size: 0.75rem;
-            color: var(--primary-color);
-        }
-
-        .tooltip-icon {
-            color: var(--primary-color);
-            margin-left: 0.5rem;
-            cursor: pointer;
-        }
-
-        .confirmation-modal .modal-content {
-            border-radius: 0.5rem;
-            border: none;
-            box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
-        }
-
-        .confirmation-modal .modal-header {
-            border-bottom: none;
-            padding-bottom: 0;
-        }
-
-        .confirmation-modal .modal-body {
-            text-align: center;
-            padding: 2rem;
-        }
-
-        .confirmation-modal .modal-body i {
-            font-size: 4rem;
-            color: var(--success-color);
-            margin-bottom: 1.5rem;
-        }
-
-        .confirmation-modal .modal-footer {
-            border-top: none;
-            justify-content: center;
-            padding-top: 0;
-        }
-
-        @media (max-width: 768px) {
-            .form-container {
-                padding: 20px;
-                margin: 15px;
+        @keyframes fadeOutUp {
+            from {
+                opacity: 1;
+                transform: translate(-50%, 0);
             }
 
-            .step-title {
-                font-size: 0.7rem;
-            }
-
-            .step-number {
-                width: 2rem;
-                height: 2rem;
-                font-size: 0.9rem;
+            to {
+                opacity: 0;
+                transform: translate(-50%, -20px);
             }
         }
     </style>
 </head>
 
 <body>
-    <div class="container form-container animate__animated animate__fadeIn">
-        <div class="form-header">
-            <h2>Institute Registration</h2>
-            <div class="subtitle">Complete the form to register your educational institution</div>
-        </div>
+    <div class="container">
+        <div id="alertContainer"></div>
 
-        <!-- Progress Steps -->
-        <div class="progress-container">
-            <div class="progress-steps">
-                <div class="progress-step completed" id="progress-step1">
-                    <div class="step-number">1</div>
-                    <span class="step-title">Basic Info</span>
-                </div>
-                <div class="progress-step" id="progress-step2">
-                    <div class="step-number">2</div>
-                    <span class="step-title">Address</span>
-                </div>
-                <div class="progress-step" id="progress-step3">
-                    <div class="step-number">3</div>
-                    <span class="step-title">Affiliations</span>
-                </div>
-                <div class="progress-step" id="progress-step4">
-                    <div class="step-number">4</div>
-                    <span class="step-title">Contact</span>
-                </div>
-                <div class="progress-step" id="progress-step5">
-                    <div class="step-number">5</div>
-                    <span class="step-title">Documents</span>
-                </div>
+        <div class="form-container">
+            <div class="form-header">
+                <h2>Institute Registration</h2>
+                <p class="text-muted">Please fill out all required fields</p>
+                <i class="fas fa-pencil-alt edit-btn" id="editBtn" style="display: none;"></i>
             </div>
-            <div class="progress">
-                <div class="progress-bar" role="progressbar" style="width: 20%;" id="formProgress"></div>
-            </div>
-        </div>
 
-        <form id="instituteForm" enctype="multipart/form-data" method="POST">
-            <!-- Step 1: Basic Details -->
-            <div class="form-step active" id="step1">
-                <h4 class="mb-4"><i class="fas fa-info-circle me-2"></i>Basic Details</h4>
+            <form id="instituteForm">
+                <input type="hidden" id="instituteId" name="id">
 
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="floating-label">
-                            <input type="text" name="instituteName" class="form-control" placeholder=" " required>
-                            <label>Institute Name <i class="fas fa-question-circle tooltip-icon"
-                                    title="Official name of your institution"></i></label>
+                <!-- Basic Details -->
+                <div class="form-section">
+                    <h4>Basic Information</h4>
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label required-field">Institute Name</label>
+                            <input type="text" class="form-control" name="instituteName" id="instituteName" required>
                         </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="floating-label">
-                            <select name="instituteType" class="form-select" required>
-                                <option value=""></option>
+                        <div class="col-md-6">
+                            <label class="form-label required-field">Institute Type</label>
+                            <select class="form-select" name="instituteType" id="instituteType" required>
+                                <option value="">Select</option>
                                 <option value="University">University</option>
                                 <option value="College">College</option>
                                 <option value="Deemed University">Deemed University</option>
                                 <option value="Private Institute">Private Institute</option>
                             </select>
-                            <label>Institute Type</label>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label required-field">Email Address</label>
+                            <input type="email" class="form-control" name="email" id="email" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label required-field">Phone Number</label>
+                            <input type="tel" class="form-control" name="phone" id="phone" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Website URL</label>
+                            <input type="url" class="form-control" name="website" id="website">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Established Year</label>
+                            <input type="number" class="form-control" name="establishedYear" id="establishedYear">
                         </div>
                     </div>
                 </div>
 
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="floating-label">
-                            <input type="email" name="email" class="form-control" placeholder=" " required>
-                            <label>Email Address</label>
+                <!-- Address Details -->
+                <div class="form-section">
+                    <h4>Address Information</h4>
+                    <div class="row g-3">
+                        <div class="col-md-4">
+                            <label class="form-label">City</label>
+                            <input type="text" class="form-control" name="address[city]" id="city">
                         </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="floating-label">
-                            <input type="text" name="phone" class="form-control" placeholder=" " required>
-                            <label>Phone Number</label>
+                        <div class="col-md-4">
+                            <label class="form-label">State</label>
+                            <input type="text" class="form-control" name="address[state]" id="state">
                         </div>
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="floating-label">
-                            <input type="url" name="website" class="form-control" placeholder=" ">
-                            <label>Website URL</label>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="floating-label">
-                            <input type="number" name="establishedYear" class="form-control" placeholder=" ">
-                            <label>Established Year</label>
+                        <div class="col-md-4">
+                            <label class="form-label">Pin Code</label>
+                            <input type="text" class="form-control" name="address[pinCode]" id="pinCode">
                         </div>
                     </div>
                 </div>
 
-                <div class="step-buttons">
-                    <button type="button" class="btn btn-secondary" disabled>
-                        <i class="fas fa-arrow-left me-2"></i>Previous
-                    </button>
-                    <button type="button" class="btn btn-primary next-step" data-next="step2">
-                        Next<i class="fas fa-arrow-right ms-2"></i>
-                    </button>
-                </div>
-            </div>
+                <!-- Affiliations -->
+                <div class="form-section">
+                    <h4>Affiliations & Accreditations</h4>
 
-            <!-- Step 2: Address -->
-            <div class="form-step" id="step2">
-                <h4 class="mb-4"><i class="fas fa-map-marker-alt me-2"></i>Address Details</h4>
-
-                <div class="row">
-                    <div class="col-md-4">
-                        <div class="floating-label">
-                            <input type="text" name="address[city]" class="form-control" placeholder=" ">
-                            <label>City</label>
+                    <!-- UGC Card -->
+                    <div class="affiliation-card">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="ugc" name="affiliations[]" value="UGC">
+                            <label class="form-check-label" for="ugc">UGC Recognized</label>
                         </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="floating-label">
-                            <input type="text" name="address[state]" class="form-control" placeholder=" ">
-                            <label>State</label>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="floating-label">
-                            <input type="text" name="address[pinCode]" class="form-control" placeholder=" ">
-                            <label>Pin Code</label>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="step-buttons">
-                    <button type="button" class="btn btn-secondary prev-step" data-prev="step1">
-                        <i class="fas fa-arrow-left me-2"></i>Previous
-                    </button>
-                    <button type="button" class="btn btn-primary next-step" data-next="step3">
-                        Next<i class="fas fa-arrow-right ms-2"></i>
-                    </button>
-                </div>
-            </div>
-
-            <!-- Step 3: Affiliations -->
-            <!-- ---- STEP‑3 : Affiliations & Accreditations ---- -->
-            <div class="form-step" id="step3">
-                <h4 class="mb-4">
-                    <i class="fas fa-certificate me-2"></i>Affiliations &amp; Accreditations
-                </h4>
-                <p class="text-muted mb-4">Select all that apply to your institution</p>
-
-                <!-- === UGC === -->
-                <input type="checkbox" class="affiliation-checkbox" id="ugc" value="UGC" name="affiliations[]">
-                <div class="affiliation-card">
-                    <label for="ugc" class="affiliation-label">
-                        <span class="checkmark"></span>
-                        <div>
-                            <div class="affiliation-title">University Grants Commission (UGC)</div>
-                            <div class="affiliation-description">
-                                Recognized by the University Grants Commission of India
+                        <div id="ugc-upload" style="display: none;">
+                            <div class="file-upload-container" onclick="document.getElementById('ugc-file').click()">
+                                <i class="fas fa-cloud-upload-alt"></i>
+                                <p>Upload UGC Certificate</p>
+                                <input type="file" id="ugc-file" name="ugcCertificate" class="d-none">
                             </div>
+                            <div class="file-preview" id="ugc-file-preview"></div>
                         </div>
-                    </label>
-
-                    <div id="ugc-upload" class="mt-3" style="display:none;">
-                        <div class="file-upload-container" onclick="document.getElementById('ugc-file').click()">
-                            <i class="fas fa-cloud-upload-alt"></i>
-                            <h5>Upload UGC Certificate</h5>
-                            <p class="text-muted">Click to browse or drag & drop</p>
-                            <input type="file" id="ugc-file" name="ugcCertificate" class="file-input">
-                        </div>
-                        <div class="file-preview" id="ugc-file-preview"></div>
                     </div>
-                </div>
 
-                <!-- === AICTE === -->
-                <input type="checkbox" class="affiliation-checkbox" id="aicte" value="AICTE" name="affiliations[]">
-                <div class="affiliation-card">
-                    <label for="aicte" class="affiliation-label">
-                        <span class="checkmark"></span>
-                        <div>
-                            <div class="affiliation-title">AICTE Approval</div>
-                            <div class="affiliation-description">
-                                Approved by All India Council for Technical Education
+                    <!-- AICTE Card -->
+                    <div class="affiliation-card">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="aicte" name="affiliations[]"
+                                value="AICTE">
+                            <label class="form-check-label" for="aicte">AICTE Approved</label>
+                        </div>
+                        <div id="aicte-upload" style="display: none;">
+                            <div class="file-upload-container" onclick="document.getElementById('aicte-file').click()">
+                                <i class="fas fa-cloud-upload-alt"></i>
+                                <p>Upload AICTE Approval</p>
+                                <input type="file" id="aicte-file" name="aicteApproval" class="d-none">
                             </div>
+                            <div class="file-preview" id="aicte-file-preview"></div>
                         </div>
-                    </label>
-
-                    <div id="aicte-upload" class="mt-3" style="display:none;">
-                        <div class="file-upload-container" onclick="document.getElementById('aicte-file').click()">
-                            <i class="fas fa-cloud-upload-alt"></i>
-                            <h5>Upload AICTE Approval</h5>
-                            <p class="text-muted">Click to browse or drag & drop</p>
-                            <input type="file" id="aicte-file" name="aicteApproval" class="file-input">
-                        </div>
-                        <div class="file-preview" id="aicte-file-preview"></div>
                     </div>
-                </div>
 
-                <!-- === NAAC === -->
-                <input type="checkbox" class="affiliation-checkbox" id="naac" value="NAAC" name="affiliations[]">
-                <div class="affiliation-card">
-                    <label for="naac" class="affiliation-label">
-                        <span class="checkmark"></span>
-                        <div>
-                            <div class="affiliation-title">NAAC Accreditation</div>
-                            <div class="affiliation-description">
-                                Accredited by National Assessment and Accreditation Council
+                    <!-- NAAC Card -->
+                    <div class="affiliation-card">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="naac" name="affiliations[]"
+                                value="NAAC">
+                            <label class="form-check-label" for="naac">NAAC Accredited</label>
+                        </div>
+                        <div id="naac-upload" style="display: none;">
+                            <div class="file-upload-container" onclick="document.getElementById('naac-file').click()">
+                                <i class="fas fa-cloud-upload-alt"></i>
+                                <p>Upload NAAC Certificate</p>
+                                <input type="file" id="naac-file" name="naacAccreditation" class="d-none">
                             </div>
+                            <div class="file-preview" id="naac-file-preview"></div>
                         </div>
-                    </label>
-
-                    <div id="naac-upload" class="mt-3" style="display:none;">
-                        <div class="file-upload-container" onclick="document.getElementById('naac-file').click()">
-                            <i class="fas fa-cloud-upload-alt"></i>
-                            <h5>Upload NAAC Accreditation</h5>
-                            <p class="text-muted">Click to browse or drag & drop</p>
-                            <input type="file" id="naac-file" name="naacAccreditation" class="file-input">
-                        </div>
-                        <div class="file-preview" id="naac-file-preview"></div>
                     </div>
-                </div>
 
-                <!-- === BCI === -->
-                <input type="checkbox" class="affiliation-checkbox" id="bci" value="BCI" name="affiliations[]">
-                <div class="affiliation-card">
-                    <label for="bci" class="affiliation-label">
-                        <span class="checkmark"></span>
-                        <div>
-                            <div class="affiliation-title">Bar Council of India (BCI)</div>
-                            <div class="affiliation-description">
-                                Recognized by Bar Council of India for law programs
+                    <!-- BCI Card -->
+                    <div class="affiliation-card">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="bci" name="affiliations[]" value="BCI">
+                            <label class="form-check-label" for="bci">BCI Recognized</label>
+                        </div>
+                        <div id="bci-upload" style="display: none;">
+                            <div class="file-upload-container" onclick="document.getElementById('bci-file').click()">
+                                <i class="fas fa-cloud-upload-alt"></i>
+                                <p>Upload BCI License</p>
+                                <input type="file" id="bci-file" name="bciLicense" class="d-none">
                             </div>
-                        </div>
-                    </label>
-
-                    <div id="bci-upload" class="mt-3" style="display:none;">
-                        <div class="file-upload-container" onclick="document.getElementById('bci-file').click()">
-                            <i class="fas fa-cloud-upload-alt"></i>
-                            <h5>Upload BCI License</h5>
-                            <p class="text-muted">Click to browse or drag & drop</p>
-                            <input type="file" id="bci-file" name="bciLicense" class="file-input">
-                        </div>
-                        <div class="file-preview" id="bci-file-preview"></div>
-                    </div>
-                </div>
-
-                <!-- Navigation buttons -->
-                <div class="step-buttons">
-                    <button type="button" class="btn btn-secondary prev-step" data-prev="step2">
-                        <i class="fas fa-arrow-left me-2"></i>Previous
-                    </button>
-                    <button type="button" class="btn btn-primary next-step" data-next="step4">
-                        Next<i class="fas fa-arrow-right ms-2"></i>
-                    </button>
-                </div>
-            </div>
-            <!-- ---- / STEP‑3 ---- -->
-
-            <!-- Step 4: Contact Person -->
-            <div class="form-step" id="step4">
-                <h4 class="mb-4"><i class="fas fa-user-tie me-2"></i>Contact Person Details</h4>
-
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="floating-label">
-                            <input type="text" name="contactPerson[name]" class="form-control" placeholder=" " required>
-                            <label>Full Name</label>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="floating-label">
-                            <input type="text" name="contactPerson[designation]" class="form-control" placeholder=" ">
-                            <label>Designation</label>
+                            <div class="file-preview" id="bci-file-preview"></div>
                         </div>
                     </div>
                 </div>
 
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="floating-label">
-                            <input type="email" name="contactPerson[email]" class="form-control" placeholder=" ">
-                            <label>Email Address</label>
+                <!-- Contact Person -->
+                <div class="form-section">
+                    <h4>Contact Person</h4>
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label required-field">Full Name</label>
+                            <input type="text" class="form-control" name="contactPerson[name]" id="contactName"
+                                required>
                         </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="floating-label">
-                            <input type="text" name="contactPerson[phone]" class="form-control" placeholder=" ">
-                            <label>Phone Number</label>
+                        <div class="col-md-6">
+                            <label class="form-label">Designation</label>
+                            <input type="text" class="form-control" name="contactPerson[designation]"
+                                id="contactDesignation">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Email Address</label>
+                            <input type="email" class="form-control" name="contactPerson[email]" id="contactEmail">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Phone Number</label>
+                            <input type="tel" class="form-control" name="contactPerson[phone]" id="contactPhone">
                         </div>
                     </div>
                 </div>
 
-                <div class="step-buttons">
-                    <button type="button" class="btn btn-secondary prev-step" data-prev="step3">
-                        <i class="fas fa-arrow-left me-2"></i>Previous
-                    </button>
-                    <button type="button" class="btn btn-primary next-step" data-next="step5">
-                        Next<i class="fas fa-arrow-right ms-2"></i>
-                    </button>
-                </div>
-            </div>
-
-            <!-- Step 5: Documents -->
-            <div class="form-step" id="step5">
-                <h4 class="mb-4"><i class="fas fa-file-upload me-2"></i>Required Documents</h4>
-                <p class="text-muted mb-4">Upload scanned copies of the following documents</p>
-
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="mb-4">
+                <!-- Documents -->
+                <div class="form-section">
+                    <h4>Required Documents</h4>
+                    <div class="row g-3">
+                        <div class="col-md-6">
                             <label class="form-label">Institute Logo</label>
-                            <div class="file-upload-container" onclick="document.getElementById('logo-file').click()">
-                                <i class="fas fa-image"></i>
-                                <h5>Upload Logo</h5>
-                                <p class="text-muted">Recommended size: 300x300px</p>
-                                <input type="file" name="logo" class="file-input" id="logo-file" accept="image/*">
-                            </div>
+                            <input type="file" class="form-control" name="logo" id="logo" accept="image/*">
                             <div class="file-preview" id="logo-preview"></div>
                         </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="mb-4">
+                        <div class="col-md-6">
                             <label class="form-label">Authorization Letter</label>
-                            <div class="file-upload-container"
-                                onclick="document.getElementById('auth-letter-file').click()">
-                                <i class="fas fa-file-signature"></i>
-                                <h5>Upload Authorization Letter</h5>
-                                <p class="text-muted">PDF or image file</p>
-                                <input type="file" name="authorizationLetter" class="file-input" id="auth-letter-file">
-                            </div>
+                            <input type="file" class="form-control" name="authorizationLetter" id="authorizationLetter">
                             <div class="file-preview" id="auth-letter-preview"></div>
                         </div>
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="mb-4">
+                        <div class="col-md-6">
                             <label class="form-label">ID Proof</label>
-                            <div class="file-upload-container"
-                                onclick="document.getElementById('id-proof-file').click()">
-                                <i class="fas fa-id-card"></i>
-                                <h5>Upload ID Proof</h5>
-                                <p class="text-muted">Aadhar, PAN, or other government ID</p>
-                                <input type="file" name="idProof" class="file-input" id="id-proof-file">
-                            </div>
+                            <input type="file" class="form-control" name="idProof" id="idProof">
                             <div class="file-preview" id="id-proof-preview"></div>
                         </div>
                     </div>
                 </div>
 
-                <div class="step-buttons">
-                    <button type="button" class="btn btn-secondary prev-step" data-prev="step4">
-                        <i class="fas fa-arrow-left me-2"></i>Previous
-                    </button>
-                    <button type="button" class="btn btn-success" id="submit-btn">
-                        <i class="fas fa-paper-plane me-2"></i>Submit Registration
-                    </button>
+                <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                    <button type="submit" class="btn btn-primary" id="submitBtn">Submit Registration</button>
+                    <button type="button" class="btn btn-secondary" id="cancelEditBtn"
+                        style="display: none;">Cancel</button>
                 </div>
-            </div>
-        </form>
-    </div>
-
-    <!-- Confirmation Modal -->
-    <div class="modal fade" id="confirmationModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content confirmation-modal">
-                <div class="modal-header">
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <i class="fas fa-check-circle"></i>
-                    <h3>Registration Submitted!</h3>
-                    <p class="text-muted">Your institute registration has been successfully submitted for review.</p>
-                    <p>You will receive a confirmation email shortly.</p>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close</button>
-                </div>
-            </div>
+            </form>
         </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        // ✅ JWT Check on Page Load
-        document.addEventListener('DOMContentLoaded', function () {
+        // Global Variables
+        let isEditMode = false;
+        let originalData = null;
+        let hasExistingData = false;
+        // const BASE_URL = 'http://localhost:3000/api';
+        const BASE_URL = `https://alumni-web-api.onrender.com/api`;
+
+        // DOM Elements
+        const editBtn = document.getElementById('editBtn');
+        const cancelEditBtn = document.getElementById('cancelEditBtn');
+        const submitBtn = document.getElementById('submitBtn');
+        const instituteForm = document.getElementById('instituteForm');
+        const alertContainer = document.getElementById('alertContainer');
+
+        // Initialization
+        document.addEventListener('DOMContentLoaded', async function () {
+            await checkExistingInstitute();
+            setupFileUploads();
+            setupFormEvents();
+
+            if (!hasExistingData) enableEditMode();
+        });
+
+        // ───── API Calls ─────
+        async function fetchAllInstitutes() {
             const Token = localStorage.getItem('Token');
-            if (!Token) {
-                window.location.href = "/login.html"; // 👈 redirect to login if Token missing
-                return;
-            }
-            const API_BASE_URL = `https://alumni-web-api.onrender.com`;
-            // const API_BASE_URL = "http://localhost:3000";
-            // Tooltip init
-            var tooltipTriggerList = [].slice.call(document.querySelectorAll('[title]'));
-            var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
-                return new bootstrap.Tooltip(tooltipTriggerEl);
-            });
+            if (!Token) throw new Error("Token not found");
 
-            initFileUploads();
-        });
-
-        // ✅ Multi-step form logic
-        document.querySelectorAll('.next-step').forEach(button => {
-            button.addEventListener('click', function () {
-                const currentStep = this.closest('.form-step');
-                const nextStepId = this.getAttribute('data-next');
-
-                if (validateStep(currentStep)) {
-                    currentStep.classList.remove('active');
-                    document.getElementById(nextStepId).classList.add('active');
-                    updateProgressBar(nextStepId);
-                    updateProgressSteps(nextStepId);
+            const response = await fetch(`${BASE_URL}/institute/all`, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${Token}`,
+                    'Content-Type': 'application/json'
                 }
             });
-        });
 
-        document.querySelectorAll('.prev-step').forEach(button => {
-            button.addEventListener('click', function () {
-                const currentStep = this.closest('.form-step');
-                const prevStepId = this.getAttribute('data-prev');
+            const data = await response.json();
+            console.log(data)
+            if (!response.ok) throw new Error(data.message || "Failed to fetch institutes");
 
-                currentStep.classList.remove('active');
-                document.getElementById(prevStepId).classList.add('active');
-                updateProgressBar(prevStepId);
-                updateProgressSteps(prevStepId);
+            return data.data || [];
+        }
+
+        async function createInstitute(formData) {
+            const Token = localStorage.getItem('Token');
+            if (!Token) throw new Error("Token not found");
+
+            const response = await fetch(`${BASE_URL}/institute/register`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${Token}`
+                },
+                body: formData
             });
-        });
 
-        function validateStep(step) {
-            const requiredInputs = step.querySelectorAll('[required]');
-            let isValid = true;
+            const data = await response.json();
+            if (!response.ok) throw new Error(data.message || "Failed to register institute");
 
-            requiredInputs.forEach(input => {
-                if (!input.value.trim()) {
-                    input.classList.add('is-invalid');
-                    isValid = false;
-                    if (input.closest('.floating-label')) {
-                        input.closest('.floating-label').classList.add('is-invalid');
-                    }
+            // ✅ Redirect after 2 seconds on successful registration
+            setTimeout(() => {
+                window.location.href = "/html/university-dashboard.html";
+            }, 2000);
+
+            return data;
+        }
+
+
+        async function updateInstitute(instituteId, formData) {
+            const Token = localStorage.getItem('Token');
+            if (!Token) throw new Error("Token not found");
+
+            const response = await fetch(`${BASE_URL}/institute/${instituteId}`, {
+                method: 'PUT',
+                headers: {
+                    'Authorization': `Bearer ${Token}`
+                },
+                body: formData
+            });
+
+            const data = await response.json();
+            if (!response.ok) throw new Error(data.message || "Failed to update institute");
+
+            return data;
+        }
+
+        // ───── Data Flow ─────
+        async function checkExistingInstitute() {
+            try {
+                const institutes = await fetchAllInstitutes();
+                if (institutes.length > 0) {
+                    const institute = institutes[0];
+                    localStorage.setItem("universityId", institute._id);
+                    populateForm(institute);
+                    originalData = institute;
+                    hasExistingData = true;
+                    enableViewMode();
                 } else {
-                    input.classList.remove('is-invalid');
-                    if (input.closest('.floating-label')) {
-                        input.closest('.floating-label').classList.remove('is-invalid');
+                    document.getElementById('instituteId').value = '';
+                    hasExistingData = false;
+                }
+            } catch (err) {
+                console.error("Error fetching institutes:", err.message);
+                showAlert('Error fetching institute data: ' + err.message, 'danger');
+                hasExistingData = false;
+            }
+        }
+
+        function populateForm(data) {
+            if (!data) return;
+
+            document.getElementById('instituteId').value = data._id || '';
+            document.getElementById('instituteName').value = data.instituteName || '';
+            document.getElementById('instituteType').value = data.instituteType || '';
+            document.getElementById('email').value = data.email || '';
+            document.getElementById('phone').value = data.phone || '';
+            document.getElementById('website').value = data.website || '';
+            document.getElementById('establishedYear').value = data.establishedYear || '';
+
+            if (data.address) {
+                document.getElementById('city').value = data.address.city || '';
+                document.getElementById('state').value = data.address.state || '';
+                document.getElementById('pinCode').value = data.address.pinCode || '';
+            }
+
+            if (data.contactPerson) {
+                document.getElementById('contactName').value = data.contactPerson.name || '';
+                document.getElementById('contactDesignation').value = data.contactPerson.designation || '';
+                document.getElementById('contactEmail').value = data.contactPerson.email || '';
+                document.getElementById('contactPhone').value = data.contactPerson.phone || '';
+            }
+
+            if (data.affiliations) {
+                document.getElementById('ugc').checked = data.affiliations.includes('UGC');
+                document.getElementById('aicte').checked = data.affiliations.includes('AICTE');
+                document.getElementById('naac').checked = data.affiliations.includes('NAAC');
+                document.getElementById('bci').checked = data.affiliations.includes('BCI');
+
+                toggleElementDisplay('ugc-upload', data.affiliations.includes('UGC'));
+                toggleElementDisplay('aicte-upload', data.affiliations.includes('AICTE'));
+                toggleElementDisplay('naac-upload', data.affiliations.includes('NAAC'));
+                toggleElementDisplay('bci-upload', data.affiliations.includes('BCI'));
+            }
+
+            updateFilePreview('ugc-file-preview', data.ugcCertificate);
+            updateFilePreview('aicte-file-preview', data.aicteApproval);
+            updateFilePreview('naac-file-preview', data.naacAccreditation);
+            updateFilePreview('bci-file-preview', data.bciLicense);
+            updateFilePreview('logo-preview', data.logo);
+            updateFilePreview('auth-letter-preview', data.authorizationLetter);
+            updateFilePreview('id-proof-preview', data.idProof);
+        }
+
+        // ───── View/Edit Modes ─────
+        function enableViewMode() {
+            isEditMode = false;
+            instituteForm.classList.add('form-disabled');
+            editBtn.style.display = hasExistingData ? 'block' : 'none';
+            submitBtn.style.display = 'none';
+            cancelEditBtn.style.display = 'none';
+
+            Array.from(instituteForm.elements).forEach(el => el.disabled = true);
+            editBtn.style.pointerEvents = 'auto';
+        }
+
+        function enableEditMode() {
+            isEditMode = true;
+            instituteForm.classList.remove('form-disabled');
+            editBtn.style.display = 'none';
+            submitBtn.style.display = 'block';
+            submitBtn.textContent = hasExistingData ? 'Update Registration' : 'Submit Registration';
+            cancelEditBtn.style.display = hasExistingData ? 'block' : 'none';
+
+            Array.from(instituteForm.elements).forEach(el => el.disabled = false);
+        }
+
+        function cancelEdit() {
+            if (originalData) populateForm(originalData);
+            enableViewMode();
+        }
+
+        // ───── Event Listeners ─────
+        function setupFormEvents() {
+            editBtn.addEventListener('click', enableEditMode);
+            cancelEditBtn.addEventListener('click', cancelEdit);
+
+            instituteForm.addEventListener('submit', async function (e) {
+                e.preventDefault();
+                const formData = new FormData(instituteForm);
+                const instituteId = localStorage.getItem("universityId");
+
+                // Show loading state
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Processing...';
+
+                try {
+                    let response;
+                    if (hasExistingData && instituteId) {
+                        response = await updateInstitute(instituteId, formData);
+                        showAlert('Institute updated successfully!', 'success');
+                    } else {
+                        response = await createInstitute(formData);
+                        showAlert('Institute registered successfully!', 'success');
+                        if (response._id) {
+                            document.getElementById('instituteId').value = response._id;
+                            localStorage.setItem("universityId", response._id);
+                        }
                     }
+
+                    await checkExistingInstitute();
+                    enableViewMode();
+                } catch (err) {
+                    showAlert(`Error: ${err.message}`, 'danger');
+                    console.error(err);
+                } finally {
+                    // Reset button state
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = hasExistingData ? 'Update Registration' : 'Submit Registration';
                 }
             });
-
-            if (!isValid) {
-                const firstInvalid = step.querySelector('.is-invalid');
-                firstInvalid.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                firstInvalid.classList.add('animate__animated', 'animate__headShake');
-                setTimeout(() => {
-                    firstInvalid.classList.remove('animate__animated', 'animate__headShake');
-                }, 1000);
-            }
-
-            return isValid;
         }
 
-        function updateProgressBar(currentStepId) {
-            const steps = ['step1', 'step2', 'step3', 'step4', 'step5'];
-            const currentIndex = steps.indexOf(currentStepId);
-            const progressPercentage = ((currentIndex + 1) / steps.length) * 100;
-            document.getElementById('formProgress').style.width = `${progressPercentage}%`;
-        }
-
-        function updateProgressSteps(currentStepId) {
-            const steps = ['step1', 'step2', 'step3', 'step4', 'step5'];
-            const currentIndex = steps.indexOf(currentStepId);
-            document.querySelectorAll('.progress-step').forEach(step => {
-                step.classList.remove('active', 'completed');
+        // ───── File Uploads & Previews ─────
+        function setupFileUploads() {
+            const checkboxIds = ['ugc', 'aicte', 'naac', 'bci'];
+            checkboxIds.forEach(id => {
+                document.getElementById(id).addEventListener('change', function () {
+                    toggleElementDisplay(`${id}-upload`, this.checked);
+                });
             });
 
-            for (let i = 0; i < currentIndex; i++) {
-                document.getElementById(`progress-step${i + 1}`).classList.add('completed');
-            }
-            document.getElementById(`progress-step${currentIndex + 1}`).classList.add('active');
-        }
+            const fileMappings = [
+                ['ugc-file', 'ugc-file-preview'],
+                ['aicte-file', 'aicte-file-preview'],
+                ['naac-file', 'naac-file-preview'],
+                ['bci-file', 'bci-file-preview'],
+                ['logo', 'logo-preview'],
+                ['authorizationLetter', 'auth-letter-preview'],
+                ['idProof', 'id-proof-preview']
+            ];
 
-        function initFileUploads() {
-            document.querySelectorAll('.file-input').forEach(input => {
+            fileMappings.forEach(([inputId, previewId]) => {
+                const input = document.getElementById(inputId);
+                const preview = document.getElementById(previewId);
+
                 input.addEventListener('change', function () {
-                    const previewId = this.id + '-preview';
-                    const previewDiv = document.getElementById(previewId);
-
+                    preview.innerHTML = '';
                     if (this.files && this.files[0]) {
-                        previewDiv.innerHTML = '';
-                        const fileInfo = document.createElement('div');
-                        fileInfo.className = 'file-info';
+                        const file = this.files[0];
+                        const fileType = file.type.split('/')[0];
 
-                        const checkboxId = this.id.replace('-file', '');
-                        const checkbox = document.getElementById(checkboxId);
-
-                        if (checkbox) {
-                            checkbox.checked = true;
-                            const uploadDiv = document.getElementById(checkboxId + '-upload');
-                            if (uploadDiv) uploadDiv.style.display = 'block';
-                        }
-
-                        if (this.files[0].type.startsWith('image/')) {
+                        if (fileType === 'image') {
                             const reader = new FileReader();
                             reader.onload = function (e) {
                                 const img = document.createElement('img');
                                 img.src = e.target.result;
                                 img.classList.add('file-preview-img');
-                                previewDiv.appendChild(img);
+                                preview.appendChild(img);
 
-                                fileInfo.innerHTML = `
-                                <div class="file-meta">
-                                    <i class="fas fa-file-image me-2"></i>
-                                    <span>${this.files[0].name}</span>
-                                </div>
-                                <button type="button" class="btn btn-sm btn-danger remove-file" data-input="${this.id}">
-                                    <i class="fas fa-times"></i>
-                                </button>
-                            `;
-                                previewDiv.appendChild(fileInfo);
-                            }.bind(this);
-                            reader.readAsDataURL(this.files[0]);
+                                const fileName = document.createElement('div');
+                                fileName.textContent = file.name;
+                                preview.appendChild(fileName);
+                            };
+                            reader.readAsDataURL(file);
                         } else {
-                            fileInfo.innerHTML = `
-                            <div class="file-meta">
-                                <i class="fas fa-file-pdf me-2"></i>
-                                <span>${this.files[0].name}</span>
-                            </div>
-                            <button type="button" class="btn btn-sm btn-danger remove-file" data-input="${this.id}">
-                                <i class="fas fa-times"></i>
-                            </button>
-                        `;
-                            previewDiv.appendChild(fileInfo);
+                            preview.innerHTML = `<i class="fas fa-file"></i> ${file.name} (${(file.size / 1024).toFixed(2)} KB)`;
                         }
-                    }
-                });
-            });
-
-            document.addEventListener('click', function (e) {
-                if (e.target.closest('.remove-file')) {
-                    const button = e.target.closest('.remove-file');
-                    const inputId = button.getAttribute('data-input');
-                    removeFile(inputId);
-                }
-            });
-
-            document.querySelectorAll('.affiliation-checkbox').forEach(checkbox => {
-                checkbox.addEventListener('change', function () {
-                    const uploadDivId = this.id + '-upload';
-                    const uploadDiv = document.getElementById(uploadDivId);
-                    if (this.checked) {
-                        if (uploadDiv) uploadDiv.style.display = 'block';
-                    } else {
-                        if (uploadDiv) {
-                            uploadDiv.style.display = 'none';
-                            const fileInput = uploadDiv.querySelector('.file-input');
-                            if (fileInput) {
-                                fileInput.value = '';
-                                const previewDiv = document.getElementById(fileInput.id + '-preview');
-                                if (previewDiv) previewDiv.innerHTML = '';
-                            }
-                        }
-                    }
-                });
-            });
-
-            document.querySelectorAll('.file-upload-container').forEach(container => {
-                container.addEventListener('dragover', (e) => {
-                    e.preventDefault();
-                    container.style.borderColor = 'var(--primary-color)';
-                    container.style.backgroundColor = 'rgba(78, 115, 223, 0.1)';
-                });
-
-                container.addEventListener('dragleave', () => {
-                    container.style.borderColor = '#d1d3e2';
-                    container.style.backgroundColor = '';
-                });
-
-                container.addEventListener('drop', (e) => {
-                    e.preventDefault();
-                    container.style.borderColor = '#d1d3e2';
-                    container.style.backgroundColor = '';
-                    const fileInput = container.querySelector('input[type="file"]');
-                    if (fileInput && e.dataTransfer.files.length) {
-                        fileInput.files = e.dataTransfer.files;
-                        const event = new Event('change');
-                        fileInput.dispatchEvent(event);
                     }
                 });
             });
         }
 
-        function removeFile(inputId) {
-            const input = document.getElementById(inputId);
-            const previewDiv = document.getElementById(inputId + '-preview');
-            input.value = '';
-            if (previewDiv) previewDiv.innerHTML = '';
+        // ───── Alert System ─────
+        function showAlert(message, type) {
+            // Remove any existing alerts
+            const existingAlerts = document.querySelectorAll('.alert-fixed-top');
+            existingAlerts.forEach(alert => alert.remove());
 
-            const checkboxId = inputId.replace('-file', '');
-            const checkbox = document.getElementById(checkboxId);
-            if (checkbox) {
-                checkbox.checked = false;
-                const uploadDiv = document.getElementById(checkboxId + '-upload');
-                if (uploadDiv) uploadDiv.style.display = 'none';
+            const alertDiv = document.createElement('div');
+            alertDiv.className = `alert alert-${type} alert-dismissible fade show alert-fixed-top`;
+            alertDiv.role = 'alert';
+
+            // Add icon based on alert type
+            let iconClass;
+            switch (type) {
+                case 'success':
+                    iconClass = 'fa-check-circle';
+                    break;
+                case 'danger':
+                    iconClass = 'fa-exclamation-circle';
+                    break;
+                case 'warning':
+                    iconClass = 'fa-exclamation-triangle';
+                    break;
+                default:
+                    iconClass = 'fa-info-circle';
             }
+
+            alertDiv.innerHTML = `
+                <i class="fas ${iconClass} me-2"></i>
+                ${message}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            `;
+
+            alertContainer.appendChild(alertDiv);
+
+            // Auto-dismiss after 5 seconds
+            setTimeout(() => {
+                const bsAlert = new bootstrap.Alert(alertDiv);
+                bsAlert.close();
+            }, 5000);
         }
 
-        // ✅ Final Form Submit With Token
-        document.getElementById('submit-btn').addEventListener('click', async function (e) {
-            e.preventDefault();
+        // ───── Utilities ─────
+        function toggleElementDisplay(elementId, show) {
+            const el = document.getElementById(elementId);
+            if (el) el.style.display = show ? 'block' : 'none';
+        }
 
-            let allValid = true;
-            document.querySelectorAll('.form-step').forEach(step => {
-                if (!validateStep(step)) allValid = false;
-            });
+        function updateFilePreview(previewId, filePath) {
+            const preview = document.getElementById(previewId);
+            if (!preview || !filePath) return;
+            preview.innerHTML = '';
 
-            if (!allValid) {
-                alert('Please fill all required fields in all steps before submitting.');
-                return;
+            const fileName = filePath.split('\\').pop().split('/').pop();
+            const fileExtension = fileName.split('.').pop().toLowerCase();
+            const imageExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
+
+            if (imageExtensions.includes(fileExtension)) {
+                const imageUrl = filePath.replace(/\\/g, '/');
+                const img = document.createElement('img');
+                img.src = imageUrl;
+                img.classList.add('file-preview-img');
+
+                img.onerror = () => {
+                    preview.innerHTML = `<i class="fas fa-file-image"></i>`;
+                };
+
+                preview.appendChild(img);
+            } else {
+                preview.innerHTML = `<i class="fas fa-file"></i>`;
             }
-
-            const submitBtn = document.getElementById('submit-btn');
-            submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Submitting...';
-            submitBtn.disabled = true;
-
-            const formData = new FormData(document.getElementById('instituteForm'));
-            const Token = localStorage.getItem('Token'); // ✅ Get Token
-
-            try {
-                const response = await fetch(`${API_BASE_URL}/api/institute/register`, {
-                    method: 'POST',
-                    headers: {
-                        'Authorization': `Bearer ${Token}` // ✅ Include Token
-                    },
-                    body: formData
-                });
-
-                const result = await response.json();
-
-                if (response.ok) {
-                    var confirmationModal = new bootstrap.Modal(document.getElementById('confirmationModal'));
-                    confirmationModal.show();
-
-                    // ✅ 2 second ke baad redirect karo relative path se
-                    setTimeout(() => {
-                        window.location.href = "/html/university-dashboard.html";
-                    }, 2000); // 2000ms = 2 seconds
-
-                    // ✅ Form reset and UI cleanup
-                    document.getElementById('instituteForm').reset();
-
-                    // File previews clear karo
-                    document.querySelectorAll('.file-preview').forEach(div => div.innerHTML = '');
-
-                    // Form steps reset
-                    document.querySelectorAll('.form-step').forEach(step => step.classList.remove('active'));
-                    document.getElementById('step1').classList.add('active');
-                    updateProgressBar('step1');
-                    updateProgressSteps('step1');
-
-                    // Affiliation checkboxes reset
-                    document.querySelectorAll('.affiliation-checkbox').forEach(checkbox => {
-                        checkbox.checked = false;
-                        const uploadDivId = checkbox.id + '-upload';
-                        document.getElementById(uploadDivId).style.display = 'none';
-                    });
-                }
-                else {
-                    alert('Error: ' + (result.message || 'Registration failed'));
-                }
-
-                console.log(result);
-            } catch (error) {
-                console.error('Error:', error);
-                alert('An error occurred while submitting the form.');
-            } finally {
-                submitBtn.innerHTML = '<i class="fas fa-paper-plane me-2"></i>Submit Registration';
-                submitBtn.disabled = false;
-            }
-        });
+        }
     </script>
-
-
-
 </body>
 
 </html>

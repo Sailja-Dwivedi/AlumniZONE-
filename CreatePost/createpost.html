@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Create Post</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Bootstrap CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #1877f2;
+            --secondary-color: #42b72a;
+            --bg-color: #f0f2f5;
+            --card-color: #ffffff;
+            --text-primary: #050505;
+            --text-secondary: #65676b;
+            --divider-color: #ced0d4;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            font-family: 'Segoe UI', Helvetica, Arial, sans-serif;
+        }
+
+        .navbar-custom {
+            background-color: var(--primary-color);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .navbar-brand {
+            font-weight: bold;
+            font-size: 1.8rem;
+            color: white !important;
+        }
+
+        .create-post-container {
+            background-color: var(--card-color);
+            border-radius: 8px;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+            padding: 16px;
+            margin-bottom: 16px;
+        }
+
+        .create-post-header {
+            font-weight: 600;
+            margin-bottom: 16px;
+            color: var(--text-primary);
+        }
+
+        .post-input {
+            border: none;
+            background-color: var(--bg-color);
+            border-radius: 18px;
+            padding: 12px 16px;
+            resize: none;
+        }
+
+        .post-input:focus {
+            outline: none;
+            box-shadow: none;
+        }
+
+        .post-options {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 1px solid var(--divider-color);
+        }
+
+        .option-btn {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            color: var(--text-secondary);
+            font-weight: 600;
+        }
+
+        .option-btn:hover {
+            background-color: rgba(0, 0, 0, 0.05);
+        }
+
+        .option-btn i {
+            margin-right: 8px;
+            font-size: 1.2rem;
+        }
+
+        .btn-primary-custom {
+            background-color: var(--primary-color);
+            border: none;
+            font-weight: 600;
+            padding: 8px 16px;
+        }
+
+        .btn-primary-custom:hover {
+            background-color: #166fe5;
+        }
+
+        .image-preview {
+            position: relative;
+            margin-top: 8px;
+        }
+
+        .image-preview-item {
+            position: relative;
+            display: inline-block;
+            margin-right: 8px;
+            margin-bottom: 8px;
+        }
+
+        .remove-image-btn {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background-color: white;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+            cursor: pointer;
+            color: var(--text-secondary);
+        }
+
+        .preview-image {
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+
+        .container {
+            max-width: 680px;
+            margin-top: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding-left: 8px;
+                padding-right: 8px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark navbar-custom mb-3">
+        <div class="container">
+            <a class="navbar-brand" href="#">
+                <i class="fas fa-university me-2"></i>UniConnect
+            </a>
+            <div class="d-flex align-items-center">
+                <div class="dropdown">
+                    <button class="btn btn-light dropdown-toggle" type="button" id="dropdownMenuButton"
+                        data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="fas fa-user-circle me-1"></i> Profile
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton">
+                        <li><a class="dropdown-item" href="#"><i class="fas fa-user me-2"></i>My Profile</a></li>
+                        <li><a class="dropdown-item" href="#"><i class="fas fa-cog me-2"></i>Settings</a></li>
+                        <li>
+                            <hr class="dropdown-divider">
+                        </li>
+                        <li><a class="dropdown-item" href="#" id="logoutBtn"><i
+                                    class="fas fa-sign-out-alt me-2"></i>Logout</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <!-- Create Post Card -->
+        <div class="create-post-container">
+            <div class="create-post-header">Create Post</div>
+            <form id="createPostForm" enctype="multipart/form-data">
+                <div class="mb-3">
+                    <textarea name="content" class="form-control post-input" placeholder="What's on your mind?" rows="3"
+                        required></textarea>
+                </div>
+
+                <div id="imagePreview" class="image-preview"></div>
+
+                <div class="post-options">
+                    <label class="option-btn">
+                        <i class="fas fa-image text-success"></i>
+                        <span>Photo</span>
+                        <input type="file" name="images" class="d-none" multiple accept="image/*" id="imageUpload">
+                    </label>
+                    <button type="submit" class="btn btn-primary-custom">
+                        <span id="submitText">Post</span>
+                        <div id="submitSpinner" class="spinner-border spinner-border-sm d-none" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        // const BASE_URL = 'http://localhost:3000/api/post';
+        const BASE_URL = `https://alumni-web-api.onrender.com/api/post`;
+
+        const Token = localStorage.getItem('Token');
+        const currentUserId = localStorage.getItem('userId');
+
+        // Check authentication first
+        if (!Token) {
+            alert('Please login first');
+            window.location.href = '/login.html';
+        }
+
+        // Logout functionality
+        document.getElementById('logoutBtn').addEventListener('click', function () {
+            localStorage.removeItem('Token');
+            localStorage.removeItem('userId');
+            localStorage.removeItem('userRole');
+            window.location.href = '/login.html';
+        });
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // Handle image preview
+            document.getElementById('imageUpload').addEventListener('change', function (e) {
+                const previewContainer = document.getElementById('imagePreview');
+                previewContainer.innerHTML = '';
+
+                if (this.files.length > 0) {
+                    for (let i = 0; i < this.files.length; i++) {
+                        const file = this.files[i];
+                        if (file.type.match('image.*')) {
+                            const reader = new FileReader();
+
+                            reader.onload = function (e) {
+                                const previewItem = document.createElement('div');
+                                previewItem.className = 'image-preview-item';
+                                previewItem.innerHTML = `
+                                    <span class="remove-image-btn" data-index="${i}">&times;</span>
+                                    <img src="${e.target.result}" class="preview-image">
+                                `;
+                                previewContainer.appendChild(previewItem);
+
+                                // Add click event to remove button
+                                previewItem.querySelector('.remove-image-btn').addEventListener('click', function () {
+                                    removeImageFromPreview(this.getAttribute('data-index'));
+                                });
+                            }
+
+                            reader.readAsDataURL(file);
+                        }
+                    }
+                }
+            });
+        });
+
+        function removeImageFromPreview(index) {
+            const input = document.getElementById('imageUpload');
+            const files = Array.from(input.files);
+            files.splice(index, 1);
+
+            // Create new DataTransfer to update files
+            const dataTransfer = new DataTransfer();
+            files.forEach(file => dataTransfer.items.add(file));
+            input.files = dataTransfer.files;
+
+            // Trigger change event to update preview
+            const event = new Event('change');
+            input.dispatchEvent(event);
+        }
+
+        document.getElementById('createPostForm').addEventListener('submit', async function (e) {
+            e.preventDefault();
+            const submitBtn = this.querySelector('button[type="submit"]');
+            const submitText = document.getElementById('submitText');
+            const submitSpinner = document.getElementById('submitSpinner');
+
+            try {
+                // Show loading state
+                submitText.textContent = 'Posting...';
+                submitSpinner.classList.remove('d-none');
+                submitBtn.disabled = true;
+
+                const formData = new FormData(this);
+
+                const res = await fetch(`${BASE_URL}/create`, {
+                    method: 'POST',
+                    headers: { Authorization: `Bearer ${Token}` },
+                    body: formData
+                });
+                console.log(res);
+                if (!res.ok) {
+                    const errorData = await res.json();
+                    throw new Error(errorData.message || 'Failed to create post');
+                }
+
+                const data = await res.json();
+                this.reset();
+                document.getElementById('imagePreview').innerHTML = '';
+                alert('Post created successfully!');
+                // window.location.href = 'posts.html'; // Redirect to posts page
+            } catch (error) {
+                console.error('Error creating post:', error);
+                alert(error.message || '❌ Error creating post');
+            } finally {
+                // Reset button state
+                submitText.textContent = 'Post';
+                submitSpinner.classList.add('d-none');
+                submitBtn.disabled = false;
+            }
+        });
+    </script>
+</body>
+
+</html>

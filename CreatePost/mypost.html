@@ -1,0 +1,950 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Social Posts</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Bootstrap CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #1877f2;
+            --secondary-color: #42b72a;
+            --bg-color: #f0f2f5;
+            --card-color: #ffffff;
+            --text-primary: #050505;
+            --text-secondary: #65676b;
+            --divider-color: #ced0d4;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            font-family: 'Segoe UI', Helvetica, Arial, sans-serif;
+        }
+
+        .navbar-custom {
+            background-color: var(--primary-color);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .navbar-brand {
+            font-weight: bold;
+            font-size: 1.8rem;
+            color: white !important;
+        }
+
+        .post-card {
+            background-color: var(--card-color);
+            border-radius: 8px;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+            margin-bottom: 16px;
+            border: none;
+        }
+
+        .post-header {
+            padding: 12px 16px 0;
+        }
+
+        .post-body {
+            padding: 12px 16px;
+        }
+
+        .post-footer {
+            padding: 8px 16px;
+            border-top: 1px solid var(--divider-color);
+            border-bottom: 1px solid var(--divider-color);
+        }
+
+        .post-actions {
+            display: flex;
+            justify-content: space-around;
+            padding: 8px 0;
+        }
+
+        .action-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 8px 0;
+            border-radius: 4px;
+            color: var(--text-secondary);
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            flex: 1;
+        }
+
+        .action-btn:hover {
+            background-color: rgba(0, 0, 0, 0.05);
+        }
+
+        .action-btn i {
+            margin-right: 8px;
+            font-size: 1.1rem;
+        }
+
+        .like-btn.liked {
+            color: var(--primary-color) !important;
+        }
+
+        .comment-section {
+            padding: 8px 16px;
+            background-color: var(--bg-color);
+            border-radius: 0 0 8px 8px;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+
+        .comment-section.expanded {
+            max-height: 500px;
+        }
+
+        .comment-box {
+            background: var(--card-color);
+            padding: 8px 12px;
+            border-radius: 18px;
+            margin-top: 8px;
+            margin-bottom: 8px;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+        }
+
+        .comments-container {
+            max-height: 300px;
+            overflow-y: auto;
+            padding-right: 8px;
+        }
+
+        /* Custom scrollbar for comments */
+        .comments-container::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .comments-container::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+
+        .comments-container::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 10px;
+        }
+
+        .comments-container::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+
+        .post-image {
+            width: 100%;
+            border-radius: 8px;
+            margin-top: 8px;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .post-image:hover {
+            transform: scale(1.01);
+        }
+
+        .image-grid {
+            display: grid;
+            grid-gap: 8px;
+            margin-top: 8px;
+        }
+
+        .image-grid.single {
+            grid-template-columns: 1fr;
+        }
+
+        .image-grid.double {
+            grid-template-columns: 1fr 1fr;
+        }
+
+        .image-grid.triple {
+            grid-template-columns: 1fr 1fr;
+        }
+
+        .image-grid.triple img:first-child {
+            grid-column: span 2;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-right: 10px;
+        }
+
+        .user-name {
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 2px;
+        }
+
+        .post-time {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        .post-content {
+            margin-top: 8px;
+            line-height: 1.4;
+            white-space: pre-line;
+        }
+
+        .like-count {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            padding: 8px 16px;
+            border-bottom: 1px solid var(--divider-color);
+        }
+
+        .comment-input-container {
+            display: flex;
+            align-items: center;
+            margin-top: 8px;
+        }
+
+        .comment-input {
+            flex: 1;
+            border-radius: 18px;
+            border: none;
+            background-color: var(--bg-color);
+            padding: 8px 12px;
+            margin-right: 8px;
+        }
+
+        .comment-input:focus {
+            outline: none;
+            box-shadow: none;
+        }
+
+        .send-comment-btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+
+        .loading-spinner {
+            display: none;
+            width: 3rem;
+            height: 3rem;
+        }
+
+        .create-post-container {
+            background-color: var(--card-color);
+            border-radius: 8px;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+            padding: 16px;
+            margin-bottom: 16px;
+        }
+
+        .create-post-header {
+            font-weight: 600;
+            margin-bottom: 16px;
+            color: var(--text-primary);
+        }
+
+        .post-input {
+            border: none;
+            background-color: var(--bg-color);
+            border-radius: 18px;
+            padding: 12px 16px;
+            resize: none;
+        }
+
+        .post-input:focus {
+            outline: none;
+            box-shadow: none;
+        }
+
+        .post-options {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 1px solid var(--divider-color);
+        }
+
+        .option-btn {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            color: var(--text-secondary);
+            font-weight: 600;
+        }
+
+        .option-btn:hover {
+            background-color: rgba(0, 0, 0, 0.05);
+        }
+
+        .option-btn i {
+            margin-right: 8px;
+            font-size: 1.2rem;
+        }
+
+        .btn-primary-custom {
+            background-color: var(--primary-color);
+            border: none;
+            font-weight: 600;
+            padding: 8px 16px;
+        }
+
+        .btn-primary-custom:hover {
+            background-color: #166fe5;
+        }
+
+        .btn-success-custom {
+            background-color: var(--secondary-color);
+            border: none;
+            font-weight: 600;
+            padding: 8px 16px;
+        }
+
+        .btn-success-custom:hover {
+            background-color: #36a420;
+        }
+
+        .dropdown-menu {
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            border: none;
+        }
+
+        .dropdown-item {
+            padding: 8px 16px;
+        }
+
+        .dropdown-item:hover {
+            background-color: var(--bg-color);
+        }
+
+        .emoji-picker {
+            position: absolute;
+            bottom: 50px;
+            right: 0;
+            z-index: 1000;
+        }
+
+        .image-preview {
+            position: relative;
+            margin-top: 8px;
+        }
+
+        .image-preview-item {
+            position: relative;
+            display: inline-block;
+            margin-right: 8px;
+            margin-bottom: 8px;
+        }
+
+        .remove-image-btn {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background-color: white;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+            cursor: pointer;
+            color: var(--text-secondary);
+        }
+
+        .preview-image {
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+
+        .container {
+            max-width: 680px;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding-left: 8px;
+                padding-right: 8px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark navbar-custom mb-3">
+        <div class="container">
+            <a class="navbar-brand" href="#">
+                <i class="fas fa-university me-2"></i>UniConnect
+            </a>
+            <div class="d-flex align-items-center">
+                <div class="dropdown">
+                    <button class="btn btn-light dropdown-toggle" type="button" id="dropdownMenuButton"
+                        data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="fas fa-user-circle me-1"></i> Profile
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton">
+                        <li><a class="dropdown-item" href="#"><i class="fas fa-user me-2"></i>My Profile</a></li>
+                        <li><a class="dropdown-item" href="#"><i class="fas fa-cog me-2"></i>Settings</a></li>
+                        <li>
+                            <hr class="dropdown-divider">
+                        </li>
+                        <li><a class="dropdown-item" href="#" id="logoutBtn"><i
+                                    class="fas fa-sign-out-alt me-2"></i>Logout</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+
+
+        <!-- Posts Container -->
+        <div id="loadingPosts" class="text-center my-4">
+            <div class="spinner-border text-primary loading-spinner" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+        </div>
+        <div id="postsContainer"></div>
+    </div>
+
+    <!-- Bootstrap JS Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        const BASE_URL = `https://alumni-web-api.onrender.com/api/post`;
+
+        // const BASE_URL = 'http://localhost:3000/api/post';
+        const Token = localStorage.getItem('Token');
+        const currentUserId = localStorage.getItem('userId');
+        const currentUserRole = localStorage.getItem('userRole');
+
+        // Check authentication first
+        if (!Token) {
+            alert('Please login first');
+            window.location.href = '/login.html';
+        }
+
+        // Logout functionality
+        document.getElementById('logoutBtn').addEventListener('click', function () {
+            localStorage.removeItem('Token');
+            localStorage.removeItem('userId');
+            localStorage.removeItem('userRole');
+            window.location.href = '/login.html';
+        });
+
+        document.addEventListener('DOMContentLoaded', () => {
+            fetchPosts();
+
+            // Handle image preview
+            document.getElementById('imageUpload').addEventListener('change', function (e) {
+                const previewContainer = document.getElementById('imagePreview');
+                previewContainer.innerHTML = '';
+
+                if (this.files.length > 0) {
+                    for (let i = 0; i < this.files.length; i++) {
+                        const file = this.files[i];
+                        if (file.type.match('image.*')) {
+                            const reader = new FileReader();
+
+                            reader.onload = function (e) {
+                                const previewItem = document.createElement('div');
+                                previewItem.className = 'image-preview-item';
+                                previewItem.innerHTML = `
+                                    <span class="remove-image-btn" data-index="${i}">&times;</span>
+                                    <img src="${e.target.result}" class="preview-image">
+                                `;
+                                previewContainer.appendChild(previewItem);
+
+                                // Add click event to remove button
+                                previewItem.querySelector('.remove-image-btn').addEventListener('click', function () {
+                                    removeImageFromPreview(this.getAttribute('data-index'));
+                                });
+                            }
+
+                            reader.readAsDataURL(file);
+                        }
+                    }
+                }
+            });
+        });
+
+        function removeImageFromPreview(index) {
+            const input = document.getElementById('imageUpload');
+            const files = Array.from(input.files);
+            files.splice(index, 1);
+
+            // Create new DataTransfer to update files
+            const dataTransfer = new DataTransfer();
+            files.forEach(file => dataTransfer.items.add(file));
+            input.files = dataTransfer.files;
+
+            // Trigger change event to update preview
+            const event = new Event('change');
+            input.dispatchEvent(event);
+        }
+
+        document.getElementById('createPostForm').addEventListener('submit', async function (e) {
+            e.preventDefault();
+            const submitBtn = this.querySelector('button[type="submit"]');
+            const submitText = document.getElementById('submitText');
+            const submitSpinner = document.getElementById('submitSpinner');
+
+            try {
+                // Show loading state
+                submitText.textContent = 'Posting...';
+                submitSpinner.style.display = 'inline-block';
+                submitBtn.disabled = true;
+
+                const formData = new FormData(this);
+
+                const res = await fetch(`${BASE_URL}/create`, {
+                    method: 'POST',
+                    headers: { Authorization: `Bearer ${Token}` },
+                    body: formData
+                });
+
+                if (!res.ok) {
+                    const errorData = await res.json();
+                    throw new Error(errorData.message || 'Failed to create post');
+                }
+
+                const data = await res.json();
+                this.reset();
+                document.getElementById('imagePreview').innerHTML = '';
+                await fetchPosts();
+            } catch (error) {
+                console.error('Error creating post:', error);
+                alert(error.message || '❌ Error creating post');
+            } finally {
+                // Reset button state
+                submitText.textContent = 'Post';
+                submitSpinner.style.display = 'none';
+                submitBtn.disabled = false;
+            }
+        });
+
+        async function fetchPosts() {
+            const loadingIndicator = document.getElementById('loadingPosts');
+            const postsContainer = document.getElementById('postsContainer');
+
+            try {
+                loadingIndicator.style.display = 'block';
+                postsContainer.innerHTML = '';
+
+                const res = await fetch("http://localhost:3000/api/post/mine", {
+                    headers: { Authorization: `Bearer ${Token}` }
+                });
+
+
+                if (!res.ok) {
+                    throw new Error(`HTTP error! status: ${res.status}`);
+                }
+
+                const posts = await res.json();
+                // console.log(posts)
+
+                if (!Array.isArray(posts)) {
+                    throw new Error('Invalid response format: Expected array');
+                }
+
+                if (posts.length === 0) {
+                    postsContainer.innerHTML = `
+                        <div class="post-card text-center p-4">
+                            <i class="fas fa-newspaper fa-3x mb-3 text-muted"></i>
+                            <h5>No posts yet</h5>
+                            <p class="text-muted">Be the first to share something!</p>
+                        </div>`;
+                    return;
+                }
+
+                posts.forEach(post => {
+                    // Ensure all required fields exist with defaults
+                    post.likes = post.likes || [];
+                    post.comments = post.comments || [];
+                    post.images = post.images || [];
+                    post.author = post.author || {
+                        name: 'Unknown', _id: null
+                    };
+
+                    console.log(post.author)
+                    const role = localStorage.getItem("userRole");
+                    const isLiked = post.likes.includes(currentUserId);
+                    const canEditOrDelete = post.author._id === currentUserId || currentUserRole === role;
+
+                    // Format date
+                    const postDate = new Date(post.createdAt).toLocaleString('en-US', {
+                        month: 'short',
+                        day: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit'
+                    });
+
+                    // Build comment list
+                    const commentList = post.comments.map(c => {
+                        const userName = c.user?.name || (typeof c.user === 'string' ? 'User' : 'Unknown');
+                        return `
+                        <div class="comment-box">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <b>${userName}</b> ${c.comment}
+                                </div>
+                                ${((c.user?._id === currentUserId) || currentUserRole === role) ?
+                                `<button class="btn btn-sm btn-link text-danger p-0 btn-delete-comment" 
+                                            data-postid="${post._id}" 
+                                            data-commentid="${c._id}">
+                                    <i class="fas fa-trash-alt"></i>
+                                </button>` : ''}
+                            </div>
+                            <small class="text-muted">${new Date(c.createdAt).toLocaleString('en-US', {
+                                    month: 'short',
+                                    day: 'numeric',
+                                    hour: '2-digit',
+                                    minute: '2-digit'
+                                })}</small>
+                        </div>`;
+                    }).join('');
+
+                    // Build images display
+                    let imagesDisplay = '';
+                    if (post.images.length > 0) {
+                        if (post.images.length === 1) {
+                            imagesDisplay = `
+                                <div class="image-grid single">
+                                    <img src="${post.images[0]}" class="post-image" loading="lazy">
+                                </div>
+                            `;
+                        } else if (post.images.length === 2) {
+                            imagesDisplay = `
+                                <div class="image-grid double">
+                                    ${post.images.map(img => `<img src="${img}" class="post-image" loading="lazy">`).join('')}
+                                </div>
+                            `;
+                        } else {
+                            imagesDisplay = `
+                                <div class="image-grid triple">
+                                    <img src="${post.images[0]}" class="post-image" loading="lazy">
+                                    ${post.images.slice(1, 3).map(img => `<img src="${img}" class="post-image" loading="lazy">`).join('')}
+                                    ${post.images.length > 3 ? `<div class="position-relative">
+                                        <img src="${post.images[3]}" class="post-image" loading="lazy" style="filter: brightness(0.7);">
+                                        <div class="position-absolute top-50 start-50 translate-middle text-white fw-bold">
+                                            +${post.images.length - 3} more
+                                        </div>
+                                    </div>` : ''}
+                                </div>
+                            `;
+                        }
+                    }
+                    console.log(post.author.name);
+                    // Build the post card
+                    postsContainer.innerHTML += `
+                    <div class="card post-card" id="post-${post._id}">
+                        <div class="post-header">
+                            <div class="d-flex align-items-center">
+                                <img src="https://ui-avatars.com/api/?name=${encodeURIComponent(post.author.name)}&background=random" class="user-avatar">
+                                <div>
+                                    <div class="user-name">${post.author.name}</div>
+                                    <div class="post-time">${postDate}</div>
+                                </div>
+                                ${canEditOrDelete ? `
+                                <div class="ms-auto dropdown">
+                                    <button class="btn btn-link text-muted p-0" type="button" data-bs-toggle="dropdown">
+                                        <i class="fas fa-ellipsis-h"></i>
+                                    </button>
+                                    <ul class="dropdown-menu dropdown-menu-end">
+                                        <li><button class="dropdown-item btn-edit" data-id="${post._id}"><i class="fas fa-edit me-2"></i>Edit</button></li>
+                                        <li><button class="dropdown-item btn-delete text-danger" data-id="${post._id}"><i class="fas fa-trash-alt me-2"></i>Delete</button></li>
+                                    </ul>
+                                </div>
+                                ` : ''}
+                            </div>
+                        </div>
+                        
+                        <div class="post-body">
+                            <div class="post-content">${post.content}</div>
+                            ${imagesDisplay}
+                        </div>
+                        
+                        <div class="like-count">
+                            <i class="fas fa-thumbs-up text-primary"></i> ${post.likes.length} ${post.likes.length === 1 ? 'like' : 'likes'}
+                        </div>
+                        
+                        <div class="post-footer">
+                            <div class="post-actions">
+                                <button class="action-btn like-btn ${isLiked ? 'liked' : ''}" data-id="${post._id}">
+                                    <i class="fas fa-thumbs-up"></i> Like
+                                </button>
+                                <button class="action-btn comment-trigger" data-id="${post._id}">
+                                    <i class="fas fa-comment"></i> Comment
+                                </button>
+                                <button class="action-btn">
+                                    <i class="fas fa-share"></i> Share
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="comment-section" id="comment-section-${post._id}">
+                            <div class="comments-container">
+                                ${commentList || '<p class="text-muted text-center my-2">No comments yet</p>'}
+                            </div>
+                            <div class="comment-input-container">
+                                <img src="https://ui-avatars.com/api/?name=You&background=random" class="user-avatar" style="width: 32px; height: 32px;">
+                                <input type="text" class="comment-input comment-input-${post._id}" placeholder="Write a comment..." data-id="${post._id}">
+                                <button class="send-comment-btn btn-submit-comment" data-id="${post._id}">
+                                    <i class="fas fa-paper-plane"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>`;
+                });
+
+                initializePostInteractions();
+            } catch (error) {
+                console.error('Error fetching posts:', error);
+                postsContainer.innerHTML = `
+                    <div class="post-card text-center p-4">
+                        <i class="fas fa-exclamation-triangle fa-3x mb-3 text-danger"></i>
+                        <h5>Failed to load posts</h5>
+                        <p class="text-muted">${error.message}</p>
+                        <button class="btn btn-primary" onclick="fetchPosts()">
+                            <i class="fas fa-sync-alt me-2"></i>Try Again
+                        </button>
+                    </div>`;
+            } finally {
+                loadingIndicator.style.display = 'none';
+            }
+        }
+
+        function initializePostInteractions() {
+            // Like / Unlike
+            document.querySelectorAll('.like-btn').forEach(btn => {
+                btn.addEventListener('click', async () => {
+                    try {
+                        const postId = btn.dataset.id;
+                        const endpoint = btn.classList.contains('liked') ? 'unlike' : 'like';
+                        const icon = btn.querySelector('i');
+
+                        // Optimistic UI update
+                        btn.disabled = true;
+                        if (endpoint === 'like') {
+                            btn.classList.add('liked');
+                            icon.classList.replace('fa-thumbs-up', 'fa-thumbs-up');
+                        } else {
+                            btn.classList.remove('liked');
+                            icon.classList.replace('fa-thumbs-up', 'fa-thumbs-up');
+                        }
+
+                        const res = await fetch(`${BASE_URL}/${postId}/${endpoint}`, {
+                            method: 'POST',
+                            headers: { Authorization: `Bearer ${Token}` }
+                        });
+
+                        if (!res.ok) {
+                            throw new Error('Failed to update like status');
+                        }
+
+                        // Refresh the like count
+                        fetchPosts();
+                    } catch (error) {
+                        console.error('Error updating like:', error);
+                        // Revert UI on error
+                        btn.disabled = false;
+                        if (btn.classList.contains('liked')) {
+                            btn.classList.remove('liked');
+                        } else {
+                            btn.classList.add('liked');
+                        }
+                    }
+                });
+            });
+
+            // Toggle comment section
+            document.querySelectorAll('.comment-trigger').forEach(btn => {
+                btn.addEventListener('click', function () {
+                    const postId = this.dataset.id;
+                    const commentSection = document.getElementById(`comment-section-${postId}`);
+                    commentSection.classList.toggle('expanded');
+
+                    // Scroll to the comment section if it's being expanded
+                    if (commentSection.classList.contains('expanded')) {
+                        setTimeout(() => {
+                            commentSection.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                        }, 100);
+                    }
+                });
+            });
+
+            // Comment Submit
+            document.querySelectorAll('.btn-submit-comment').forEach(btn => {
+                btn.addEventListener('click', async () => {
+                    try {
+                        const postId = btn.dataset.id;
+                        const input = document.querySelector(`.comment-input-${postId}`);
+                        const comment = input.value.trim();
+
+                        if (!comment) {
+                            input.focus();
+                            return;
+                        }
+
+                        btn.disabled = true;
+                        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+
+                        const res = await fetch(`${BASE_URL}/${postId}/comment`, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                Authorization: `Bearer ${Token}`
+                            },
+                            body: JSON.stringify({ comment })
+                        });
+
+                        if (!res.ok) {
+                            const err = await res.json();
+                            throw new Error(err.message || 'Error adding comment');
+                        }
+
+                        input.value = '';
+                        await fetchPosts();
+                    } catch (error) {
+                        console.error('Error adding comment:', error);
+                    } finally {
+                        btn.disabled = false;
+                        btn.innerHTML = '<i class="fas fa-paper-plane"></i>';
+                    }
+                });
+            });
+
+            // Comment input enter key
+            document.querySelectorAll('.comment-input').forEach(input => {
+                input.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') {
+                        const postId = input.dataset.id;
+                        document.querySelector(`.btn-submit-comment[data-id="${postId}"]`).click();
+                    }
+                });
+            });
+
+            // Delete Comment
+            document.querySelectorAll('.btn-delete-comment').forEach(btn => {
+                btn.addEventListener('click', async (e) => {
+                    e.stopPropagation();
+                    try {
+                        const postId = btn.dataset.postid;
+                        const commentId = btn.dataset.commentid;
+
+                        if (!confirm('Are you sure you want to delete this comment?')) return;
+
+                        btn.disabled = true;
+                        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+
+                        const res = await fetch(`${BASE_URL}/${postId}/comment/${commentId}`, {
+                            method: 'DELETE',
+                            headers: { Authorization: `Bearer ${Token}` }
+                        });
+
+                        if (!res.ok) {
+                            const err = await res.json();
+                            throw new Error(err.message || 'Error deleting comment');
+                        }
+
+                        await fetchPosts();
+                    } catch (error) {
+                        console.error('Error deleting comment:', error);
+                        alert(error.message || 'Error deleting comment');
+                    }
+                });
+            });
+
+            // Edit Post
+            document.querySelectorAll('.btn-edit').forEach(btn => {
+                btn.addEventListener('click', async () => {
+                    try {
+                        const postId = btn.dataset.id;
+                        const postElement = document.getElementById(`post-${postId}`);
+                        const currentContent = postElement.querySelector('.post-content').textContent;
+
+                        const newContent = prompt('Edit your post:', currentContent);
+                        if (newContent === null) return; // User cancelled
+
+                        if (!newContent.trim()) {
+                            alert('Post content cannot be empty');
+                            return;
+                        }
+
+                        btn.disabled = true;
+                        btn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i> Updating...';
+
+                        const formData = new FormData();
+                        formData.append('content', newContent);
+
+                        const res = await fetch(`${BASE_URL}/${postId}`, {
+                            method: 'PUT',
+                            headers: { Authorization: `Bearer ${Token}` },
+                            body: formData
+                        });
+
+                        if (!res.ok) {
+                            const err = await res.json();
+                            throw new Error(err.message || 'Error updating post');
+                        }
+
+                        await fetchPosts();
+                    } catch (error) {
+                        console.error('Error updating post:', error);
+                        alert(error.message || 'Error updating post');
+                    }
+                });
+            });
+
+            // Delete Post
+            document.querySelectorAll('.btn-delete').forEach(btn => {
+                btn.addEventListener('click', async () => {
+                    try {
+                        const postId = btn.dataset.id;
+                        if (!confirm('Are you sure you want to delete this post? This cannot be undone.')) return;
+
+                        btn.disabled = true;
+                        btn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i> Deleting...';
+
+                        const res = await fetch(`${BASE_URL}/${postId}`, {
+                            method: 'DELETE',
+                            headers: { Authorization: `Bearer ${Token}` }
+                        });
+
+                        if (!res.ok) {
+                            const err = await res.json();
+                            throw new Error(err.message || 'Error deleting post');
+                        }
+
+                        await fetchPosts();
+                    } catch (error) {
+                        console.error('Error deleting post:', error);
+                        alert(error.message || 'Error deleting post');
+                    }
+                });
+            });
+        }
+    </script>
+</body>
+
+</html>

@@ -338,10 +338,14 @@
         </button>
         <nav>
             <ul id="navMenu">
-                <li><a href="#" class="active">Dashboard</a></li>
-                <li><a href="profile.html">Profile</a></li>
-                <!-- <li><a href="jobs.html">Jobs</a></li> -->
-                <!-- <li><a href="network.html">Network</a></li> -->
+                <li><a href="#" class="active"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+                <li><a href="../index.html"><i class="fas fa-user-tie"></i> Home</a></li>
+                <li><a href="recruiter-updateProfile.html"><i class="fas fa-user"></i> My Profile</a></li>
+
+                <li><a href="../CreatePost/createpost.html"><i class="fas fa-pen-nib"></i> Post Crete</a></li>
+
+                <li><a href="../CreatePost/mypost.html"><i class="fas fa-bullhorn"></i> MY POST</a></li>
+                <li><a href="../CreatePost/social.html"><i class="fas fa-bullhorn"></i> Recent POST</a></li>
                 <li><button onclick="logout()" class="logout-btn">Logout</button></li>
             </ul>
         </nav>
@@ -356,11 +360,14 @@
             </div>
             <ul class="side-menu">
                 <li><a href="#" class="active"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
-                <li><a href="alumni-updateProfile.html"><i class="fas fa-user"></i> My Profile</a></li>
-                <!-- <li><a href="jobs.html"><i class="fas fa-briefcase"></i> Job Opportunities</a></li> -->
-                <!-- <li><a href="events.html"><i class="fas fa-calendar-alt"></i> Events</a></li> -->
-                <!-- <li><a href="messages.html"><i class="fas fa-envelope"></i> Messages</a></li> -->
-                <!-- <li><a href="settings.html"><i class="fas fa-cog"></i> Settings</a></li> -->
+                <li><a href="../index.html"><i class="fas fa-user-tie"></i> Home</a></li>
+                <li><a href="recruiter-updateProfile.html"><i class="fas fa-user"></i> My Profile</a></li>
+
+                <li><a href="../CreatePost/createpost.html"><i class="fas fa-pen-nib"></i> Post Crete</a></li>
+
+                <li><a href="../CreatePost/mypost.html"><i class="fas fa-bullhorn"></i> MY POST</a></li>
+                <li><a href="../CreatePost/social.html"><i class="fas fa-bullhorn"></i> Recent POST</a></li>
+
             </ul>
         </aside>
 
@@ -405,10 +412,10 @@
             const Token = localStorage.getItem('Token');
             const userRole = localStorage.getItem('userRole');
 
-            // if (!Token || userRole !== 'alumni') {
-            //     window.location.href = '../index.html';
-            //     return;
-            // }
+            if (!Token || userRole !== 'recruiter') {
+                window.location.href = '../index.html';
+                return;
+            }
 
             // Mobile menu toggle
             const mobileMenuBtn = document.getElementById('mobileMenuBtn');
@@ -459,13 +466,13 @@
                 console.log('Profile data:', result);
 
                 // Update UI with profile data
-                document.getElementById('alumniName').textContent = result.fullName || 'Alumni User';
-                document.getElementById('alumniUniversity').textContent = result.college || 'University';
-                document.getElementById('welcomeName').textContent = result.fullName?.split(' ')[0] || 'Alumni';
+                document.getElementById('alumniName').textContent = result.user.name || 'Alumni User';
+                document.getElementById('alumniUniversity').textContent = result.user.role || 'University';
+                document.getElementById('welcomeName').textContent = result.user.name;
 
                 // Update profile picture if available
                 if (result.imageUrl) {
-                    document.getElementById('logo').src = `${API_BASE_URL}/uploads/${result.imageUrl}`;
+                    document.getElementById('logo').src = `${result.imageUrl}`;
                 }
 
             } catch (error) {

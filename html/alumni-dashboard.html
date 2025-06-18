@@ -339,9 +339,13 @@
         <nav>
             <ul id="navMenu">
                 <li><a href="#" class="active">Dashboard</a></li>
-                <li><a href="profile.html">Profile</a></li>
-                <!-- <li><a href="jobs.html">Jobs</a></li> -->
-                <!-- <li><a href="network.html">Network</a></li> -->
+                <li><a href="../index.html"><i class="fas fa-user-tie"></i> Home</a></li>
+                <!-- <li><a href="../index.html"><i class="fas fa-user-tie"></i> Home</a></li> -->
+                <li><a href="alumni-updateProfile.html"><i class="fas fa-user"></i> My Profile</a></li>
+                <!-- <li><a href=""><i class="fas fa-university"></i> University POST</a></li> -->
+                <li><a href="../CreatePost/social.html"><i class="fas fa-user-tie"></i> Recruiters POST</a></li>
+
+                <li><a href="../CreatePost/createpost.html"><i class="fas fa-pen-nib"></i> Post Create</a></li>
                 <li><button onclick="logout()" class="logout-btn">Logout</button></li>
             </ul>
         </nav>
@@ -356,11 +360,14 @@
             </div>
             <ul class="side-menu">
                 <li><a href="#" class="active"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+                <li><a href="../index.html"><i class="fas fa-user-tie"></i> Home</a></li>
                 <li><a href="alumni-updateProfile.html"><i class="fas fa-user"></i> My Profile</a></li>
-                <!-- <li><a href="jobs.html"><i class="fas fa-briefcase"></i> Job Opportunities</a></li> -->
-                <!-- <li><a href="events.html"><i class="fas fa-calendar-alt"></i> Events</a></li>
-                <li><a href="messages.html"><i class="fas fa-envelope"></i> Messages</a></li>
-                <li><a href="settings.html"><i class="fas fa-cog"></i> Settings</a></li> -->
+                <!-- <li><a href=""><i class="fas fa-university"></i> University POST</a></li> -->
+                <li><a href="../CreatePost/social.html"><i class="fas fa-user-tie"></i> Recruiters POST</a></li>
+
+                <li><a href="../CreatePost/createpost.html"><i class="fas fa-pen-nib"></i> Post Create</a></li>
+
+
             </ul>
         </aside>
 
@@ -402,9 +409,9 @@
             // const API_BASE_URL = 'http://localhost:3000'; // Replace with your actual API base URL
             const API_BASE_URL = `https://alumni-web-api.onrender.com`;
 
-            // if (!Token || userRole !== 'alumni') {
-            //     window.location.href = '../index.html';
-            // }
+            if (!Token || userRole !== 'alumni') {
+                window.location.href = '../index.html';
+            }
 
             // Mobile menu toggle
             const mobileMenuBtn = document.getElementById('mobileMenuBtn');
@@ -455,7 +462,7 @@
                 // Update UI with profile data
                 document.getElementById('alumniName').textContent = result.name || 'Alumni User';
                 document.getElementById('alumniUniversity').textContent = result.role || 'University';
-                document.getElementById('welcomeName').textContent = result.fullName?.split(' ')[0] || 'Alumni';
+                document.getElementById('welcomeName').textContent = result.name?.split(' ')[0] || 'Alumni';
 
                 if (data.imageUrl) {
                     document.getElementById('logo').src = data.imageUrl;

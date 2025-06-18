@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Institutes with Pagination</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .institute-card {
+            cursor: pointer;
+            transition: 0.3s ease;
+            position: relative;
+        }
+
+        .institute-card:hover {
+            transform: scale(1.03);
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .institute-logo {
+            width: 100%;
+            height: 200px;
+            object-fit: contain;
+        }
+
+        @media (max-width: 768px) {
+            .institute-logo {
+                height: 150px;
+            }
+
+            .col-md-4 {
+                flex: 0 0 100%;
+                max-width: 100%;
+            }
+        }
+
+        .lazy {
+            background-color: #f8f9fa;
+            min-height: 200px;
+        }
+
+        .verified-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: #28a745;
+            color: white;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .status-badge {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            color: white;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .status-pending {
+            background-color: #ffc107;
+        }
+
+        .status-rejected {
+            background-color: #dc3545;
+        }
+
+        .institute-card {
+            cursor: pointer;
+            transition: 0.3s ease;
+            position: relative;
+            height: 100%;
+        }
+
+        .institute-card:hover {
+            transform: scale(1.03);
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .institute-logo {
+            width: 100%;
+            height: 200px;
+            object-fit: contain;
+        }
+
+        .verified-badge,
+        .status-badge {
+            position: absolute;
+            top: 10px;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: bold;
+            color: white;
+        }
+
+        .verified-badge {
+            right: 10px;
+            background-color: #28a745;
+        }
+
+        .status-badge {
+            left: 10px;
+        }
+
+        .status-pending {
+            background-color: #ffc107;
+            color: #000;
+        }
+
+        .status-rejected {
+            background-color: #dc3545;
+        }
+
+        /* Responsive Styles */
+        @media (max-width: 768px) {
+            .col-md-4 {
+                flex: 0 0 100%;
+                max-width: 100%;
+            }
+
+            .institute-logo {
+                height: 160px;
+            }
+
+            .modal-content {
+                padding: 10px;
+            }
+
+            .modal-body img {
+                width: 100%;
+                max-height: 140px;
+                object-fit: contain;
+            }
+
+            #pageInfo {
+                font-size: 14px;
+            }
+
+            .input-group,
+            .form-select {
+                width: 100%;
+            }
+
+            .form-select {
+                margin-bottom: 15px;
+            }
+
+            .card-body h5 {
+                font-size: 1.1rem;
+            }
+
+            .card-body p {
+                font-size: 0.9rem;
+            }
+
+            .d-flex.justify-content-center.mt-4 {
+                flex-direction: column;
+                align-items: center;
+                gap: 10px;
+            }
+        }
+
+        .modal-body {
+            padding: 1rem;
+        }
+    </style>
+
+
+</head>
+
+<body class="bg-light">
+
+    <div class="container py-5">
+        <!-- Search Box -->
+        <div class="row mb-4 text-center">
+
+            <div class="col-md-6 mx-auto">
+                <div class="input-group">
+                    <input type="text" id="searchInput" class="form-control" placeholder="Search institutes...">
+                    <button class="btn btn-outline-secondary" type="button" id="searchBtn">Search</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sort Dropdown -->
+        <div class="row mb-4">
+            <div class="col-md-3">
+                <select class="form-select" id="sortSelect">
+                    <option value="name-asc">Name (A-Z)</option>
+                    <option value="name-desc">Name (Z-A)</option>
+                    <option value="type-asc">Type (A-Z)</option>
+                    <option value="type-desc">Type (Z-A)</option>
+                    <option value="status-asc">Status (A-Z)</option>
+                    <option value="status-desc">Status (Z-A)</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Loading Spinner -->
+        <div id="loading-spinner" class="text-center py-5">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+        </div>
+
+        <!-- Institute List -->
+        <div class="row" id="institute-list"></div>
+
+        <!-- Pagination Controls -->
+        <div class="d-flex justify-content-center mt-4">
+            <button class="btn btn-secondary me-2" id="prevBtn">Previous</button>
+            <span id="pageInfo" class="mx-3 align-self-center">Page 1 of 1</span>
+            <button class="btn btn-secondary" id="nextBtn">Next</button>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="instituteModal" tabindex="-1" aria-labelledby="instituteModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="instituteModalLabel">Institute Details</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="modalBody">
+                    <!-- Institute details will be injected here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // const API_URL = "http://localhost:3000/api/public/institutes";
+        const API_URL = `https://alumni-web-api.onrender.com/api/public/institutes`;
+        const ITEMS_PER_PAGE = 6;
+        let currentPage = 1;
+        let approvedInstitutes = [];
+        let filteredInstitutes = [];
+
+        async function fetchInstitutes() {
+            try {
+                document.getElementById('loading-spinner').style.display = 'block';
+                const res = await fetch(API_URL);
+                if (!res.ok) throw new Error('Network response was not ok');
+                const data = await res.json();
+                approvedInstitutes = data.filter(inst => inst.status !== 'pending' && inst.status !== 'rejected');
+                renderInstitutes();
+            } catch (error) {
+                console.error("Error fetching institutes:", error);
+                const list = document.getElementById('institute-list');
+                list.innerHTML = `
+                    <div class="col-12 text-center py-5">
+                        <div class="alert alert-danger">
+                            Failed to load institutes. Please try again later.
+                        </div>
+                        <button class="btn btn-primary" onclick="fetchInstitutes()">Retry</button>
+                    </div>
+                `;
+            } finally {
+                document.getElementById('loading-spinner').style.display = 'none';
+            }
+        }
+
+        function renderInstitutes(useFiltered = false) {
+            const list = document.getElementById('institute-list');
+            list.innerHTML = '';
+
+            const dataToUse = useFiltered ? filteredInstitutes : approvedInstitutes;
+            const start = (currentPage - 1) * ITEMS_PER_PAGE;
+            const end = start + ITEMS_PER_PAGE;
+            const paginatedData = dataToUse.slice(start, end);
+
+            if (paginatedData.length === 0) {
+                list.innerHTML = `
+                    <div class="col-12 text-center py-5">
+                        <div class="alert alert-info">
+                            No institutes found. Try adjusting your search.
+                        </div>
+                    </div>
+                `;
+                updateButtons(dataToUse);
+                return;
+            }
+
+            paginatedData.forEach((inst, index) => {
+                const col = document.createElement('div');
+                col.className = 'col-md-4 mb-4';
+
+                // Determine status badge
+                let statusBadge = '';
+                if (inst.status === 'Verified') {
+                    statusBadge = '<span class="verified-badge">Verified</span>';
+                } else if (inst.status === 'pending') {
+                    statusBadge = '<span class="status-badge status-pending">Pending</span>';
+                } else if (inst.status === 'rejected') {
+                    statusBadge = '<span class="status-badge status-rejected">Rejected</span>';
+                }
+
+                col.innerHTML = `
+                    <div class="card institute-card" onclick="showDetails(${start + index}, ${useFiltered})">
+                        ${statusBadge}
+                        <img src="placeholder.jpg" data-src="${inst.logo}" alt="${inst.instituteName}" class="card-img-top institute-logo lazy">
+                        <div class="card-body text-center">
+                            <h5 class="card-title">${inst.instituteName}</h5>
+                            <p class="text-muted">${inst.instituteType}</p>
+                        </div>
+                    </div>
+                `;
+                list.appendChild(col);
+            });
+
+            // Initialize lazy loading
+            initLazyLoading();
+            updateButtons(dataToUse);
+        }
+
+        function initLazyLoading() {
+            const lazyImages = [].slice.call(document.querySelectorAll('img.lazy'));
+
+            if ('IntersectionObserver' in window) {
+                let lazyImageObserver = new IntersectionObserver(function (entries, observer) {
+                    entries.forEach(function (entry) {
+                        if (entry.isIntersecting) {
+                            let lazyImage = entry.target;
+                            lazyImage.src = lazyImage.dataset.src;
+                            lazyImage.classList.remove('lazy');
+                            lazyImageObserver.unobserve(lazyImage);
+                        }
+                    });
+                });
+
+                lazyImages.forEach(function (lazyImage) {
+                    lazyImageObserver.observe(lazyImage);
+                });
+            }
+        }
+
+        function updateButtons(data = approvedInstitutes) {
+            const totalPages = Math.ceil(data.length / ITEMS_PER_PAGE);
+            document.getElementById('prevBtn').disabled = currentPage === 1;
+            document.getElementById('nextBtn').disabled = currentPage === totalPages || totalPages === 0;
+            document.getElementById('pageInfo').textContent = `Page ${currentPage} of ${totalPages}`;
+        }
+
+        function showDetails(index, isFromFiltered = false) {
+            const inst = isFromFiltered ? filteredInstitutes[index] : approvedInstitutes[index];
+            const modalBody = document.getElementById('modalBody');
+
+            // Status badge for modal
+            let statusBadge = '';
+            if (inst.status === 'Verified') {
+                statusBadge = '<span class="badge bg-success mb-3">Verified</span>';
+            } else if (inst.status === 'pending') {
+                statusBadge = '<span class="badge bg-warning text-dark mb-3">Pending</span>';
+            } else if (inst.status === 'rejected') {
+                statusBadge = '<span class="badge bg-danger mb-3">Rejected</span>';
+            }
+
+            modalBody.innerHTML = `
+                <div class="text-center mb-4">
+                    <img src="${inst.logo}" alt="${inst.instituteName}" style="max-height: 150px; object-fit: contain;">
+                    ${statusBadge}
+                </div>
+                <h4 class="text-center">${inst.instituteName}</h4>
+                <p class="text-center"><strong>Type:</strong> ${inst.instituteType}</p>
+                <hr>
+                <p><strong>Email:</strong> ${inst.email}</p>
+                <p><strong>Phone:</strong> ${inst.phone}</p>
+                <p><strong>Website:</strong> <a href="${inst.website}" target="_blank">${inst.website}</a></p>
+                <p><strong>Affiliations:</strong> ${inst.affiliations.join(", ")}</p>
+                <p><strong>Address:</strong> ${inst.address.city}, ${inst.address.state} - ${inst.address.pinCode}</p>
+                <hr>
+                <h5>Added By:</h5>
+                <p><strong>Name:</strong> ${inst.userId.name}</p>
+                <p><strong>Email:</strong> ${inst.userId.email}</p>
+                <p><strong>Role:</strong> ${inst.userId.role}</p>
+            `;
+            const modal = new bootstrap.Modal(document.getElementById('instituteModal'));
+            modal.show();
+        }
+
+        // Event Listeners
+        document.getElementById('prevBtn').addEventListener('click', () => {
+            if (currentPage > 1) {
+                currentPage--;
+                renderInstitutes();
+            }
+        });
+
+        document.getElementById('nextBtn').addEventListener('click', () => {
+            const totalPages = Math.ceil((filteredInstitutes.length > 0 ? filteredInstitutes : approvedInstitutes).length / ITEMS_PER_PAGE);
+            if (currentPage < totalPages) {
+                currentPage++;
+                renderInstitutes(filteredInstitutes.length > 0);
+            }
+        });
+
+        document.getElementById('searchBtn').addEventListener('click', () => {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            filteredInstitutes = approvedInstitutes.filter(inst =>
+                inst.instituteName.toLowerCase().includes(searchTerm) ||
+                inst.instituteType.toLowerCase().includes(searchTerm) ||
+                inst.address.city.toLowerCase().includes(searchTerm)
+            );
+            currentPage = 1;
+            renderInstitutes(true);
+        });
+
+        document.getElementById('sortSelect').addEventListener('change', (e) => {
+            const value = e.target.value;
+
+            approvedInstitutes.sort((a, b) => {
+                switch (value) {
+                    case 'name-asc': return a.instituteName.localeCompare(b.instituteName);
+                    case 'name-desc': return b.instituteName.localeCompare(a.instituteName);
+                    case 'type-asc': return a.instituteType.localeCompare(b.instituteType);
+                    case 'type-desc': return b.instituteType.localeCompare(a.instituteType);
+                    case 'status-asc': return a.status.localeCompare(b.status);
+                    case 'status-desc': return b.status.localeCompare(a.status);
+                    default: return 0;
+                }
+            });
+
+            currentPage = 1;
+            renderInstitutes();
+        });
+
+        // Initial Fetch
+        fetchInstitutes();
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

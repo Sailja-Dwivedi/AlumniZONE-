@@ -331,9 +331,10 @@
     <script>
         window.addEventListener('DOMContentLoaded', async () => {
             const select = document.getElementById('college');
-
+            const API_BASE_URL = `https://alumni-web-api.onrender.com`;
+            // const API_BASE_URL = "http://localhost:3000";
             try {
-                const response = await fetch('http://localhost:3000/api/verified-institutes');
+                const response = await fetch(`${API_BASE_URL}/api/verified-institutes`);
                 const result = await response.json();
 
                 if (result.success && Array.isArray(result.data)) {
@@ -610,14 +611,22 @@
                         localStorage.setItem("alumniId", result._id);
                         cancelEditing();
 
-                        // ✅ Redirect to alumni dashboard only on create
-                        window.location.href = "/html/alumni-dashboard.html";
+                        // ✅ Redirect after 5 seconds
+                        setTimeout(() => {
+                            window.location.href = "/html/alumni-dashboard.html";
+                        }, 5000);
                     } else {
                         cancelEditing();
-                        // ✅ Only reload if it's an update
-                        window.location.reload();
+
+                        // ✅ Reload after 5 seconds
+                        setTimeout(() => {
+                            window.location.href = "/html/alumni-dashboard.html";
+                            // Optional: Reload the dashboard after redirect (only if needed)
+                            // window.location.reload();
+                        }, 5000);
                     }
                 }
+
 
             } catch (error) {
                 console.error("Save error:", error);
