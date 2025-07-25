@@ -507,6 +507,26 @@
             background-color: #f3e5f5;
             color: #8e24aa;
         }
+
+        /* Share Modal Styles */
+        .modal-content {
+            border-radius: 12px;
+        }
+
+        .share-options {
+            display: flex;
+            gap: 8px;
+            margin-top: 15px;
+        }
+
+        .share-options button {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 8px;
+            flex-grow: 1;
+        }
     </style>
 </head>
 
@@ -520,15 +540,9 @@
                 </a>
                 <div class="d-flex align-items-center">
                     <div class="dropdown">
-                        <!-- <button class="btn btn-light dropdown-toggle" type="button" id="dropdownMenuButton"
-                            data-bs-toggle="dropdown" aria-expanded="false">
-                            <i class="fas fa-user-circle me-1"></i> Profile
-                        </button> -->
                         <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton">
-                            <!-- <li><a class="dropdown-item" href="#"><i class="fas fa-user me-2"></i>My Profile</a></li>
-                            <li><a class="dropdown-item" href="#"><i class="fas fa-cog me-2"></i>Settings</a></li>
-                            <li> -->
-                            <hr class="dropdown-divider">
+                            <li>
+                                <hr class="dropdown-divider">
                             </li>
                             <li><a class="dropdown-item" href="#" id="logoutBtn"><i
                                         class="fas fa-sign-out-alt me-2"></i>Logout</a></li>
@@ -852,7 +866,7 @@
                             <button class="action-btn comment-trigger" data-id="${post._id}">
                                 <i class="fas fa-comment"></i> Comment
                             </button>
-                            <button class="action-btn">
+                            <button class="action-btn share-btn" data-id="${post._id}">
                                 <i class="fas fa-share"></i> Share
                             </button>
                         </div>
@@ -883,16 +897,19 @@
                     try {
                         const postId = btn.dataset.id;
                         const endpoint = btn.classList.contains('liked') ? 'unlike' : 'like';
-                        const icon = btn.querySelector('i');
-
+                        const likeCountElement = btn.closest('.post-card').querySelector('.like-count i');
+                        const currentLikeCount = parseInt(btn.closest('.post-card').querySelector('.like-count').textContent.match(/\d+/)[0]);
+                        
                         // Optimistic UI update
                         btn.disabled = true;
                         if (endpoint === 'like') {
                             btn.classList.add('liked');
-                            icon.classList.replace('fa-thumbs-up', 'fa-thumbs-up');
+                            btn.querySelector('i').classList.add('text-primary');
+                            likeCountElement.parentElement.textContent = ` ${currentLikeCount + 1} ${currentLikeCount + 1 === 1 ? 'like' : 'likes'}`;
                         } else {
                             btn.classList.remove('liked');
-                            icon.classList.replace('fa-thumbs-up', 'fa-thumbs-up');
+                            btn.querySelector('i').classList.remove('text-primary');
+                            likeCountElement.parentElement.textContent = ` ${currentLikeCount - 1} ${currentLikeCount - 1 === 1 ? 'like' : 'likes'}`;
                         }
 
                         const res = await fetch(`${BASE_URL}/${postId}/${endpoint}`, {
@@ -904,17 +921,20 @@
                             throw new Error('Failed to update like status');
                         }
 
-                        // Refresh the like count
-                        fetchPosts();
+                        // No need to refresh the whole page now
+                        btn.disabled = false;
                     } catch (error) {
                         console.error('Error updating like:', error);
                         // Revert UI on error
                         btn.disabled = false;
                         if (btn.classList.contains('liked')) {
                             btn.classList.remove('liked');
+                            btn.querySelector('i').classList.remove('text-primary');
                         } else {
                             btn.classList.add('liked');
+                            btn.querySelector('i').classList.add('text-primary');
                         }
+                        alert('Failed to update like. Please try again.');
                     }
                 });
             });
@@ -1083,6 +1103,61 @@
                         console.error('Error deleting post:', error);
                         alert(error.message || 'Error deleting post');
                     }
+                });
+            });
+
+            // Share Button
+            document.querySelectorAll('.share-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const postId = this.dataset.id;
+                    const postElement = document.getElementById(`post-${postId}`);
+                    const postContent = postElement.querySelector('.post-content').textContent;
+                    const postUrl = `${window.location.origin}${window.location.pathname}#post-${postId}`;
+                    
+                    // Create a temporary share modal
+                    const shareModal = `
+                        <div class="modal fade" id="shareModal" tabindex="-1" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title">Share This Post</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div class="mb-3">
+                                            <label class="form-label">Share Link:</label>
+                                            <input type="text" class="form-control" value="${postUrl}" readonly>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label">Add Message (Optional):</label>
+                                            <textarea class="form-control" rows="3" placeholder="Write something..."></textarea>
+                                        </div>
+                                        <div class="share-options d-flex gap-2">
+                                            <button class="btn btn-outline-primary flex-grow-1" onclick="navigator.clipboard.writeText('${postUrl}'); alert('Link copied!')">
+                                                <i class="fas fa-copy"></i> Copy Link
+                                            </button>
+                                            <button class="btn btn-outline-success flex-grow-1" onclick="window.open('https://wa.me/?text=${encodeURIComponent(postContent + '\n\n' + postUrl)}', '_blank')">
+                                                <i class="fab fa-whatsapp"></i> WhatsApp
+                                            </button>
+                                            <button class="btn btn-outline-info flex-grow-1" onclick="window.open('https://twitter.com/intent/tweet?text=${encodeURIComponent(postContent + '\n\n' + postUrl)}', '_blank')">
+                                                <i class="fab fa-twitter"></i> Twitter
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    
+                    // Add modal to DOM and show it
+                    document.body.insertAdjacentHTML('beforeend', shareModal);
+                    const modal = new bootstrap.Modal(document.getElementById('shareModal'));
+                    modal.show();
+                    
+                    // Remove modal when closed
+                    document.getElementById('shareModal').addEventListener('hidden.bs.modal', function() {
+                        this.remove();
+                    });
                 });
             });
         }
