@@ -261,14 +261,14 @@
                                     <h6><i class="bi bi-envelope me-2"></i> Email</h6>
                                     <p id="modalEmail" class="text-muted"></p>
                                 </div>
-                                <div class="info-item">
+                                <!-- <div class="info-item">
                                     <h6><i class="bi bi-phone me-2"></i> Mobile</h6>
                                     <p id="modalMobile" class="text-muted"></p>
                                 </div>
                                 <div class="info-item">
                                     <h6><i class="bi bi-person-badge me-2"></i> Enrollment No.</h6>
                                     <p id="modalEnrollment" class="text-muted"></p>
-                                </div>
+                                </div> -->
                                 <div class="info-item">
                                     <h6><i class="bi bi-book me-2"></i> Course</h6>
                                     <p id="modalCourse" class="text-muted"></p>
@@ -462,8 +462,8 @@
             document.getElementById("modalPhoto").onerror = "this.src='https://via.placeholder.com/150'";
             document.getElementById("modalName").textContent = person.fullName;
             document.getElementById("modalEmail").textContent = person.email || 'Not available';
-            document.getElementById("modalMobile").textContent = person.mobile || 'Not available';
-            document.getElementById("modalEnrollment").textContent = person.enrollment || 'Not available';
+            // document.getElementById("modalMobile").textContent = person.mobile || 'Not available';
+            // document.getElementById("modalEnrollment").textContent = person.enrollment || 'Not available';
             document.getElementById("modalCourse").textContent = person.courseName || 'Not available';
             document.getElementById("modalDept").textContent = person.departmentName || 'Not available';
             document.getElementById("modalYear").textContent = person.passingYear || 'Not available';
